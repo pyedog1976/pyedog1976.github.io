@@ -1,7 +1,7 @@
 
     <header>
 
-      <!-- Nav Bar -->
+      <!-- Nav Bar we show the name forevershow -->
       <nav id="navbar" class="navbar navbar-light navbar-expand-sm {% if site.navbar_fixed %}fixed-top{% else %}sticky-top{% endif %}">
         <div class="container">
           {% if page.permalink != '/' -%}
@@ -63,6 +63,7 @@
               {%- endif %}
 
               <!-- Other pages -->
+
               {%- assign sorted_pages = site.pages | sort: "nav_order" -%}
               {%- for p in sorted_pages -%}
               {%- if p.nav and p.autogen == nil -%}
@@ -95,7 +96,6 @@
               {%- endif -%}
               {% endfor -%}
               {%- if site.enable_darkmode %}
-
               <!-- Toogle theme mode -->
               <li class="toggle-container">
                 <button id="light-toggle" title="Change theme">
