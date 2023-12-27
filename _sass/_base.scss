@@ -17,6 +17,7 @@ li,
 span,
 strong {
   color: var(--global-text-color);
+  font-family: BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 hr {
@@ -163,15 +164,12 @@ blockquote {
 
 .profile {
   width: 100%;
-
   .more-info {
-    margin-bottom: 5px;
-    margin-top: 5px;
+    margin-bottom: 0px; //-10%; //-px;
+    margin-top: 0px;
     font-family: monospace;
-
     p {
       display: inline-block;
-      margin: 0;
     }
   }
 }
@@ -183,11 +181,11 @@ blockquote {
 .profile.float-left {
   margin-right: 1rem;
 }
-
+// change the photo image
 @media (min-width: 576px) {
   .profile {
+    margin-right: 100px;
     width: 30%;
-
     .address {
       p {
         display: block;
@@ -197,9 +195,8 @@ blockquote {
 }
 
 .post-description {
-  margin-bottom: 2rem;
+//   margin-bottom: 2rem;
   font-size: 0.875rem;
-
   a {
     color: inherit;
 
@@ -279,7 +276,6 @@ blockquote {
     padding-bottom: 0;
     padding-top: 0;
     font-size: 1.7rem;
-
     a {
       i::before {
         color: var(--global-text-color);
@@ -349,20 +345,21 @@ blockquote {
 // Social (bottom)
 
 .social {
-  text-align: center;
-
+  bottom:0px;
+  text-align: right;
+  // Modified the icon size
   .contact-icons {
-    font-size: 4rem;
+    font-size: 2.5rem;
 
     a {
       i::before {
-        color: var(--global-text-color);
+        color: var(--global-theme-color);
         transition-property: all 0.2s ease-in-out;
       }
 
       &:hover {
         i::before {
-          color: var(--global-theme-color);
+          color: var(--global-hover-color);
         }
       }
     }
@@ -504,6 +501,7 @@ footer.sticky-bottom {
   mjx-container[jax="CHTML"][display="true"] {
     display: unset;
   }
+//   right: 200px,
 }
 
 .post-list {
