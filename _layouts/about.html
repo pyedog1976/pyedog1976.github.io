@@ -2,95 +2,268 @@
 layout: default
 ---
 
-<!-- about.html style = "position:relative; left:170px; -->
+<!-- about.html: left = original content (name, intro, News), right = Selected Publications, same row -->
       <div class="post">
-        <header class="post-header">
-          <h1 class="post-title">
-            {% if site.title == "blank" -%}
-            <span class="font-weight-bold">{{ site.first_name }}</span>
-            {{ site.middle_name }} {{ site.last_name }}{%- else -%}{{ site.title }}
+        <div class="row about-side-by-side">
+          <!-- Left: 三个主题框之一 = Introduction，之二 = News -->
+          <div class="col-md-6 about-left-col">
+            <div class="about-section about-intro">
+
+              <!-- USER INFO 與 HISTORY 並排（左側含 Yuyuan Liu 標題 + USER INFO，右側為 HISTORY） -->
+              <div class="info-history-row">
+                <div class="info-col">
+                  <header class="post-header">
+                    <h1 class="post-title">
+                      {% if site.title == "blank" -%}
+                      <span class="font-weight-bold">{{ site.first_name }}</span>
+                      {{ site.middle_name }} {{ site.last_name }}{%- else -%}{{ site.title }}
+                      {%- endif %}
+                    </h1>
+                    <p class="desc">{{ page.subtitle }}</p>
+                  </header>
+
+                  <div class="about-profile">
+                    <div class="profile-grid">
+                      <div class="profile-left">
+                        <h2 class="about-section-title">
+                          <span class="about-section-prefix">>></span> USER INFO
+                        </h2>
+                        <ul class="sysinfo-list">
+                          <li>
+                            <span class="k">loc</span><span class="c">:</span>
+                            <span class="v">
+                              <span class="ent">oxford</span>, <span class="muted">united kingdom</span>
+                            </span>
+                          </li>
+                          <li>
+                            <span class="k">role</span><span class="c">:</span>
+                            <span class="v">
+                              postdoctoral <span class="kw">researcher</span>
+                            </span>
+                          </li>
+                          <li>
+                            <span class="k">affil</span><span class="c">:</span>
+                            <span class="v">
+                              depart. of engineering sci., <span class="ent">university of oxford</span>
+                            </span>
+                          </li>
+                          <li>
+                            <span class="k">proj</span><span class="c">:</span>
+                            <span class="v">
+                              <span class="v">human-ai collaboration</span>
+                            </span>
+                          </li>
+                          <li>
+                            <span class="k">focus</span><span class="c">:</span>
+                            <span class="v">
+                              <span class="kw">lvlms</span> · <span class="ent">reasoning</span> · <span class="kw2">percept.</span>
+                            </span>
+                          </li>
+                          <li>
+                            <span class="k">email</span><span class="c">:</span>
+                            <span class="v">
+                              <span class="linkish">yuyuan dot liu@eng.ox.ac.uk</span>
+                            </span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="history-col">
+                  <h2 class="about-section-title about-profile-title-clone">
+                    <span class="about-section-prefix">>></span> HISTORY
+                  </h2>
+                  <!-- 三行蛇形軌跡 HISTORY -->
+                  <div class="history-trace">
+                    <!-- ASCII '+'' frame：用 <pre> 一次性畫完整邊框，左側與 '>' 結合成 old-school terminal prompt 風格 -->
+                      <pre class="trace-ascii-frame" aria-hidden="true">
+<span class="prompt">&gt;</span>
+<span class="prompt">&gt;</span> +++++++++++++++++++++++++++++++++++++++++++
+<span class="prompt">&gt;</span> +                                         +
+<span class="prompt">&gt;</span> +                                         +
+<span class="prompt">&gt;</span> +                                         +
+<span class="prompt">&gt;</span> +                                         +
+<span class="prompt">&gt;</span> +                                         +
+<span class="prompt">&gt;</span> +                                         +
+<span class="prompt">&gt;</span> +                                         +
+<span class="prompt">&gt;</span> +                                         +
+<span class="prompt">&gt;</span> +                                         +
+<span class="prompt">&gt;</span> +                                         +
+<span class="prompt">&gt;</span> +                                         +
+<span class="prompt">&gt;</span> +                                         +
+<span class="prompt">&gt;</span> +                                         +
+<span class="prompt">&gt;</span> +                                         +
+<span class="prompt">&gt;</span> +                                         +
+<span class="prompt">&gt;</span> +++++++++++++++++++++++++++++++++++++++++++
+</pre>
+                    <!-- connected serpentine path -->
+                    <svg class="history-trace-svg" viewBox="0 0 1000 220" preserveAspectRatio="none" aria-hidden="true">
+                      <!-- main connected trace -->
+                      <path class="trace-path"
+                            d="M 40 40
+                               L 960 40
+                               L 960 110
+                               L 40 110
+                               L 40 180
+                               L 550 180" />
+                      <!-- arrow + cursor：線段 550→610，箭頭尖在 630 指向右 -->
+                      <path class="trace-arrow" d="M 550 180 L 630 180" />
+                      <path class="trace-arrow-head" d="M 630 180 L 598 174 L 598 186 Z" />
+                    </svg>
+
+                    <!-- pieces (experience) -->
+                    <div class="trace-node piece" style="--x:150;  --y:70;">
+                      <div class="icon">♟</div>  <!-- BSc: pawn -->
+                      <div class="anno">2014<br>bsc start</div>
+                    </div>
+
+                    <div class="trace-node piece" style="--x:520; --y:70;">
+                      <div class="icon">♟</div>  <!-- BSc (hons): pawn -->
+                      <div class="anno">2019<br>hons</div>
+                    </div>
+
+                    <!-- 左側旗子：scholarship -->
+                    <div class="trace-node flag" style="--x:560; --y:60;">
+                      <div class="icon">⚑</div>
+                      <div class="anno">University of Adelaide Alumni Scholarship (International)</div>
+                    </div>
+
+                    <!-- 2019 hons 右側旗子：Finalist award -->
+                    <div class="trace-node flag" style="--x:640; --y:70;">
+                      <div class="icon">⚑</div>
+                      <div class="anno">Finalist of Minister’s Research and Innovation Award (AI for Health)</div>
+                    </div> 
+                    <div class="trace-node piece" style="--x:740; --y:70;">
+                      <div class="icon">♞</div>  <!-- PhD start: knight -->
+                      <div class="anno">2021.1<br>phd start</div>    
+                    </div>
+
+                    <!-- 2021 phd start 右側旗子：Divisional PhD Scholarship -->
+                    <div class="trace-node flag" style="--x:780; --y:60;"> 
+                      <div class="icon">⚑</div>
+                      <div class="anno">Computer &amp; Mathematical Sciences Divisional PhD Scholarship</div>
+                    </div>
+
+                    <div class="trace-node piece" style="--x:520; --y:120;">
+                      <div class="icon">♞</div>  <!-- PhD finish: knight -->
+                      <div class="anno">2024.6<br>phd finish</div>
+                    </div>
+
+                    <div class="trace-node piece" style="--x:220; --y:165;">
+                      <div class="icon">♜</div>  <!-- Postdoc: rook -->
+                      <div class="anno">2024.11<br>postdoc</div>
+                    </div>
+
+                    <!-- 2024 PhD finish 附近旗子：Dean's commendation -->
+                    <div class="trace-node flag" style="--x:420; --y:120;">
+                      <div class="icon">⚑</div>
+                      <div class="anno">Receiver of Dean’s Commendation for Doctoral Thesis Excellence</div>
+                    </div>
+
+                    <div class="trace-node flag" style="--x:250; --y:155;">
+                      <div class="icon">⚑</div>
+                      <div class="anno">Funded by the Turing AI World-Leading Researcher (WLR) Fellowship</div>
+                    </div>
+
+                    <!-- end label：手動控制同 trace-node；hover 顯示 Open to Work! 彈窗 -->
+                    <div class="trace-now" style="--x: 740; --y: 160; --now-font-size: 18px;">
+                      <span class="trace-now-label">Now!</span>
+                      <div class="trace-now-anno">"Open to Work"</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <article>
+                {% if page.profile and page.profile.image -%}
+                <div class="profile float-{%- if page.profile.align == 'left' -%}left{%- else -%}right{%- endif -%}">
+                  {%- assign profile_image_path = page.profile.image | prepend: 'assets/img/' -%}
+                  {% if page.profile.image_circular %}
+                    {%- assign profile_image_class = "img-fluid z-depth-1 rounded-circle" -%}
+                  {% else %}
+                    {%- assign profile_image_class = "img-fluid z-depth-1 rounded" -%}
+                  {% endif %}
+                  {% include figure.html
+                  path=profile_image_path
+                  class=profile_image_class
+                  alt=page.profile.image
+                  cache_bust=true -%}
+                  {%- if page.profile.more_info %}
+                  <div class="more-info">
+                    {{ page.profile.more_info }}
+                  </div>
+                  {%- endif %}
+                </div>
+                {%- endif %}
+                <div class="clearfix">
+                  {{ content }}
+                  {%- if page.social %}
+                  <div class="social">
+                    <div class="contact-icons">
+                      {% include social.html %}
+                    </div>
+                    <div class="contact-note">
+                      {{ site.contact_note }}
+                    </div>
+                  </div>
+                  {%- endif %}
+                </div>
+              </article>
+            </div>
+
+            {% if page.news and site.announcements.enabled -%}
+            <div class="about-section about-news">
+              <h2 class="about-section-title"><span class="about-section-prefix">>></span> <a href="{{ '/news/' | relative_url }}" style="color: inherit;">News</a></h2>
+              {% include news.html limit=true %}
+            </div>
             {%- endif %}
-          </h1>
-          <p class="desc">{{ page.subtitle }}</p>
-        </header>
-        <article>
-          {% if page.profile -%}
-          <div class="profile float-{%- if page.profile.align == 'left' -%}left{%- else -%}right{%- endif -%}">
-            {%- if page.profile.image %}
-              {%- assign profile_image_path = page.profile.image | prepend: 'assets/img/' -%}
 
-              {% if page.profile.image_circular %}
-                {%- assign profile_image_class = "img-fluid z-depth-1 rounded-circle" -%}
-              {% else %}
-                {%- assign profile_image_class = "img-fluid z-depth-1 rounded" -%}
-              {% endif %}
-
-              {% include figure.html
-              path=profile_image_path
-              class=profile_image_class
-              alt=page.profile.image
-              cache_bust=true -%}
-            {% endif -%}
-            {%- if page.profile.more_info %}
-            <div class="more-info">
-              {{ page.profile.more_info }}
+            {% if page.latest_posts -%}
+            <div class="about-section about-latest-posts">
+              <h2><a href="{{ '/blog/' | relative_url }}" style="color: inherit;">latest posts</a></h2>
+              {% include latest_posts.html %}
             </div>
             {%- endif %}
           </div>
-          {%- endif %}
-          <div class="clearfix">
-            <!--
-            <h1 class="post-title">
-              {% if site.title == "blank" -%}
-              <span class="font-weight-bold">{{ site.first_name }}</span>
-              {{ site.middle_name }} {{ site.last_name }}{%- else -%}{{ site.title }}
-              {%- endif %}
-            </h1>
-            <div style="margin-bottom: 3.5%;"></div> -->
 
-            <p>&#160;</p>
-            {{ content }}
-            <!-- Social -->
-            {%- if page.social %}
-            <div class="social">
-              <div class="contact-icons">
-                {% include social.html %}
-              </div>
-              <div class="contact-note">
-                {{ site.contact_note }}
+          <!-- Right: 三个主题框之三 = Selected Publications -->
+          <div class="col-md-6 about-right-col">
+            {% if page.selected_papers -%}
+            <div class="about-section about-pubs">
+              <h2 class="about-section-title"><span class="about-section-prefix">>></span> <span>Selected Publications</span></h2>
+              <div class="publications publications-two-cols">
+                <div class="pub-group pub-group-top">
+                  <p class="pub-group-intro"><span class="pub-group-intro-mark">[*]</span> [*] Multimodal learning and reasoning with foundation models.</p>
+                  <div class="pub-tag-timeline" aria-label="upcoming publication tag timeline">
+                    <span class="pub-tag-item"><span class="tag tag-venue-cvpr">CVPR'26</span><span class="sep">----------</span></span>
+                    <span class="pub-tag-item"><span class="tag tag-venue-cvpr">CVPRF'26</span><span class="sep">---------</span></span>
+                    <span class="pub-tag-item"><span class="tag tag-venue-cvpr">CVPR'24</span><span class="sep">-------------------------</span></span>
+                  </div>
+                  <div class="pub-mllm-papers-row">
+                    {% bibliography -f {{ site.scholar.bibliography }} --group_by none --query @*[mllm=true]* %}
+                    <div class="pub-mllm-sidebar-col">
+                      <p class="pub-mllm-code-epigraph" role="note">/* In progress, as always.<br><span class="pub-mllm-code-epigraph__indent">&nbsp;&nbsp;&nbsp;Experiments are ongoing.<br>&nbsp;&nbsp;&nbsp;Results to follow.<br>&nbsp;&nbsp;&nbsp;Additional checks are running.<br>&nbsp;&nbsp;&nbsp;Outputs under review.</span> */</p>
+                      <span class="ascii-face" aria-label="ASCII mood"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="pub-group pub-group-bottom">
+                  <p class="pub-group-intro"><span class="pub-group-intro-mark">[*]</span> Robust learning under distribution shift and imperfect labels.</p>
+                  <div class="pub-tag-timeline" aria-label="publication tag timeline">
+                    <span class="pub-tag-item"><span class="tag">TMI'25</span><span class="sep">------------</span></span>
+                    <span class="pub-tag-item"><span class="tag">ECCV'24</span><span class="sep">-----------</span></span>
+                    <span class="pub-tag-item"><span class="tag">ICCV'23</span><span class="sep">----------</span></span>
+                    <span class="pub-tag-item"><span class="tag">ECCV'22</span><span class="sep">----------</span></span>
+                    <span class="pub-tag-item"><span class="tag tag-venue-cvpr">CVPR'22</span><span class="sep">-------------------------</span></span>
+                  </div>
+                  {% bibliography -f {{ site.scholar.bibliography }} --group_by none --query @*[selected=true]* %}
+                </div>
               </div>
             </div>
             {%- endif %}
           </div>
-
-<!--          <hr width="100%" size="60px" color="black" align="mid" />-->
-
-<!--          <h2><a style="color: inherit;">Research</a></h2>-->
-<!--          {%- include research.html %}-->
-
-          <hr width="100%" size="60px" color="black" align="mid" />
-          <!-- News -->
-          {% if page.news and site.announcements.enabled -%}
-            <h2><a href="{{ '/news/' | relative_url }}" style="color: inherit;">News</a></h2>
-            {%- include news.html limit=true %}
-          {%- endif %}
-
-          <hr width="100%" size="60px" color="black" align="mid" />
-
-          <!-- Latest posts comments for not use -->
-          {% if page.latest_posts -%}
-            <h2><a href="{{ '/blog/' | relative_url }}" style="color: inherit;">latest posts</a></h2>
-            {%- include latest_posts.html %}
-          {%- endif %}
-
-
-          <!-- Selected papers -->
-          {% if page.selected_papers -%}
-            <h2><a href="{{ '/publications/' | relative_url }}" style="color: inherit;">Selected Publications</a></h2>
-            {%- include selected_papers.html %}
-          {%- endif %}
-
-
-        </article>
-
-</div>
+        </div>
+      </div>

@@ -1,0 +1,1796 @@
+/* assets/css/dark-sci-min.css */
+/* Minimal dark theme: pure black background, no decorative elements.
+   Keeps About/Publications layout (about-side-by-side, publications-two-cols, full width).
+*/
+
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&display=swap");
+
+:root {
+  --bg: #000000;
+  --text: #f2f6ff;
+  --muted: #b0b8cc;
+  --coin: #ffcc33;
+  --border: rgba(255,255,255,0.12);
+  --panel: rgba(255,255,255,0.06);
+  --font-ui: "Press Start 2P", monospace;
+  --font-body: "JetBrains Mono", monospace;
+  --global-bg-color: var(--bg);
+  --global-text-color: var(--text);
+  --global-text-color-light: var(--muted);
+  --global-theme-color: var(--coin);
+  --global-hover-color: var(--coin);
+  --global-divider-color: var(--border);
+  --global-card-bg-color: var(--panel);
+  --global-code-bg-color: rgba(255,255,255,0.08);
+  --title-dash-thickness: 3px;      /* 所有標題後虛線統一粗細 */
+  --history-dash-length: 220px;     /* 單獨控制 HISTORY 後虛線長度 */
+  --title-dash-color: #a89984;      /* 復古灰棕（比白色柔和） */
+  --pub-card-width: calc(270px * 0.95);
+  --pub-card-overlap: -1rem;
+  /* CVPR / CVPRF timeline 標籤單獨色，其餘標籤仍用默認 #ff4444 */
+  --venue-cvpr: #ff5555;
+}
+
+/* ====== 1) Pure black background (no scroll, fixed to viewport) ====== */
+html {
+  min-height: 100%;
+  background: var(--bg) !important;
+  overflow-y: hidden;
+  overflow-x: hidden;  /* 防止出現橫向滾動條 */
+}
+
+body {
+  min-height: 100vh;
+  background: transparent !important;
+  color: var(--text) !important;
+  font-family: var(--font-body) !important;
+  font-size: calc(18px * 0.95);
+  line-height: 1.6;
+  overflow-y: hidden;
+  overflow-x: hidden;  /* 防止出現橫向滾動條 */
+}
+
+/* 固定導航：與主題默認 ~56px 對齊，略留一點給像素字導航欄即可（過大會整頁偏下） */
+body.fixed-top-nav {
+  padding-top: 3.75rem !important; /* ≈60px */
+}
+
+/* 介紹段落：主題的 _base 對 p/div/span 直接設了 sans-serif，這裡覆蓋為 --font-body */
+.post .about-left-col .clearfix,
+.post .about-left-col .clearfix p,
+.post .about-left-col .clearfix div,
+.post .about-left-col .clearfix span,
+.post .about-left-col .clearfix li {
+  font-family: var(--font-body) !important;
+}
+
+.container, .page-content, .content, .post, main, article, .clearfix, header, footer {
+  background: transparent !important;
+}
+
+.page, .container, .post, .post-header, .post-content, main, footer {
+  position: relative;
+  z-index: 1;
+}
+
+/*
+ * 勿與 .container 共用同一 z-index：二者為 body 下兄弟時，後出現的 .container
+ * 會整塊蓋在 header 之上，導致主內容與導航文字視覺交叉（調 margin 無效）。
+ */
+header {
+  position: relative;
+  z-index: 2000 !important;
+}
+
+/* ====== 2) Navbar ====== */
+.navbar, .navbar-light, .fixed-top {
+  background: rgba(0,0,0,0.85) !important;
+  backdrop-filter: blur(8px);
+  border-bottom: none !important;  /* 去掉導航欄下方的橫線 */
+  box-shadow: none !important;
+  z-index: 1050 !important;        /* 始終在內容之上，避免刷新後主內容框覆蓋 About/Publications */
+}
+
+/* 隱藏導航欄下方的「閱讀進度條」（那條會往右延伸的實線） */
+#progress,
+progress#progress,
+.progress-container {
+  display: none !important;
+}
+
+.navbar .navbar-brand,
+.navbar .nav-link,
+.navbar a {
+  font-family: var(--font-ui) !important;
+  font-size: 13px !important;
+  color: var(--text) !important;
+  text-decoration: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+/* 徹底關閉導航欄所有鏈接的 ::after（主題可能有動畫實線） */
+.navbar a::after,
+.navbar .nav-link::after,
+.navbar .navbar-brand::after {
+  display: none !important;
+  content: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: none !important;
+  border: none !important;
+  transition: none !important;
+}
+
+.navbar .nav-link:hover,
+.navbar .navbar-brand:hover,
+.navbar a:hover {
+  color: var(--coin) !important;
+  text-decoration: none !important;
+  border-bottom: none !important;
+}
+
+/* 當前頁面導航項：黃色 + 下方虛線 */
+.navbar .nav-item.active .nav-link,
+.navbar .nav-item.active a.nav-link {
+  color: var(--coin) !important;
+  border-bottom: 1px dashed var(--coin) !important;
+}
+
+/* ====== 3) Headings ====== */
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-ui) !important;  /* pixel-style font */
+  color: var(--text) !important;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Name (Yuyuan Liu) uses same pixel heading style, just larger size */
+.post-title {
+  font-family: "Press Start 2P", monospace !important;
+  font-size: clamp(21px, 3vw, 32px) !important;
+  line-height: 1.25 !important;
+  margin-bottom: 14px !important;
+}
+
+.desc, .post-header .desc {
+  font-family: var(--font-ui) !important;
+  font-size: 10px !important;
+  color: var(--muted) !important;
+  margin-top: 6px;
+}
+
+/* Services 頁：兩組區塊標題 — 同一字體（JetBrains Mono）、白色 */
+.post article .services-h,
+.post article .services-h--pc,
+.post article .services-h--journal {
+  font-family: "JetBrains Mono", var(--font-body), monospace !important;
+  font-size: calc(21px * 0.95) !important;
+  font-weight: 700 !important;
+  color: var(--text) !important;
+  text-transform: none !important;
+  letter-spacing: 0.03em !important;
+  line-height: 1.55 !important;
+  text-align: center !important;
+}
+
+.post article .services-h--pc {
+  margin-top: 1.65rem !important;
+  margin-bottom: 0.9rem !important;
+}
+
+.post article .services-h--journal {
+  margin-top: 1.4rem !important;
+  margin-bottom: 0.8rem !important;
+}
+
+/* Services 頁：標題 + 列表條目整塊置中 */
+.post article:has(.services-h) {
+  text-align: center !important;
+}
+
+.post article:has(.services-h) ul {
+  list-style-position: inside !important;
+  padding-left: 0 !important;
+  margin-inline: auto !important;
+  max-width: 56rem;
+}
+
+/* Services 頁：頂部「Services」大標題置中 */
+.post:has(article .services-h) .post-header {
+  text-align: center !important;
+}
+
+/* ====== 4) Links ====== */
+a, a:visited {
+  color: var(--text) !important;
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(255,255,255,0.3);
+}
+a:hover {
+  color: var(--coin) !important;
+  border-bottom-color: var(--coin);
+}
+
+/* ====== 5) Panels / Cards ====== */
+.profile,
+.card,
+blockquote,
+pre {
+  background: var(--panel) !important;
+  border: 1px solid var(--border) !important;
+}
+
+.post {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.profile {
+  padding: 16px !important;
+}
+
+.profile::before,
+pre::before {
+  content: none !important;
+}
+
+/* ====== 6) HR ====== */
+hr {
+  border: none !important;
+  height: 1px !important;
+  background: linear-gradient(90deg, transparent, var(--border), transparent) !important;
+  margin: 26px 0 !important;
+}
+hr::after { content: "" !important; }
+
+/* ====== 7) Buttons ====== */
+.btn, button, input[type="submit"] {
+  font-family: var(--font-ui) !important;
+  font-size: 10px !important;
+  background: var(--coin) !important;
+  color: black !important;
+  border: none !important;
+  padding: 8px 14px !important;
+}
+
+.btn:hover, button:hover, input[type="submit"]:hover {
+  background: #ffd84d !important;
+}
+
+/* ====== 8) Code ====== */
+pre, code {
+  font-family: var(--font-body) !important;
+}
+code {
+  background: rgba(255,255,255,0.08) !important;
+  padding: 2px 6px !important;
+}
+
+/* ====== 9) Tables ====== */
+table {
+  color: var(--text) !important;
+}
+thead th {
+  border-bottom: 1px solid var(--border) !important;
+}
+tbody td {
+  border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+}
+
+/* ====== 10) Social ====== */
+.social, .contact-icons, .contact-note {
+  color: var(--muted) !important;
+}
+
+/* 像素風社交圖標：右下角 email / scholar / github / linkedin / twitter 使用本地像素圖 */
+.social-icon-pixel img {
+  width: 48px;
+  height: 48px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  display: block;
+  transform-origin: center bottom;   /* 以底部為基準縮放/旋轉，最低點對齊 */
+  transition: transform 0.18s ease-out, filter 0.18s ease-out;
+}
+
+/* 其餘社交鏈接：保留下劃虛線 + 像素字體 */
+.social a,
+.contact-icons a {
+  display: inline-flex;
+  align-items: flex-end;            /* 讓多個 icon 的底邊對齊 */
+  justify-content: center;
+  margin: -10px -10px;
+  padding-bottom: 2px;
+  text-decoration: none !important;
+  color: #ffffff !important;      /* 圖標下方文字 / 下劃線顏色 */
+
+  font-family: "Press Start 2P", var(--font-ui), monospace !important;
+  font-size: inherit;        /* 大小恢復為主題原本設置 */
+  letter-spacing: 0.03em;
+
+  /* 保留下劃虛線，像終端鏈接 */
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-bottom: 1px dashed #ffffff;
+}
+
+/* 像素圖標專用背景：覆蓋上面的 transparent，不再透明 */
+.social a.social-icon-pixel {
+  position: relative;                    /* 讓內部絕對定位的紅色 icon 以它為參考 */
+  z-index: 1;                            /* 默認層級略高一點 */
+}
+
+/* 懸浮時：把當前 icon 提到最上層，避免被其他內容壓住 */
+.social a.social-icon-pixel:hover {
+  z-index: 5;
+}
+
+/* Hover：恢復到 0 度並放大到 1.5 倍，同時切換到 *_red.svg */
+.social a.social-icon-pixel:hover img {
+  transform: rotate(0deg) scale(1.5);
+}
+
+/* 基本圖標顯示，紅色版本預設隱藏 */
+.social a.social-icon-pixel .icon-base {
+  opacity: 1;
+}
+.social a.social-icon-pixel .icon-hover {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+}
+
+/* 懸浮時：隱藏黃色，顯示紅色 */
+.social a.social-icon-pixel:hover .icon-base {
+  opacity: 0;
+}
+.social a.social-icon-pixel:hover .icon-hover {
+  opacity: 1;
+}
+
+.social a i,
+.contact-icons a i {
+  font-size: 1em;           /* 使用父元素原始大小 */
+}
+
+.social a:hover,
+.contact-icons a:hover {
+  color: var(--coin) !important;
+  border-bottom-color: var(--coin);
+}
+
+/* About 文本内嵌像素图标（in-context：右侧浮动，正文环绕） */
+.inline-icon-cloud {
+  float: right;
+  display: inline-flex;
+  flex-wrap: nowrap;                 /* 一排显示 */
+  align-items: flex-end;
+  gap: 0.45rem;
+  margin: 0.2rem 0 0.35rem 0.75rem;  /* 放在 MLLMs 那行附近並讓正文環繞 */
+}
+
+.inline-icon-cloud a.social-icon-pixel {
+  display: inline-flex;
+  align-items: flex-end;
+  justify-content: center;
+  text-decoration: none !important;
+  border-bottom: none !important;
+  padding-bottom: 1px;
+  position: relative;
+  z-index: 1;
+}
+
+.inline-icon-cloud a.social-icon-pixel:hover {
+  z-index: 8;
+}
+
+.inline-icon-cloud .inline-pixel-icon {
+  width: 48px;                       /* 恢复到最开始的大尺寸 */
+  height: 48px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  display: block;
+  transform-origin: center bottom;
+  transition: transform 0.18s ease-out, opacity 0.12s ease-out;
+}
+
+.inline-icon-cloud a.social-icon-pixel .icon-base { opacity: 1; }
+.inline-icon-cloud a.social-icon-pixel .icon-hover {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+}
+.inline-icon-cloud a.social-icon-pixel:hover .inline-pixel-icon {
+  transform: rotate(0deg) scale(1.5);
+}
+.inline-icon-cloud a.social-icon-pixel:hover .icon-base { opacity: 0; }
+.inline-icon-cloud a.social-icon-pixel:hover .icon-hover { opacity: 1; }
+
+/* 复古高亮句：像素风、加粗、醒目换色 */
+.retro-highlight-line {
+  display: inline;
+  font-family: "Press Start 2P", var(--font-ui), monospace !important;
+  font-weight: 700 !important;
+  color: #83a598 !important; /* retro orange */
+  text-shadow: 0 0 8px rgba(254, 128, 25, 0.25);
+  letter-spacing: 0.02em;
+}
+
+/* 只给 Recently 这一句加复古前缀符号 */
+.retro-with-prefix::before {
+  content: "[!]";
+  color: #ebdbb2;
+  margin-right: 0.2em;
+}
+
+/* 導師姓名：小虛線下劃線 */
+.mentor-name {
+  border-bottom: 1px dashed #bfbfbf;
+  padding-bottom: 1px;
+}
+
+/* 收紧 About 文本到底部横线的空白 */
+.about-section.about-intro article p {
+  margin-bottom: 0.2rem !important;
+}
+
+/* ====== 11) Reduce motion ====== */
+@media (prefers-reduced-motion: reduce) {
+  .btn:active, button:active, input[type="submit"]:active {
+    transform: none;
+  }
+}
+
+/* ====== 12) Selected publications ====== */
+.publications ol.bibliography > li {
+  margin-bottom: 0.75rem;
+  padding: 0.35rem 0;
+  border: none !important;
+  background: transparent !important;
+}
+
+.publications ol.bibliography > li .row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.publications ol.bibliography > li .preview,
+.publications ol.bibliography > li .abbr {
+  flex: 0 0 auto;
+}
+
+/* 讓 Selected Publications 的快照有大致統一的寬度，
+   但完整顯示整張圖（不裁切），高度自適應。 */
+.publications-two-cols ol.bibliography > li img.preview {
+  width: var(--pub-card-width) !important;
+  max-width: var(--pub-card-width) !important;
+  height: auto;       /* 高度依比例自動調整，完整顯示 */
+  object-fit: contain;
+  display: block;
+
+  /* 必要：让高亮动画更顺滑（不改 layout） */
+  transition: transform 0.18s ease-out, box-shadow 0.18s ease-out;
+}
+
+.publications ol.bibliography > li .abbr abbr {
+  background-color: transparent !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+.publications ol.bibliography > li .abbr abbr a {
+  color: var(--muted) !important;
+}
+
+.publications ol.bibliography > li .title {
+  font-weight: 500;
+}
+.publications ol.bibliography > li .periodical {
+  color: var(--muted) !important;
+}
+
+.publications ol.bibliography > li .author a {
+  border-bottom: 1px dashed var(--border) !important;
+}
+.publications ol.bibliography > li .author a:hover {
+  border-bottom-color: var(--coin) !important;
+}
+
+/* ====== 13) About page: side-by-side ====== */
+.about-side-by-side {
+  align-items: stretch; /* 兩欄同高：隨較高一側拉伸 */
+}
+
+.about-right-col {
+  padding-left: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* 桌面端：寬度比例 + 強制同列等高（nowrap + 雙欄皆 stretch） */
+@media (min-width: 768px) {
+  .about-side-by-side {
+    flex-wrap: nowrap;
+    align-items: stretch;
+  }
+
+  .about-side-by-side .about-left-col {
+    flex: 0 0 48%;
+    max-width: 48%;
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    min-height: 0;
+  }
+
+  .about-side-by-side .about-right-col {
+    flex: 0 0 52%;
+    max-width: 52%;
+    align-self: stretch;
+    min-height: 0;
+    height: auto;
+  }
+}
+
+.about-right-col h2 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+
+/* News / Selected Publications 标题：>> 前缀 + 后面 --- 虚线（与 >> 同色），无下划虚线 */
+.about-section-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.35em !important;
+  margin-bottom: 0.75rem !important;
+  border-bottom: none !important;
+  font-size: 1.2em !important;  /* 仅缩小 News / Selected Publications 标题 */
+}
+.about-section-title a {
+  text-decoration: none !important;
+  border-bottom: none !important;
+}
+/* 仅 >> 使用 JetBrains Mono，加粗并加大字号 */
+.about-section-prefix {
+  font-family: "JetBrains Mono", var(--font-body), monospace !important;
+  font-weight: 1200 !important;
+  font-size: 1.15em !important;
+  color: var(--coin) !important;
+  letter-spacing: 0.05em;
+}
+/* 虚线用渐变控制：News / Selected Publications 標題後面的黃色虛線 */
+.about-section-title::after {
+  content: "";
+  display: block !important;
+  flex: 1 1 auto;
+  min-width: 1rem;
+  height: var(--title-dash-thickness);
+  margin-left: 0.35em;
+  background: repeating-linear-gradient(to right, var(--coin) 0, var(--coin) 8px, transparent 4px, transparent 18px) !important;
+}
+
+/* 強制 News、Selected Publications 標題後的虛線顯示（更高優先級） */
+.about-section.about-news .about-section-title::after,
+.about-section.about-pubs .about-section-title::after {
+  content: "" !important;
+  display: block !important;
+  flex: 1 1 auto !important;
+  min-width: 1rem !important;
+  height: var(--title-dash-thickness) !important;
+  margin-left: 0.35em !important;
+  background: repeating-linear-gradient(to right, var(--coin) 0, var(--coin) 8px, transparent 4px, transparent 18px) !important;
+}
+
+/* News / Selected Publications 標題改成與 HISTORY 同款（含左側 >>） */
+.about-section.about-news .about-section-title,
+.about-section.about-news .about-section-title *,
+.about-section.about-pubs .about-section-title,
+.about-section.about-pubs .about-section-title * {
+  font-family: "Press Start 2P", var(--font-ui), monospace !important;
+  font-weight: 400 !important;
+  font-size: 17px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0 !important;
+  color: #fabd2f !important;
+}
+
+.about-section.about-news .about-section-prefix,
+.about-section.about-pubs .about-section-prefix {
+  color: #fe8019 !important; /* 與 HISTORY 的 >> 一致 */
+}
+
+/* 與 HISTORY 完全一致：去掉標題後面的橫向虛線 */
+.about-section.about-news .about-section-title::after,
+.about-section.about-pubs .about-section-title::after {
+  content: "" !important;
+  display: block !important;
+  flex: 1 1 auto !important;
+  min-width: 1rem !important;
+  height: var(--title-dash-thickness) !important;
+  margin-left: 0.35em !important;
+  background: repeating-linear-gradient(to right, var(--title-dash-color) 0, var(--title-dash-color) 8px, transparent 4px, transparent 18px) !important;
+}
+
+/* HISTORY 標題恢復白色虛線，並強制大寫 */
+.history-col .about-profile-title-clone,
+.history-col .about-profile-title-clone * {
+  text-transform: uppercase !important;
+}
+.history-col .about-profile-title-clone::after {
+  content: "" !important;
+  display: block !important;
+  flex: 0 0 var(--history-dash-length) !important; /* 縮短 HISTORY 後虛線長度 */
+  min-width: var(--history-dash-length) !important;
+  max-width: var(--history-dash-length) !important;
+  height: var(--title-dash-thickness) !important;   /* 和其它標題虛線統一 */
+  margin-left: 0.35em !important;
+  background: repeating-linear-gradient(to right, var(--title-dash-color) 0, var(--title-dash-color) 8px, transparent 4px, transparent 18px) !important;
+}
+
+/* 僅在 USER INFO / HISTORY 區塊隱藏標題後的虛線 */
+.about-profile .about-section-title::after {
+  display: none !important;
+}
+
+/* Selected Publications 面板高度拉满，与左侧 News 底部持平 */
+.about-section.about-pubs {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 右欄等高時拉滿欄高，底邊 border-bottom 貼齊欄位下沿（避免黃線懸在內容下方空白之上） */
+.about-right-col > .about-section.about-pubs {
+  align-self: stretch;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 100%;
+}
+
+/* 與左欄 >> HISTORY 同一水平：同為 about-section 上 padding + 標題 margin-top 0.2rem */
+.about-section.about-pubs > h2.about-section-title {
+  margin-top: 0.2rem !important;
+  margin-bottom: 0.2rem !important; /* 壓縮與下方 [*] MLLM 總結句的距離，向標題靠攏 */
+}
+.about-section.about-pubs .publications-two-cols {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* Selected Publications: two stacked groups (top reserved, bottom current) */
+.about-section.about-pubs .publications-two-cols .pub-group {
+  margin-bottom: 0.9rem;
+}
+
+.about-section.about-pubs .publications-two-cols .pub-group:last-child {
+  margin-bottom: 0;
+}
+
+.about-section.about-pubs .publications-two-cols .pub-group-intro {
+  margin: 0 0 0.55rem 0;
+  font-family: "JetBrains Mono", var(--font-body), monospace !important;
+  font-size: calc(20px * 0.95);
+  font-weight: 800 !important;
+  /* 與 USER INFO 裡 key / focus 同款 Gruvbox soft green */
+  color: #b8bb26;
+  text-shadow: 0 0 12px rgba(184, 187, 38, 0.35), 0 0 22px rgba(184, 187, 38, 0.18);
+  line-height: 1.45;
+  letter-spacing: 0.02em;
+}
+
+/* 前綴 [*]：與 intro 裡 Recently 的 [!]（.retro-with-prefix::before）同色 */
+.about-section.about-pubs .publications-two-cols .pub-group-intro .pub-group-intro-mark {
+  color: #ebdbb2;
+  text-shadow: none;
+}
+
+/* 僅第一組：MLLM [*] 一句再貼近 >> Selected Publications */
+.about-section.about-pubs .publications-two-cols .pub-group:first-child .pub-group-intro {
+  margin-top: -1.5rem;
+}
+
+/* 第二組：Robust learning… 一句略上移，貼近上一組論文列 */
+.about-section.about-pubs .publications-two-cols .pub-group-bottom .pub-group-intro {
+  margin-top: -0.45rem;
+}
+
+/* MLLM 組：論文快照列 + 右側註解（絕對定位不占寬，避免橫向捲軸；z-index 高於快照） */
+.about-section.about-pubs .pub-group-top .pub-mllm-papers-row {
+  position: relative;
+  width: 100%;
+  overflow: visible;
+}
+
+.about-section.about-pubs .pub-group-top .pub-mllm-papers-row > ol.bibliography {
+  position: relative;
+  z-index: 1;
+}
+
+/* 懸停論文時整條 ol 抬到側欄之上，否則 .pub-details（z-index:20）仍被壓在 .pub-mllm-sidebar-col（25）下，氣泡蓋不住左側伸出的區域 */
+.about-section.about-pubs .pub-group-top .pub-mllm-papers-row:has(> ol.bibliography > li:hover) > ol.bibliography {
+  z-index: 32;
+}
+
+/*
+ * MLLM 右側欄（註解 + ascii-face）：自調改 .pub-mllm-sidebar-col（位置／寬）或子項字級。
+ */
+.about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col {
+  position: absolute;
+  right: 0.0rem;
+  top: 40%;
+  transform: translateY(-50%);
+  z-index: 25;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.55rem;
+  max-width: 25rem;
+}
+
+.about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col .pub-mllm-code-epigraph {
+  position: static;
+  transform: none;
+  font-family: "JetBrains Mono", var(--font-body), monospace !important;
+  font-size: calc(15px * 0.95);
+  font-weight: 700 !important;
+  color: #928374;
+  margin: 0 !important;
+  padding: 0.25rem 0.15rem 0 0.5rem;
+  line-height: 1.45;
+  letter-spacing: 0.02em;
+  text-align: left;
+  text-shadow:
+    0 0 6px rgba(0, 0, 0, 0.9),
+    0 0 14px rgba(0, 0, 0, 0.75);
+}
+
+.about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-code-epigraph .pub-mllm-code-epigraph__indent {
+  font-family: inherit;
+}
+
+/* MLLM 側欄：ASCII 表情（內容在 ::after，hover 用 keyframes 換 content；父層 pointer-events:none 故此處開 auto 才能懸停） */
+.about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col .ascii-face {
+  font-family: "Press Start 2P", var(--font-ui), monospace !important;
+  font-weight: 400 !important;
+  display: inline-block;
+  position: relative;
+  color: transparent;
+  /* Press Start 2P 較寬；字體本身多為單一字重，「加粗」靠略大字號 + ::after 描邊陰影 */
+  font-size: calc(14px * 0.95);
+  line-height: 1.45;
+  margin: 0.55rem 0 0 auto;
+  padding-left: 0;
+  padding-right: 0.15rem;
+  align-self: flex-end;
+  min-width: 20ch;
+  min-height: 1.6em;
+  vertical-align: baseline;
+  pointer-events: auto;
+  cursor: default;
+}
+
+.about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col .ascii-face::after {
+  content: "( -_- )";
+  position: absolute;
+  left: auto;
+  right: 0.15rem;
+  top: 1.38rem;
+  font-family: inherit;
+  font-weight: inherit;
+  /* 與 intro 裡 Recently 的 [!]（.retro-with-prefix::before）同色 */
+  color: #ebdbb2;
+  opacity: 1;
+  white-space: pre;
+  /* 像素字描邊：沿用 #ebdbb2 系，外圈略壓暗以便疊在快照上仍可讀 */
+  text-shadow:
+    1px 0 0 rgba(235, 219, 178, 0.4),
+    -1px 0 0 rgba(235, 219, 178, 0.4),
+    0 1px 0 rgba(235, 219, 178, 0.32),
+    0 -1px 0 rgba(235, 219, 178, 0.26),
+    0 0 8px rgba(0, 0, 0, 0.88),
+    0 0 14px rgba(0, 0, 0, 0.68);
+}
+
+.about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col .ascii-face:hover::after {
+  animation: pub-mllm-cool-face 0.9s steps(1) forwards;
+}
+
+@keyframes pub-mllm-cool-face {
+  0% {
+    content: "( -_- )";
+  }
+  33% {
+    content: "( •_• )";
+  }
+  66% {
+    /* 過渡幀：改為從左側伸手（與首幀臉在左、末幀戴鏡的敘事一致） */
+    content: "⌐▀-▀<( •_• )";
+  }
+  100% {
+    /* 用「上半塊」▀ 取代 ■：像素字裡更像橫條墨鏡，避免 ■ 過方像方塊眼 */
+    content: "(⌐▀_▀)";
+  }
+}
+
+/* Selected Publications tag timeline (moved from per-paper badges) */
+.about-section.about-pubs .pub-tag-timeline {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.2rem;
+  margin: 0 0 0.12rem 0; /* 與下方 paper 快照拉近 */
+  font-family: "Press Start 2P", var(--font-ui), monospace !important;
+  font-size: calc(18px * 0.95); /* 再放大 */
+  font-weight: 700 !important;  /* 加粗 */
+  line-height: 1.2;
+  color: #ff4444;
+  white-space: nowrap;
+}
+
+/* timeline 正下方的論文列表再貼近一點 */
+.about-section.about-pubs .pub-group-bottom > .publications {
+  margin-top: 0;
+}
+
+/* 每个 tag 槽位与每张快照使用相同宽度/重叠参数，左边缘自然对齐 */
+.about-section.about-pubs .pub-tag-timeline .pub-tag-item {
+  width: auto;
+  margin-left: 0;
+  flex: 0 0 auto;
+}
+
+.about-section.about-pubs .pub-tag-timeline .tag {
+  color: #ff4444;
+  display: inline-block;
+}
+
+.about-section.about-pubs .pub-tag-timeline .tag.tag-venue-cvpr {
+  color: var(--venue-cvpr);
+}
+
+.about-section.about-pubs .pub-tag-timeline .sep {
+  color: #a89984; /* 恢复原来的复古分隔线颜色 */
+  letter-spacing: 0;        /* 交給你手動在 about.html 增減 '-' 來對齊 */
+  margin-left: 0.2em;
+}
+
+/* 每个 tag 前后都加小号 ◆，营造“钉上去”的节点感 */
+.about-section.about-pubs .pub-tag-timeline .tag::before,
+.about-section.about-pubs .pub-tag-timeline .tag::after {
+  content: " ◆ ";
+  color: currentColor;
+  font-size: 0.42em; /* 小一点 */
+  font-weight: 700;
+  display: inline-block;
+  position: relative;
+  top: -0.52em; /* 往上挪一点 */
+}
+
+.about-section.about-pubs .pub-tag-timeline .tag::before {
+  margin-right: 0.2em;
+}
+
+.about-section.about-pubs .pub-tag-timeline .tag::after {
+  margin-left: 0.2em;
+}
+
+.about-section.about-pubs .publications-two-cols .pub-group-empty {
+  min-height: 56px; /* 预留上方组空间，后续你填新 papers */
+  border: 1px dashed rgba(168, 153, 132, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a89984;
+  font-family: "JetBrains Mono", var(--font-body), monospace !important;
+  font-size: calc(12px * 0.95);
+}
+
+/* 三个主题框：横轴实线 10px，纵轴虚线 5px，颜色 #b8fcb8；纵轴用渐变实现较长虚线片段 */
+.about-section {
+  border-top: 3px solid #ffd84d !important;
+  border-bottom: 1px solid #ffd84d !important;
+  border-left: none !important;
+  border-right: none !important;
+  /* 纵轴虚线：用背景渐变模拟，每段约 12px 实线、8px 透明 */
+  background-image:
+    repeating-linear-gradient(to bottom, #ffd84d 0, #ffd84d 5px, transparent 12px, transparent 20px),
+    repeating-linear-gradient(to bottom, #ffd84d 0, #ffd84d 5px, transparent 12px, transparent 20px);
+  background-size: 2px 100%, 2px 100%;  /* 纵轴粗细：改小则更细 */
+  background-position: left center, right center;
+  background-repeat: repeat-y;
+  padding: 1rem 1.25rem 1rem 1.25rem; /* 與黃色上邊框留出空間，避免內容貼頂 */
+  margin-bottom: 1.25rem;
+  box-sizing: border-box;
+}
+.about-section:last-child {
+  margin-bottom: 0;
+}
+
+/* News 精修：更清晰的日期层级 + 更松的行距 + 轻量 hover */
+.about-section.about-news {
+  padding-top: 0.8rem !important;   /* 往下挪，与上边框拉开距离 */
+}
+
+.about-section.about-news .news .table {
+  margin-bottom: 0;
+}
+
+.about-section.about-news .news .table tr th,
+.about-section.about-news .news .table tr td {
+  padding-top: 0.34rem !important;
+  padding-bottom: 0.34rem !important;
+  vertical-align: top;
+  line-height: 1.5;
+}
+
+.about-section.about-news .news .table tr th {
+  width: 18% !important;
+  color: #ebdbb2 !important;              /* 日期更亮一点，便于扫读 */
+  font-family: "JetBrains Mono", var(--font-body), monospace !important;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.about-section.about-news .news .table tr th.news-date-highlight {
+  color: #ff4444 !important;               /* Mar, 2026 高亮红色 */
+  text-shadow: 0 0 8px rgba(255, 68, 68, 0.35);
+}
+
+.about-section.about-news .news .table tr td {
+  color: #f2f6ff;
+}
+
+.about-section.about-news .news .table tr td a.news-title {
+  color: #f2f6ff !important;
+  text-decoration: none !important;
+  border-bottom: 1px dashed rgba(242, 246, 255, 0.45);
+}
+
+.about-section.about-news .news .table tr td a.news-title:hover {
+  color: #fabd2f !important;
+  border-bottom-color: #fabd2f;
+}
+
+.about-section.about-news .news .table tr {
+  transition: background-color 0.16s ease;
+}
+
+.about-section.about-news .news .table tr:hover {
+  background-color: rgba(250, 189, 47, 0.06); /* 轻微像素终端高亮 */
+}
+
+.publications-two-cols ol.bibliography {
+  /* 橫向從左到右排列，按時間順序互相覆蓋（負 margin 控制重疊緊密程度） */
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.publications-two-cols ol.bibliography > li {
+  break-inside: avoid;
+  position: relative;
+  margin-bottom: 0;
+  margin-left: var(--pub-card-overlap);        /* 與 timeline 共用重疊參數 */
+  flex: 0 0 auto;
+  transition: transform 0.18s ease-out, box-shadow 0.18s ease-out;
+}
+.publications-two-cols ol.bibliography > li:first-child {
+  margin-left: 0;              /* 第一個不左移 */
+}
+
+/* 氣泡在快照左側伸出時，須高於同列其他 li（含其 img.preview 的 z-index:3），否則會被相鄰卡片蓋住 */
+.publications-two-cols ol.bibliography > li:hover {
+  z-index: 35;
+}
+
+/* 會議+年份小標籤（例如 CVPR'22），貼在快照左上角 */
+.publications-two-cols .preview {
+  position: relative;
+}
+.publications-two-cols .preview .pub-venue-badge {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  padding: 2px 6px;
+  font-size: calc(10px * 0.95);
+  background: rgba(0,0,0,0.8);
+  color: #ffffff;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.5);
+  z-index: 2;
+}
+
+/* Hide per-paper top-left badges after moving to timeline */
+.about-section.about-pubs .publications-two-cols .preview .pub-venue-badge {
+  display: none !important;
+}
+
+/* ✅ Hover 时高亮对应的 paper 快照（不影响 layout） */
+.publications-two-cols ol.bibliography > li:hover img.preview {
+  transform: scale(1.04);
+  box-shadow: 0 0 0 2px var(--coin), 0 0 12px rgba(255, 204, 51, 0.6);
+  position: relative;
+  z-index: 3;
+}
+
+/* =========================
+   COOL HACKER SPEECH BUBBLE
+   (only affects .pub-details)
+   ========================= */
+.publications-two-cols ol.bibliography > li .pub-details {
+  position: absolute;
+  top: 0;
+
+  /* bubble on the LEFT of snapshot */
+  left: auto;
+  right: calc(100% + 14px);
+
+  min-width: 320px;
+  max-width: 520px;
+  padding: 0.85rem 1.0rem;
+
+  /* Terminal glass look */
+  background:
+    linear-gradient(180deg, rgba(6, 10, 18, 0.96), rgba(0, 0, 0, 0.92)),
+    repeating-linear-gradient(
+      180deg,
+      rgba(255,255,255,0.05) 0px,
+      rgba(255,255,255,0.05) 1px,
+      rgba(0,0,0,0) 3px,
+      rgba(0,0,0,0) 6px
+    );
+  border: 1px solid rgba(255, 204, 51, 0.65);
+  border-radius: 18px;
+  box-sizing: border-box;
+
+  /* let it grow naturally; avoid the "white scroll card" feel */
+  max-height: none;
+  overflow: visible;
+
+  /* entrance */
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-10px);
+  transition: opacity 0.18s ease-out, transform 0.18s ease-out;
+  z-index: 20;
+
+  /* neon + depth */
+  box-shadow:
+    0 0 0 1px rgba(255, 204, 51, 0.18),
+    0 16px 40px rgba(0,0,0,0.55),
+    0 0 22px rgba(255, 204, 51, 0.18);
+
+  /* typography inside bubble */
+  font-family: "Share Tech Mono", monospace;
+  font-size: calc(17px * 0.95);
+  line-height: 1.55;
+  letter-spacing: 0.2px;
+
+  /* subtle glow to feel "CRT" */
+  text-shadow: 0 0 8px rgba(255, 204, 51, 0.18);
+}
+
+/* hover show */
+.publications-two-cols ol.bibliography > li:hover .pub-details {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+}
+
+/* Top "status bar" inside bubble (no layout change, purely decorative) */
+.publications-two-cols ol.bibliography > li .pub-details::marker { content: ""; }
+.publications-two-cols ol.bibliography > li .pub-details::selection { background: rgba(255, 204, 51, 0.25); }
+
+/* A thin header line to add structure */
+.publications-two-cols ol.bibliography > li .pub-details::before {
+  content: ">> PAPER DETAILS";
+  display: block;
+  font-family: var(--font-ui);
+  font-size: calc(9px * 0.95);
+  letter-spacing: 1px;
+  color: rgba(255, 204, 51, 0.95);
+  margin: 0 0 8px 0;
+  padding: 0 0 6px 0;
+  border-bottom: 1px dashed rgba(255,255,255,0.18);
+}
+
+/* Tail (points to snapshot) with neon outline */
+.publications-two-cols ol.bibliography > li .pub-details::after {
+  content: "";
+  position: absolute;
+  top: 26px;
+  right: -12px;
+  width: 0;
+  height: 0;
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  border-left: 12px solid rgba(255, 204, 51, 0.55);
+  filter: drop-shadow(0 0 10px rgba(255, 204, 51, 0.25));
+}
+
+/* Inner fill for tail (so it looks like connected bubble) */
+.publications-two-cols ol.bibliography > li .pub-details .bubble-tail-fill {
+  display: none;
+}
+
+/* Ensure readable colors inside bubble */
+.publications-two-cols ol.bibliography > li .pub-details,
+.publications-two-cols ol.bibliography > li .pub-details * {
+  color: rgba(242, 246, 255, 0.92) !important;
+}
+
+/* Make links inside bubble look like terminal links */
+.publications-two-cols ol.bibliography > li .pub-details a {
+  color: rgba(255, 204, 51, 0.95) !important;
+  border-bottom: 1px dashed rgba(255, 204, 51, 0.55) !important;
+}
+.publications-two-cols ol.bibliography > li .pub-details a:hover {
+  color: #000000 !important;
+  background: rgba(255, 204, 51, 0.95) !important;
+  border-bottom-color: rgba(255, 204, 51, 0.95) !important;
+  padding: 0 4px;
+  border-radius: 6px;
+}
+
+/* Optional: tighten common parts if your template uses these classes */
+.publications-two-cols ol.bibliography > li .pub-details .title {
+  font-family: "Share Tech Mono", monospace;
+  font-size: calc(18px * 0.95);
+  line-height: 1.35;
+  margin-bottom: 6px;
+  font-weight: 700;   /* ✅ 加粗 */
+  color: rgba(190,255,200,0.92) !important;
+}
+.publications-two-cols ol.bibliography > li .pub-details .author,
+.publications-two-cols ol.bibliography > li .pub-details .periodical {
+  opacity: 0.9;
+}
+
+/* Popup links/buttons: force visible and readable (Poster / Code / arXiv / etc.) */
+.publications-two-cols ol.bibliography > li .pub-details .links {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.45rem;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.publications-two-cols ol.bibliography > li .pub-details .links .btn {
+  display: inline-block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  background: #fabd2f !important;
+  color: #000000 !important;
+  border: 1px solid rgba(0, 0, 0, 0.35) !important;
+  border-radius: 4px !important;
+  padding: 3px 8px !important;
+  font-family: "JetBrains Mono", var(--font-body), monospace !important;
+  font-size: calc(12px * 0.95) !important;
+  line-height: 1.2 !important;
+  text-decoration: none !important;
+}
+
+.publications-two-cols ol.bibliography > li .pub-details .links .btn:hover {
+  background: #ff4444 !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
+}
+
+/* 氣泡內隱藏 note（例如 * represents the equal contribution） */
+.publications-two-cols ol.bibliography > li .pub-details .pub-note {
+  display: none !important;
+}
+
+/* 氣泡內作者區：去掉所有下劃線（主題在 .author > em 上加了 border-bottom） */
+.publications-two-cols ol.bibliography > li .pub-details .author a,
+.publications-two-cols ol.bibliography > li .pub-details .author > em {
+  text-decoration: none !important;
+  border-bottom: none !important;
+}
+/* 氣泡內你的名字 Yuyuan Liu（或帶 *）：黑字 + 金色背景緊貼包裹 */
+.publications-two-cols ol.bibliography > li .pub-details .author em b,
+.publications-two-cols ol.bibliography > li .pub-details .author b {
+  font-weight: 700 !important;
+  color: #000000 !important;
+  background: #ffcc66 !important;
+  padding: 1px 3px;
+  margin: 0;
+  display: inline;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* mobile behavior unchanged (keep your logic) */
+@media (max-width: 767px) {
+  .about-right-col {
+    padding-left: 0;
+    border-left: none;
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+    margin-top: 1rem;
+  }
+  .publications-two-cols ol.bibliography > li .pub-details {
+    position: static;
+    transform: none;
+    margin-top: 0.5rem;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .publications-two-cols ol.bibliography > li .pub-details::after {
+    display: none;
+  }
+}
+
+/* ====== 14) Full width + no blue frame ====== */
+.container {
+  max-width: none !important;
+  width: 100% !important;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  box-sizing: border-box;
+}
+
+/* About 双栏：覆蓋 Bootstrap mt-5，避免與 body padding-top 疊加後空隙過大 */
+.container.mt-5:has(.about-side-by-side) {
+  margin-top: 0.75rem !important;
+  padding-top: 0.25rem !important;
+}
+
+.container,
+.container .post,
+.post,
+.about-side-by-side,
+.about-left-col,
+.about-right-col {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+body,
+body > div,
+.container,
+.container.mt-5,
+.container .post,
+.post,
+.about-side-by-side,
+.about-left-col,
+.about-right-col,
+.about-side-by-side .row {
+  background-color: transparent !important;
+  background: none !important;
+}
+
+/* =========================
+   PROFILE + HISTORY ROW
+   ========================= */
+.info-history-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2.0rem;
+  margin-top: 0;
+  margin-bottom: -1.25rem;   /* 負值過大會把下方 intro / News 整塊頂得太靠上；需更緊再調小 */
+}
+.info-history-row .info-col {
+  flex: 0 0 47%;
+  max-width: 47%;
+}
+.info-history-row .history-col {
+  flex: 0 0 53%;
+  max-width: 53%;
+}
+
+/* 讓 HISTORY 標題與下面的 ASCII 邊框更緊貼 */
+.history-col .about-profile-title-clone {
+  margin-bottom: 0.05rem;   /* 比默認標題間距更小 */
+}
+@media (max-width: 767px) {
+  .info-history-row {
+    flex-direction: column;
+  }
+  .info-history-row .info-col,
+  .info-history-row .history-col {
+    flex: 0 0 auto;
+    max-width: 100%;
+  }
+}
+
+.about-profile {
+  margin-bottom: 0.75rem;  /* 與下方 intro 段落拉開距離 */
+  padding: 0.75rem 0.9rem;
+  border-radius: 8px;
+  /* gruvbox: 深棕灰邊框 + #1d2021 玻璃背景 */
+  border: 1px solid #504945;
+  background:
+    linear-gradient(180deg, rgba(29,32,33,0.92), rgba(29,32,33,0.88)),
+    radial-gradient(circle at top left, rgba(250,189,47,0.06), transparent 55%);
+  box-shadow: 0 14px 28px rgba(0,0,0,0.65);
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.about-profile:hover {
+  background:
+    linear-gradient(180deg, rgba(29,32,33,0.98), rgba(29,32,33,0.94)),
+    radial-gradient(circle at top left, rgba(250,189,47,0.10), transparent 55%);
+  border-color: #fabd2f;  /* hover: soft yellow 邊框 */
+  box-shadow: 0 0 0 1px rgba(250,189,47,0.25), 0 18px 36px rgba(0,0,0,0.8);
+}
+
+.about-profile .profile-grid {
+  display: grid;
+  grid-template-columns: 1fr;        /* USER INFO 單欄即可 */
+  gap: 1.2rem;
+  align-items: flex-start;
+}
+
+/* 在 PROFILE 區塊裡，標題用 JetBrains Mono、正常字重偏粗，且移除後面的虛線 */
+/* USER INFO / HISTORY 標題：Press Start 2P，字號不變 */
+.about-profile .about-section-title,
+.about-profile .about-section-title *,
+/* 右側 HISTORY 標題沿用 USER INFO 樣式 */
+.about-profile-title-clone,
+.about-profile-title-clone * {
+  font-family: "Press Start 2P", var(--font-ui), monospace !important;
+  font-weight: 400 !important;
+  font-size: 17px !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+.about-profile .about-section-title,
+.about-profile-title-clone {
+  color: #fabd2f !important;      /* 標題文字：Gruvbox yellow */
+}
+.about-profile .about-section-prefix,
+.about-profile-title-clone .about-section-prefix {
+  color: #fe8019 !important;      /* >> 提示符：Gruvbox orange */
+}
+.about-profile .about-section-title::after,
+.about-profile-title-clone::after {
+  display: none !important;
+}
+
+/* 讓右側 HISTORY 的標題與 ASCII 邊框更緊貼（覆蓋通用 .about-section-title 的 margin-bottom） */
+.history-col .about-profile-title-clone {
+  margin-top: 0.2rem !important;    /* 稍微下移 >> HISTORY */
+  margin-bottom: 0.05rem !important;
+}
+
+/* SYSTEM INFO */
+.sysinfo-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: "JetBrains Mono", var(--font-body), monospace !important;  /* 與下面 intro 一致 */
+  font-size: calc(17px * 0.95);          /* ✅ 这里调 bullet 字号 */
+  font-weight: 700 !important;
+  line-height: 1.6;
+}
+
+/* 主題在 _base.scss 對 span 有全局字體設定，會蓋掉上面的 font-family
+   這裡對內部 span 再做一層覆蓋，確保整行都真的是 JetBrains Mono */
+.sysinfo-list span {
+  font-family: "JetBrains Mono", var(--font-body), monospace !important;
+}
+
+.sysinfo-list li {
+  /* 改用 flex：確保 key、冒號和值永遠在同一行 */
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  margin-bottom: 4px;
+}
+
+.sysinfo-list li::before {
+  content: "> ";
+  color: #fe8019;  /* Gruvbox soft orange prompt (>> / > / →) */
+  margin-right: 0.35rem;
+  display: inline-block;
+}
+
+.sysinfo-list .k {
+  /* key（location / role / organisation / research focus）：Gruvbox soft green */
+  color: #b8bb26 !important;
+  font-weight: 700;
+}
+.sysinfo-list .c { color: #504945 !important; }   /* colon / separators：gruvbox brown */
+.sysinfo-list .v { color: #d5c4a1 !important; font-size: calc(17px * 0.9); }   /* values：Gruvbox fg2 */
+
+/* USER INFO 值內做“vim語法高亮” */
+.sysinfo-list .v .ent   { color: #83a598 !important; }  /* entities: university, oxford, project names (blue) */
+.sysinfo-list .v .kw    { color: #fabd2f !important; }  /* core keywords: mllms, lvlms, etc. (yellow) */
+.sysinfo-list .v .kw2   { color: #b8bb26 !important; }  /* secondary keywords: perceptron 等 (green) */
+.sysinfo-list .v .muted { color: #a89984 !important; }  /* 次要文字: country, connectors (muted) */
+.sysinfo-list .v .linkish {
+  color: #83a598 !important;
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(131,165,152,0.7);
+}
+.sysinfo-list .v .linkish:hover {
+  color: #fabd2f !important;
+  border-bottom-color: #fabd2f !important;
+}
+
+@media (max-width: 767px) {
+  .sysinfo-list { font-size: calc(13px * 0.95); }
+}
+
+/* =========================
+   MINI TIMELINE
+   ========================= */
+.timeline-mini {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  padding-top: 14px;
+  font-family: "JetBrains Mono", var(--font-body), monospace !important;
+}
+
+/* horizontal line */
+.timeline-mini::before {
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  top:22px;
+  height:2px;  /* 加粗 */
+  /* scratch 風格：粗糙的橫向虛線 */
+  background:repeating-linear-gradient(
+    to right,
+    rgba(255,216,77,0.95) 0,
+    rgba(255,216,77,0.95) 6px,
+    transparent 6px,
+    transparent 12px
+  );
+}
+
+/* node */
+.tl-node {
+  position:relative;
+  text-align:center;
+  flex:1;
+}
+
+/* chess piece */
+.tl-dot {
+  font-size: calc(14px * 0.95);  /* 小棋子 */
+  color:rgba(190,255,200,0.92);
+  margin-bottom:6px;
+}
+
+/* label */
+.tl-label {
+  font-size: calc(12px * 0.95);
+  color:rgba(242,246,255,0.85);
+}
+
+/* mobile fallback */
+@media (max-width: 767px){
+  .about-profile .profile-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+/* =========================
+   CONNECTED SNAKE TRACE (3 rows)
+   perfect continuity via SVG path
+   ========================= */
+
+.history-trace {
+  position: relative;
+  margin-top: 0;
+  /* 固定高度，作為一個 pixel box；寬度仍然隨右側欄自適應 */
+  height: 360px;             /* ✅ 這裡改成你想要的像素高度 */
+  width: 100%;               /* 佔滿 HISTORY 這一列的寬度 */
+  margin-left: 0;
+  margin-right: 0;
+  padding: 0;
+
+  /* 與左側 USER INFO 卡片底部對齊：使用相同的下邊距 */
+  margin-bottom: 0.5rem;
+
+  /* 刪掉套在 '+' 外面的任何邊框 / 背景 */
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  /* 多餘內容裁剪掉，讓所有東西“被這個盒子完全包住” */
+  overflow: visible;   /* 旗子彈窗可伸出，不被裁掉 */
+}
+
+/* the connected path */
+.history-trace-svg {
+  position: absolute;
+  /* 讓整個 trace 在 ASCII 框內居中縮放，整體上移 10px */
+  left: 50%;
+  top: calc(50% - 10px);
+  transform: translate(-50%, -50%);
+  width: 80%;          /* 根據需要微調：控制 trace 橫向占比 */
+  height: 70%;         /* 根據需要微調：控制 trace 縱向占比 */
+  pointer-events: none;
+}
+
+.trace-path {
+  fill: none;
+  stroke: #504945;
+  stroke-width: 2.2;
+
+  stroke-dasharray: 5 1.2;
+
+  stroke-linecap: butt;
+  stroke-linejoin: miter;
+
+  vector-effect: non-scaling-stroke;
+  shape-rendering: crispEdges;
+}
+
+/* ASCII '+'' 邊框：用 <pre> 直接畫完整框線，左側結合 '>' 模仿 USER INFO 風格
+   改為非絕對定位，讓 <pre> 的內容可以自然撐開 .history-trace 的高度 */
+.trace-ascii-frame {
+  position: relative;
+  margin: 0;
+  /* 上下留一點呼吸空間，左右貼齊欄目的左邊，讓 '>' 與 HISTORY 的 '>>' 左邊對齊 */
+  padding: 10px 0;
+  white-space: pre;                   /* 保留 <pre> 中的換行與空格，確保邊框對齊 */
+  font-family: "JetBrains Mono", var(--font-body), monospace;
+  font-size: calc(15px * 0.95);
+  /* 與 USER INFO 列表一致，稍微縮小以接近 90% 縮放效果 */
+  font-weight: 700;                   /* 與左側 sysinfo 的 '>' 一致 */
+  line-height: 1.1;                   /* 行距略緊，邊框更緊湊 */
+  letter-spacing: 0;
+  color: #d5d5d5;                     /* 更亮的灰色，讓 '+' 更清晰 */
+  pointer-events: none;
+  z-index: 0;                         /* 讓 SVG / 節點 / prompt 蓋在上面 */
+
+  /* 確保沒有額外邊框 / 背景 / 滾動條，只看見純文字 '+' 框 */
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  overflow: visible !important;
+}
+
+/* 左側 prompt '>' 保持原來的橙色 */
+.trace-ascii-frame .prompt {
+  color: #fe8019;
+}
+
+.trace-arrow {
+  fill: none;
+  stroke: #504945;
+  stroke-width: 2.2;
+}
+
+.trace-arrow-head {
+  fill: #504945;
+}
+
+/* nodes */
+.trace-node {
+  position: absolute;
+
+  /* --x / --y in svg coordinates (0..1000 / 0..220)，整體上移 10px */
+  left: calc(var(--x) * 0.1%);     /* 1000 -> 100% */
+  top: calc(var(--y) * 0.4545% - 10px);   /* 220 -> 100%，再上移 10px */
+
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  text-align: center;
+}
+
+.trace-node .icon {
+  font-size: calc(18px * 0.95);
+  line-height: 1;
+  display: inline-grid;
+  place-items: center;
+
+  width: 24px;
+  height: 24px;
+  border-radius: 10px;
+
+  /* 讓框本身變實心，完全遮擋底下的線條 */
+  background: rgba(0,0,0,0.9);
+  border: 1px solid rgba(255, 204, 51, 0.55);
+  box-shadow:
+    0 0 0 1px rgba(255, 204, 51, 0.10),
+    0 0 18px rgba(255, 204, 51, 0.12);
+}
+
+/* chess piece color */
+.trace-node.piece .icon {
+  color: #b8bb26;        /* experience nodes: gruvbox green */
+  font-size: calc(30px * 0.95);       /* 放大棋子符號 */
+  width: 32px;
+  height: 32px;
+}
+
+/* 讓旗子浮在線條上方，並在 hover 時顯示氣泡對話框（樣式類似 paper 快照的 bubble） */
+.trace-node.flag {
+  /* 在棋子精確在線條上的基礎上，旗子整體再往上抬一點；與 trace 一起上移 10px */
+  top: calc(var(--y) * 0.4545% - 28px);
+}
+
+/* flag color + hover 高亮 */
+.trace-node.flag .icon {
+  color: #fe8019;  /* milestones: gruvbox orange */
+  transition: transform 0.18s ease-out, box-shadow 0.18s ease-out, background 0.18s ease-out;
+}
+.trace-node.flag:hover .icon {
+  background: rgba(255, 204, 51, 0.18);
+  box-shadow:
+    0 0 0 1px rgba(255, 204, 51, 0.35),
+    0 0 16px rgba(255, 204, 51, 0.40);
+  transform: scale(1.06);
+}
+
+/* 旗子的文字作為 hover bubble，預設隱藏，懸停時顯示 */
+.trace-node.flag .anno {
+  position: absolute;
+  left: 0;                      /* 從旗子的左上角彈出 */
+  bottom: calc(100% + 10px);   /* 顯示在旗子上方 */
+  transform: translateX(-4px) translateY(6px);  /* 起始位置略低，方便做自下而上的動畫 */
+  box-sizing: border-box;
+  min-width: 250px;
+  max-width: 320px;
+  padding: 0.6rem 0.8rem;
+
+  /* 和論文氣泡類似的 terminal 風格背景 */
+  background:
+    linear-gradient(180deg, rgba(6, 10, 18, 0.96), rgba(0, 0, 0, 0.92)),
+    repeating-linear-gradient(
+      180deg,
+      rgba(255,255,255,0.05) 0px,
+      rgba(255,255,255,0.05) 1px,
+      rgba(0,0,0,0) 3px,
+      rgba(0,0,0,0) 6px
+    );
+  border-radius: 6px;           /* 長方形、有稜角一點 */
+  border: 1px solid rgba(255, 204, 51, 0.45);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.55);
+
+  font-family: var(--font-body) !important;
+  font-size: calc(12px * 0.95);
+  line-height: 1.4;
+  color: rgba(242, 246, 255, 0.92);
+  white-space: normal;          /* 允許換行，確保整個內容被框住 */
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.16s ease-out, transform 0.16s ease-out;
+}
+
+.trace-node.flag:hover .anno {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-4px) translateY(0);  /* 自下往上輕微浮起 */
+}
+
+/* annotations */
+.trace-node .anno {
+  margin-top: 6px;
+  font-family: var(--font-body) !important;
+  font-size: calc(12px * 0.95);
+  line-height: 1.35;
+  color: rgba(242, 246, 255, 0.85);
+  white-space: nowrap;
+}
+
+/* 棋子下面的文字：風格對齊下方 intro 段落（JetBrains Mono、純白、略大一點），且避免自動換行 */
+.trace-node.piece .anno {
+  font-family: "JetBrains Mono", var(--font-body), monospace !important;
+  font-size: calc(15px * 0.95);
+  line-height: 1.1;   /* 讓年份與描述上下更緊湊 */
+  color: #ebdbb2 !important;  /* Gruvbox text color，與正文一致 */
+  margin-top: 0px;          /* 盡量貼近棋子底部 */
+  white-space: nowrap;
+}
+
+.trace-node .anno .arr {
+  color: rgba(255, 204, 51, 0.95);
+  margin-right: 4px;
+}
+
+/* end label：與 trace-node 同格式；輕微左右搖晃，hover 變紅變大 + 從下彈窗 */
+@keyframes trace-now-sway {
+  0%   { transform: translate(-50%, -50%) translateX(0) scale(1) rotate(-5deg); }
+  50%  { transform: translate(-50%, -50%) translateX(4px) scale(1.12) rotate(5deg); }
+  100% { transform: translate(-50%, -50%) translateX(0) scale(1) rotate(-5deg); }
+}
+.trace-now {
+  position: absolute;
+  left: calc(var(--x) * 0.1%);
+  top: calc(var(--y) * 0.4545% - 10px);
+  transform: translate(-50%, -50%);
+  font-family: "Press Start 2P", var(--font-ui), monospace !important;
+  font-size: var(--now-font-size, 18px);
+  letter-spacing: 0.2px;
+  color: rgba(255, 204, 51, 0.95);
+  text-shadow: 0 0 10px rgba(255, 204, 51, 0.18);
+  z-index: 3;
+  animation: trace-now-sway 2.5s ease-in-out infinite;
+  cursor: pointer;
+}
+/* Now! 保持原本字體樣式不變（Press Start 2P、黃色、發光） */
+.trace-now-label {
+  display: inline-block;
+  font-family: "Press Start 2P", var(--font-ui), monospace !important;
+  font-size: var(--now-font-size, 18px);
+  letter-spacing: 0.2px;
+  color: rgba(255, 204, 51, 0.95);
+  text-shadow: 0 0 10px rgba(255, 204, 51, 0.18);
+  transition: color 0.2s ease, transform 0.2s ease, text-shadow 0.2s ease;
+}
+.trace-now:hover .trace-now-label {
+  color: #ff4444 !important;
+  text-shadow: 0 0 12px rgba(255, 68, 68, 0.6);
+  transform: scale(1.15);
+}
+/* NOW 的 hover 彈窗：從下往上、與旗子同風格，Press Start 2P 大字 */
+.trace-now-anno {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 10px);
+  transform: translate(-50%, 8px);
+  box-sizing: border-box;
+  padding: 0.75rem 1rem;
+  min-width: 200px;
+  text-align: center;
+
+  background: linear-gradient(180deg, rgba(6, 10, 18, 0.96), rgba(0, 0, 0, 0.92));
+  border-radius: 6px;
+  border: 1px solid rgba(255, 204, 51, 0.45);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.55);
+
+  font-family: "Press Start 2P", var(--font-ui), monospace !important;
+  font-size: calc(14px * 0.95);
+  line-height: 1.5;
+  color: rgba(255, 204, 51, 0.95);
+  white-space: nowrap;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+.trace-now:hover .trace-now-anno {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+}
+
+/* mobile: allow wrap by increasing height */
+@media (max-width: 767px) {
+  .history-trace { height: 280px; width: 100%; }
+  .trace-node .anno { font-size: calc(11.5px * 0.95); }
+}
+
+/* ====== 15) Force pixel font for homepage name (Yuyuan Liu) ====== */
+/* The actual text is inside span.font-weight-bold */
+body .post-header h1.post-title,
+body .post-header h1.post-title *,
+body .post-header h1.post-title .font-weight-bold {
+  font-family: "Press Start 2P", monospace !important;
+  font-weight: 400 !important;      /* Press Start 2P 沒有真正的 bold */
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
+  color: #fabd2f !important;        /* Gruvbox soft yellow for name */
+}
+
+/* Optional: size tuning so it looks like a NES-style header */
+body .post-header h1.post-title {
+  font-size: 35px !important;
+  line-height: 1.3 !important;
+}

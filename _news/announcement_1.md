@@ -1,8 +1,8 @@
 ---
 layout: post
-date: 2022-03-02
+date: 2025-06-15
 inline: true
 related_posts: false
 ---
 
-**2** papers are accepted for **CVPR'22**.
+**1** paper is accepted to **ACL 2025 (Main Conference)**.

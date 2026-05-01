@@ -11,7 +11,7 @@
               {% endif %}
               {% for item in news limit: news_limit %}
                 <tr>
-                  <th scope="row" style="width: 15%">
+                  <th scope="row" style="width: 15%" class="{% if item.highlight_date %}news-date-highlight{% endif %}">
 
                       {{ item.date | date: "%b, %Y" }}</th>
                   <td>

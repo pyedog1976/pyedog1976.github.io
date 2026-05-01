@@ -1,5 +1,8 @@
-            {%- if site.email -%}
-            <a href="mailto:{{ site.email | encode_email }}" title="email"><i class="fa-solid fa-envelope"></i></a>
+{%- if site.email -%}
+            <a href="mailto:{{ site.email | encode_email }}" title="email" class="social-icon-pixel">
+              <img class="icon-base"  src="{{ 'assets/img/social/pixel-style/email.svg'      | relative_url }}" alt="email">
+              <img class="icon-hover" src="{{ 'assets/img/social/pixel-style/email_red.svg'  | relative_url }}" alt="email hover">
+            </a>
             {% endif %}
             {%- if site.telegram_username -%}
             <a href="https://telegram.me/{{ site.telegram_username }}" title="telegram"><i class="fa-brands fa-telegram"></i></a>
@@ -10,11 +13,17 @@
             {%- if site.orcid_id -%}
             <a href="https://orcid.org/{{ site.orcid_id }}" title="ORCID"><i class="ai ai-orcid"></i></a>
             {% endif %}
-            {%- if site.scholar_userid -%}
-            <a href="https://scholar.google.com/citations?user={{ site.scholar_userid }}" title="Google Scholar"><i class="ai ai-google-scholar"></i></a>
+{%- if site.scholar_userid -%}
+            <a href="https://scholar.google.com/citations?user={{ site.scholar_userid }}" title="Google Scholar" class="social-icon-pixel">
+              <img class="icon-base"  src="{{ 'assets/img/social/pixel-style/scholar.svg'     | relative_url }}" alt="Google Scholar">
+              <img class="icon-hover" src="{{ 'assets/img/social/pixel-style/scholar_red.svg' | relative_url }}" alt="Google Scholar hover">
+            </a>
             {% endif %}
-            {%- if site.semanticscholar_id -%}
-            <a href="https://www.semanticscholar.org/author/{{ site.semanticscholar_id }}" title="Semantic Scholar"><i class="ai ai-semantic-scholar"></i></a>
+{%- if site.semanticscholar_id -%}
+            <a href="https://www.semanticscholar.org/author/{{ site.semanticscholar_id }}" title="Semantic Scholar" class="social-icon-pixel">
+              <img class="icon-base"  src="{{ 'assets/img/social/pixel-style/book.svg'     | relative_url }}" alt="Semantic Scholar">
+              <img class="icon-hover" src="{{ 'assets/img/social/pixel-style/book_red.svg' | relative_url }}" alt="Semantic Scholar hover">
+            </a>
             {% endif %}
             {%- if site.publons_id -%}
             <a href="https://publons.com/a/{{ site.publons_id }}/" title="Publons"><i class="ai ai-publons"></i></a>
@@ -31,14 +40,23 @@
             {%- if site.scopus_id -%}
             <a href="https://www.scopus.com/authid/detail.uri?authorId={{site.scopus_id}}" title="Scopus"><i class="ai ai-scopus"></i></a>
             {% endif %}
-            {%- if site.github_username -%}
-            <a href="https://github.com/{{ site.github_username }}" title="GitHub"><i class="fa-brands fa-github"></i></a>
+{%- if site.github_username -%}
+            <a href="https://github.com/{{ site.github_username }}" title="GitHub" class="social-icon-pixel">
+              <img class="icon-base"  src="{{ 'assets/img/social/pixel-style/github.svg'     | relative_url }}" alt="GitHub">
+              <img class="icon-hover" src="{{ 'assets/img/social/pixel-style/github_red.svg' | relative_url }}" alt="GitHub hover">
+            </a>
             {% endif %}
-            {%- if site.linkedin_username -%}
-            <a href="https://www.linkedin.com/in/{{ site.linkedin_username }}" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+{%- if site.linkedin_username -%}
+            <a href="https://www.linkedin.com/in/{{ site.linkedin_username }}" title="LinkedIn" class="social-icon-pixel">
+              <img class="icon-base"  src="{{ 'assets/img/social/pixel-style/linkedin.svg'     | relative_url }}" alt="LinkedIn">
+              <img class="icon-hover" src="{{ 'assets/img/social/pixel-style/linkedin_red.svg' | relative_url }}" alt="LinkedIn hover">
+            </a>
             {% endif %}
-            {%- if site.x_username -%}
-            <a href="https://twitter.com/{{ site.x_username }}" title="X"><i class="fa-brands fa-x-twitter"></i></a>
+{%- if site.x_username -%}
+            <a href="https://twitter.com/{{ site.x_username }}" title="X" class="social-icon-pixel">
+              <img class="icon-base"  src="{{ 'assets/img/social/pixel-style/twitter.svg'     | relative_url }}" alt="X">
+              <img class="icon-hover" src="{{ 'assets/img/social/pixel-style/twitter_red.svg' | relative_url }}" alt="X hover">
+            </a>
             {% endif %}
             {%- if site.mastodon_username -%}
             <a rel="me" href="https://{{ site.mastodon_username  }}" title="Mastodon"><i class="fa-brands fa-mastodon"></i></a>
@@ -70,8 +88,11 @@
             {%- if site.gitlab_username -%}
             <a href="https://gitlab.com/{{ site.gitlab_username }}" title="GitLab"><i class="fa-brands fa-gitlab"></i></a>
             {% endif %}
-            {%- if site.dblp_url -%}
-            <a href="{{ site.dblp_url }}" title="DBLP"><i class="ai ai-dblp"></i></a>
+{%- if site.dblp_url -%}
+            <a href="{{ site.dblp_url }}" title="DBLP" class="social-icon-pixel">
+              <img class="icon-base"  src="{{ 'assets/img/social/pixel-style/book.svg'     | relative_url }}" alt="DBLP">
+              <img class="icon-hover" src="{{ 'assets/img/social/pixel-style/book_red.svg' | relative_url }}" alt="DBLP hover">
+            </a>
             {% endif %}
             {%- if site.stackoverflow_id -%}
             <a href="https://stackoverflow.com/users/{{ site.stackoverflow_id }}" title="Stackoverflow"><i class="fa-brands fa-stack-overflow"></i></a>

@@ -1,0 +1,20 @@
+---
+# 僅用於 /cv/：立即跳轉至 PDF，不再渲染舊 CV 內容頁
+---
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: 'en' }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ page.title | default: 'CV' }}</title>
+  {%- assign cv_pdf = '/assets/pdf/yuyuanliu_cv.pdf' | relative_url -%}
+  <meta http-equiv="refresh" content="0; url={{ cv_pdf }}">
+  <link rel="canonical" href="{{ cv_pdf | absolute_url }}">
+  <script>
+    window.location.replace("{{ cv_pdf }}");
+  </script>
+</head>
+<body style="background:#000;color:#ccc;font-family:system-ui,sans-serif;padding:2rem;">
+  <p><a href="{{ cv_pdf }}" download="yuyuanliu_cv.pdf" style="color:#fe8019;">Download CV (PDF)</a></p>
+</body>
+</html>
