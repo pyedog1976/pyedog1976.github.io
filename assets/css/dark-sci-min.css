@@ -1596,9 +1596,9 @@ body > div,
 .trace-node {
   position: absolute;
 
-  /* --x / --y in svg coordinates (0..1000 / 0..220)，整體上移 10px */
-  left: calc(var(--x) * 0.1%);     /* 1000 -> 100% */
-  top: calc(var(--y) * 0.4545% - 10px);   /* 220 -> 100%，再上移 10px */
+  /* 勿寫 calc(var(--*)…)：jekyll-minifier 會在 calc 內破壞 var(--…) */
+  left: var(--node-left);
+  top: var(--node-top);
 
   transform: translate(-50%, -50%);
   z-index: 2;
@@ -1634,7 +1634,7 @@ body > div,
 /* 讓旗子浮在線條上方，並在 hover 時顯示氣泡對話框（樣式類似 paper 快照的 bubble） */
 .trace-node.flag {
   /* 在棋子精確在線條上的基礎上，旗子整體再往上抬一點；與 trace 一起上移 10px */
-  top: calc(var(--y) * 0.4545% - 28px);
+  top: var(--node-top-flag);
 }
 
 /* flag color + hover 高亮 */
@@ -1725,8 +1725,8 @@ body > div,
 }
 .trace-now {
   position: absolute;
-  left: calc(var(--x) * 0.1%);
-  top: calc(var(--y) * 0.4545% - 10px);
+  left: var(--node-left);
+  top: var(--node-top);
   transform: translate(-50%, -50%);
   font-family: "Press Start 2P", var(--font-ui), monospace !important;
   font-size: var(--now-font-size, 18px);
