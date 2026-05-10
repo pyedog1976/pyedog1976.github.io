@@ -113,7 +113,12 @@
 
         </div>
 
-        <!-- Journal/Book title and date -->
+        <!-- Journal/Book title and date（可選 periodical_display 覆蓋整行，用於投稿中等非正式發表情形） -->
+        {%- if entry.periodical_display != blank -%}
+        <div class="periodical">
+          {{ entry.periodical_display }}
+        </div>
+        {%- else -%}
         {% assign proceedings = "inproceedings,incollection" | split: ','%}
         {% assign thesis = "thesis,mastersthesis,phdthesis" | split: ','%}
         {% if entry.type == "article" -%}
@@ -136,6 +141,7 @@
         <div class="periodical">
           {{ periodical | strip }}
         </div>
+        {%- endif -%}
         <div class="periodical pub-note">
           {{ entry.note | strip }}
         </div>
