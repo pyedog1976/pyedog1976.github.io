@@ -146,7 +146,10 @@
             <a class="abstract btn btn-sm z-depth-0" role="button">Abs</a>
           {%- endif %}
           {%- if entry.arxiv %}
-            {% if entry.arxiv contains '://' -%}
+            {%- assign entry_arxiv = entry.arxiv | strip -%}
+            {%- if entry_arxiv == 'PENDING' -%}
+            <span class="btn btn-sm z-depth-0 pub-arxiv-pending" role="button" tabindex="-1" title="arXiv 链接待定">arXiv</span>
+            {%- elsif entry.arxiv contains '://' -%}
             <a href="{{ entry.arxiv }}" class="btn btn-sm z-depth-0" role="button">arXiv</a>
             {%- else -%}
             <a href="https://arxiv.org/abs/{{ entry.arxiv }}" class="btn btn-sm z-depth-0" role="button">arXiv</a>

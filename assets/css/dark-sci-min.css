@@ -27,6 +27,8 @@
   --title-dash-color: #a89984;      /* 復古灰棕（比白色柔和） */
   --pub-card-width: calc(270px * 0.95);
   --pub-card-overlap: -1rem;
+  /* MLLM 側欄 ASCII 表情整塊水平微調（負值向左，含 ::after 與 hover 動畫） */
+  --ascii-face-nudge-x: -120px;
   /* CVPR / CVPRF timeline 標籤單獨色，其餘標籤仍用默認 #ff4444 */
   --venue-cvpr: #ff5555;
 }
@@ -724,8 +726,8 @@ tbody td {
  */
 .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col {
   position: absolute;
-  right: 0.0rem;
-  top: 40%;
+  right: -1.5rem;
+  top: 20%;
   transform: translateY(-50%);
   z-index: 25;
   pointer-events: none;
@@ -733,7 +735,7 @@ tbody td {
   flex-direction: column;
   align-items: flex-start;
   gap: 0.55rem;
-  max-width: 25rem;
+  max-width: 10rem;
 }
 
 .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col .pub-mllm-code-epigraph {
@@ -742,7 +744,7 @@ tbody td {
   font-family: "JetBrains Mono", var(--font-body), monospace !important;
   font-size: calc(15px * 0.95);
   font-weight: 700 !important;
-  color: #928374;
+  color: #ebdbb2;
   margin: 0 !important;
   padding: 0.25rem 0.15rem 0 0.5rem;
   line-height: 1.45;
@@ -776,6 +778,7 @@ tbody td {
   vertical-align: baseline;
   pointer-events: auto;
   cursor: default;
+  transform: translateX(var(--ascii-face-nudge-x));
 }
 
 .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col .ascii-face::after {
@@ -1188,6 +1191,16 @@ tbody td {
   background: #ff4444 !important;
   color: #ffffff !important;
   border-color: rgba(255, 255, 255, 0.35) !important;
+}
+
+/* 與可點 arXiv 同形，bib 裡 arxiv={PENDING} 時不跳轉、不變紅懸停 */
+.publications-two-cols ol.bibliography > li .pub-details .links .pub-arxiv-pending {
+  cursor: default !important;
+}
+.publications-two-cols ol.bibliography > li .pub-details .links .pub-arxiv-pending:hover {
+  background: #fabd2f !important;
+  color: #000000 !important;
+  border-color: rgba(0, 0, 0, 0.35) !important;
 }
 
 /* 氣泡內隱藏 note（例如 * represents the equal contribution） */

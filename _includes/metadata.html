@@ -23,16 +23,17 @@
     {%- else -%}
         {%- capture title -%}{{ site.title }}{%- endcapture -%}
     {%- endif -%}
+    {%- comment -%} 分頁標題：不顯示「圖標 + 全名」；首頁用零寬字元讓標籤以 favicon 為主（瀏覽器無法讓分頁圖標居中） {%- endcomment -%}
     {% if page.url == '/blog/index.html' %}
-        {{ site.blog_nav_title }} | {{ title }}
-    {%- elsif page.title != "blank" and page.url != "/" -%}
+        {%- if site.blog_nav_title != blank -%}{{ site.blog_nav_title }}{%- else -%}&#8203;{%- endif -%}
+    {%- elsif page.title != "blank" and page.url != "/" and page.url != '/index.html' -%}
         {%- if page.title == nil or page.title == "" -%}
-            {{ page.date | date: "%Y" }} | {{ title }}
+            {{ page.date | date: "%Y" }}
         {%- else -%}
-            {{ page.title }} | {{ title }}
+            {{ page.title }}
         {%- endif -%}
     {%- else -%}
-        {{ title }}
+        &#8203;
     {%- endif -%}
     </title>
     <meta name="author" content="{{ site.first_name }} {{ site.middle_name }} {{ site.last_name }}" />

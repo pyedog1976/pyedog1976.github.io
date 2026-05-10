@@ -1,3 +1,19 @@
+    {%- comment -%}
+      Favicon 置頂；用 relative_url 讓本機（如 http://localhost:4001/）與 GitHub Pages 都能解析到當前主機，勿用 absolute_url 綁死 site.url。
+    {%- endcomment -%}
+    {%- assign _icon = site.icon | strip -%}
+    {%- if _icon != blank -%}
+      {%- if _icon contains '.' -%}
+    {%- assign _fv = '/assets/img/' | append: _icon -%}
+    {%- assign _fqv = site.time | date: '%s' -%}
+    <link rel="icon" href="{{ '/favicon.ico' | relative_url }}?v={{ _fqv }}">
+    <link rel="icon" type="image/png" sizes="80x80" href="{{ '/favicon.png' | relative_url }}?v={{ _fqv }}">
+    <link rel="icon" type="image/png" href="{{ _fv | relative_url }}?v={{ _fqv }}">
+    <link rel="shortcut icon" href="{{ _fv | relative_url }}?v={{ _fqv }}">
+      {%- elsif _icon.size <= 4 -%}
+    <link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>{{ _icon }}</text></svg>">
+      {%- endif -%}
+    {%- endif -%}
     <!-- Metadata, OpenGraph and Schema.org -->
     {% include metadata.html %}
 
@@ -27,11 +43,6 @@
     {% endif %}
 
     <!-- Styles -->
-    {% if site.icon.size <= 4 %}
-    <link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>{{ site.icon }}</text></svg>">
-    {% elsif site.icon != blank %}
-    <link rel="shortcut icon" href="{{ site.icon | prepend: '/assets/img/' | relative_url | bust_file_cache}}"/>
-    {% endif %}
     <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url | bust_css_cache }}">
 
     <!-- Pixel heading font: Press Start 2P -->
