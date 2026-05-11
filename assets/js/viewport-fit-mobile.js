@@ -6,7 +6,7 @@
  *   不是手机硬件宽。手机宽勿盲信 visualViewport.width（iOS Chrome + width=1280 下偶发极小假值）；宽布局时优先 screen 窄边再回退。
  * - 缩放比例：**scale = phoneW / designW**（与电脑同版式 = 先在 designW 下排版，再整体乘比例画满手机宽）。
  *
- * 条件：max-device-width: 900px 且 orientation: portrait
+ * 条件：竖屏 +（max-device-width:900px 或 粗指针且非巨屏设备）；Chrome iOS 上 screen 常为物理像素须除以 dpr。
  * 注意：不得 inner.style.width = scrollWidth（与子元素 width:100% 正反馈会无限拉长页面）。
  * ResizeObserver 在 apply 期间 disconnect，避免布局回调套娃。
  */
@@ -22,7 +22,31 @@
   var MAX_BAD_MEASURE = 50;
 
   function isPortraitPhone() {
-    return window.matchMedia('(max-device-width: 900px) and (orientation: portrait)').matches;
+    if (!window.matchMedia('(orientation: portrait)').matches) return false;
+    if (window.matchMedia('(max-device-width: 900px)').matches) return true;
+    /* iOS Chrome：max-device-width 偶不命中；粗指针 + 无 hover 近似手机/平板 */
+    if (
+      window.matchMedia('(pointer: coarse)').matches &&
+      window.matchMedia('(hover: none)').matches &&
+      !window.matchMedia('(min-device-width: 1100px)').matches
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  /** screen 短边：Chrome iOS 常给物理像素，除以 devicePixelRatio 得到接近 CSS 逻辑宽 */
+  function narrowScreenCssGuess() {
+    var sw = window.screen.width;
+    var sh = window.screen.height;
+    var n = Math.min(sw, sh);
+    var dpr = window.devicePixelRatio || 1;
+    if (n > 560 && dpr >= 1.5) {
+      var conv = Math.round(n / dpr);
+      if (conv >= 250 && conv <= 580) n = conv;
+    }
+    if (n > 220 && n <= 580) return n;
+    return 0;
   }
 
   /** 从 meta viewport 读「排版宽」designW（如 width=1280）；没有数字则用 documentElement.clientWidth。 */
@@ -52,10 +76,8 @@
     function tryScreenWhenLayoutStillWide(refW) {
       if (!isPortraitPhone() || designW < 1 || refW < 1) return null;
       if (refW / designW < 0.88) return null;
-      var sw = window.screen.width;
-      var sh = window.screen.height;
-      var narrow = Math.min(sw, sh);
-      if (narrow > 240 && narrow <= 520 && narrow < refW * 0.92) {
+      var narrow = narrowScreenCssGuess();
+      if (narrow > 0 && narrow < refW * 0.92) {
         var ph = ih > 180 ? ih : outer.clientHeight;
         if (vv && vv.height > 180 && vv.height < 2000) ph = vv.height;
         return { phoneW: narrow, phoneH: Math.max(ph, 200) };
@@ -82,10 +104,8 @@
     var phoneW = outer.clientWidth;
     var phoneH = outer.clientHeight;
     if (isPortraitPhone() && designW > 0 && phoneW / designW >= 0.88) {
-      var sw = window.screen.width;
-      var sh = window.screen.height;
-      var narrow = Math.min(sw, sh);
-      if (narrow > 240 && narrow <= 520 && narrow < phoneW * 0.92) {
+      var narrow = narrowScreenCssGuess();
+      if (narrow > 0 && narrow < phoneW * 0.92) {
         phoneW = narrow;
       }
     }
@@ -135,6 +155,13 @@
       var ph = readPhoneViewportCssSize(designW);
       var phoneW = ph.phoneW;
       var phoneH = ph.phoneH;
+      /* 仍把「整页排版宽」当手机宽时，最后一次用 screen÷dpr 估窄边（Chrome iOS 物理像素主因） */
+      if (phoneW > designW * 0.82) {
+        var guess = narrowScreenCssGuess();
+        if (guess > 0) {
+          phoneW = guess;
+        }
+      }
 
       inner.style.width = designW + 'px';
       inner.style.boxSizing = 'border-box';
@@ -153,7 +180,7 @@
 
       /* designW * scale = phoneW  ⇒  scale = phoneW / designW（手机相对排版宽的比例） */
       var scale = designW > 0 ? phoneW / designW : 1;
-      if (scale > 0 && scale < 0.04) scale = 0.04;
+      /* 不再用极小下限夹 scale（会把整页压成微粒）；phoneW 已由 screen÷dpr 兜底 */
       if (scale > 4) scale = 4;
 
       inner.style.transformOrigin = 'top left';
