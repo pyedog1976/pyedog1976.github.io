@@ -1,9 +1,13 @@
 /**
- * 竖屏手机：整页（完整文档宽高）等比缩放到一屏内，无滚动；余下为 html 背景色。
- * 桌面 / 横屏 / 大屏不启用。
+ * 竖屏手机：整页（与 meta viewport 宽布局一致）整体等比缩小，完整塞进屏幕，不出现滚动条；
+ * 多出来的区域由 .viewport-fit-outer 的 background（与站点 --bg 一致）铺满。
  *
- * 注意：勿把 inner 的 width 写成 scrollWidth（会与子元素 width:100% 形成正反馈，页面无限变长）；
- * 勿对 inner 使用 ResizeObserver（transform / stage 尺寸变化会反复触发）。
+ * 条件：max-device-width: 900px 且 orientation: portrait
+ * 算法：scale = min(屏宽/scrollWidth, 屏高/scrollHeight)，transform 作用于 inner，origin 左上；
+ * stage 为缩放后尺寸 + overflow:hidden。
+ *
+ * 注意：不得 inner.style.width = scrollWidth（与子元素 width:100% 正反馈会无限拉长页面）。
+ * ResizeObserver 在 apply 期间 disconnect，避免布局回调套娃。
  */
 (function () {
   var CLS = 'viewport-fit--portrait-mobile';
@@ -12,8 +16,9 @@
   var inner = document.getElementById('viewport-fit-inner');
   if (!outer || !stage || !inner) return;
 
-  var measureRetries = 0;
-  var MAX_MEASURE_RETRIES = 40;
+  var ro = null;
+  var badMeasureRetries = 0;
+  var MAX_BAD_MEASURE = 50;
 
   function isPortraitPhone() {
     return window.matchMedia('(max-device-width: 900px) and (orientation: portrait)').matches;
@@ -24,7 +29,7 @@
     outer.removeAttribute('style');
     stage.removeAttribute('style');
     inner.removeAttribute('style');
-    measureRetries = 0;
+    badMeasureRetries = 0;
     inner.querySelectorAll('img[data-vpfit-bound]').forEach(function (img) {
       delete img.dataset.vpfitBound;
     });
@@ -42,67 +47,76 @@
   }
 
   function apply() {
-    if (!isPortraitPhone()) {
-      clear();
-      return;
+    if (ro) {
+      ro.disconnect();
     }
 
-    document.documentElement.classList.add(CLS);
-    bindImgLoads();
-
-    var safeTop = 0;
     try {
-      var st = getComputedStyle(outer);
-      safeTop = parseFloat(st.paddingTop) || 0;
-    } catch (e) {}
-
-    var vw = outer.clientWidth;
-    var vh = Math.max(0, outer.clientHeight - safeTop);
-
-    inner.style.width = '';
-
-    var w = inner.scrollWidth;
-    var h = inner.scrollHeight;
-
-    if (w < 1 || h < 1 || vw < 1 || vh < 1) {
-      if (measureRetries++ < MAX_MEASURE_RETRIES) {
-        requestAnimationFrame(function () {
-          requestAnimationFrame(apply);
-        });
+      if (!isPortraitPhone()) {
+        clear();
+        return;
       }
-      return;
+
+      document.documentElement.classList.add(CLS);
+      bindImgLoads();
+
+      var vw = outer.clientWidth;
+      var vh = outer.clientHeight;
+      inner.style.width = '';
+
+      var w = inner.scrollWidth;
+      var h = inner.scrollHeight;
+
+      if (w < 1 || h < 1 || vw < 1 || vh < 1) {
+        if (badMeasureRetries++ < MAX_BAD_MEASURE) {
+          requestAnimationFrame(function () {
+            requestAnimationFrame(apply);
+          });
+        }
+        return;
+      }
+      badMeasureRetries = 0;
+
+      var s = Math.min(vw / w, vh / h) * 0.992;
+
+      inner.style.transformOrigin = 'top left';
+      inner.style.transform = 'scale(' + s + ')';
+
+      var sw = Math.round(w * s * 1000) / 1000;
+      var sh = Math.round(h * s * 1000) / 1000;
+
+      stage.style.width = sw + 'px';
+      stage.style.height = sh + 'px';
+      stage.style.overflow = 'hidden';
+      stage.style.flexShrink = '0';
+    } finally {
+      if (ro && isPortraitPhone()) {
+        ro.observe(inner);
+      }
     }
-    measureRetries = 0;
-
-    var s = Math.min(vw / w, vh / h) * 0.992;
-
-    /* 不要設 inner.style.width = scrollWidth，否則與 picture/img 100% 寬形成遞增循環 */
-    inner.style.transformOrigin = 'top left';
-    inner.style.transform = 'scale(' + s + ')';
-
-    var sw = Math.round(w * s * 1000) / 1000;
-    var sh = Math.round(h * s * 1000) / 1000;
-
-    stage.style.width = sw + 'px';
-    stage.style.height = sh + 'px';
-    stage.style.overflow = 'hidden';
-    stage.style.flexShrink = '0';
   }
 
   var t;
   function schedule() {
     clearTimeout(t);
-    t = setTimeout(apply, 100);
+    t = setTimeout(apply, 60);
   }
 
   window.addEventListener('resize', schedule);
   window.addEventListener('orientationchange', function () {
-    setTimeout(schedule, 250);
+    setTimeout(apply, 200);
   });
   window.addEventListener('load', schedule);
   if (document.readyState === 'complete') {
     schedule();
   } else {
     document.addEventListener('DOMContentLoaded', schedule);
+  }
+
+  if (typeof ResizeObserver !== 'undefined') {
+    ro = new ResizeObserver(function () {
+      schedule();
+    });
+    ro.observe(inner);
   }
 })();
