@@ -9,6 +9,8 @@
  * 此时改用 visualViewport（若明显小于 layout）或 screen 窄边估算真实 CSS 宽度，再算缩放。
  * transform 作用于 inner，origin 左上；stage 固定为当前读到的 vw×vh。
  *
+ * inner 必须按「布局视口」宽度排版（documentElement.clientWidth，与 meta width=1280 一致），
+ * 不能默认 100% 跟 stage 变窄；否则双栏会在 ~390px 下重排，极窄且纵向巨长。
  * 注意：不得 inner.style.width = scrollWidth（与子元素 width:100% 正反馈会无限拉长页面）。
  * ResizeObserver 在 apply 期间 disconnect，避免布局回调套娃。
  */
@@ -94,9 +96,11 @@
       var vp = effectiveViewportCssSize(layoutW);
       var vw = vp.vw;
       var vh = vp.vh;
-      inner.style.width = '';
+      /* 固定为布局视口宽，避免父级 stage 为真实屏宽时 inner 被挤窄导致整页按窄屏重排 */
+      inner.style.width = layoutW + 'px';
+      inner.style.boxSizing = 'border-box';
 
-      var w = inner.scrollWidth;
+      var w = Math.max(inner.scrollWidth, layoutW);
       var h = inner.scrollHeight;
 
       if (w < 1 || h < 1 || vw < 1 || vh < 1) {
