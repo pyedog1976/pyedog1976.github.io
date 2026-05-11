@@ -3,7 +3,7 @@
  *
  * 说明（重要）：
  * - 「1280」来自 <meta name="viewport" content="width=1280,...">，是浏览器给 CSS 用的**排版基准宽**，
- *   不是手机硬件宽。手机实际多为一侧约 360–430 的 CSS 像素（由 visualViewport / innerWidth / screen 估）。
+ *   不是手机硬件宽。手机宽勿盲信 visualViewport.width（iOS Chrome + width=1280 下偶发极小假值）；宽布局时优先 screen 窄边再回退。
  * - 缩放比例：**scale = phoneW / designW**（与电脑同版式 = 先在 designW 下排版，再整体乘比例画满手机宽）。
  *
  * 条件：max-device-width: 900px 且 orientation: portrait
@@ -40,21 +40,48 @@
 
   /**
    * 手机真实可视区域 phoneW×phoneH（CSS 像素量级），与 designW 无关。
-   * apply 末尾会把 outer 收成 phoneW 宽；首轮须优先 vv / innerWidth，勿把排版宽当成手机宽。
+   * iOS Chrome + meta width=1280 时 innerWidth 常仍为 1280，但 visualViewport.width 偶发极小假值；
+   * 若盲信 vv 会得到 scale≈0.04、整页缩成左上角一小点——须先做合理性判断，并在「仍显宽」时优先 screen 窄边。
    */
   function readPhoneViewportCssSize(designW) {
-    var vv = window.visualViewport;
-    if (vv && vv.width > 0 && vv.height > 0 && vv.width + 2 < designW) {
-      return { phoneW: vv.width, phoneH: vv.height };
-    }
     var iw = window.innerWidth;
     var ih = window.innerHeight;
+    var vv = window.visualViewport;
+    var minSaneVvW = Math.max(200, Math.min(300, Math.floor(designW * 0.16)));
+
+    function tryScreenWhenLayoutStillWide(refW) {
+      if (!isPortraitPhone() || designW < 1 || refW < 1) return null;
+      if (refW / designW < 0.88) return null;
+      var sw = window.screen.width;
+      var sh = window.screen.height;
+      var narrow = Math.min(sw, sh);
+      if (narrow > 240 && narrow <= 520 && narrow < refW * 0.92) {
+        var ph = ih > 180 ? ih : outer.clientHeight;
+        if (vv && vv.height > 180 && vv.height < 2000) ph = vv.height;
+        return { phoneW: narrow, phoneH: Math.max(ph, 200) };
+      }
+      return null;
+    }
+
+    var fromScreen = tryScreenWhenLayoutStillWide(iw > 0 ? iw : 0);
+    if (!fromScreen && outer.clientWidth > 0) {
+      fromScreen = tryScreenWhenLayoutStillWide(outer.clientWidth);
+    }
+    if (fromScreen) return fromScreen;
+
+    if (vv && vv.width > 0 && vv.height > 0 && vv.width + 2 < designW) {
+      var vvTooSmallVsInner = iw > 0 && vv.width + 32 < iw * 0.68;
+      if (vv.width >= minSaneVvW && !vvTooSmallVsInner) {
+        return { phoneW: vv.width, phoneH: vv.height };
+      }
+    }
     if (iw > 0 && ih > 0 && iw + 2 < designW) {
       return { phoneW: iw, phoneH: ih };
     }
+
     var phoneW = outer.clientWidth;
     var phoneH = outer.clientHeight;
-    if (isPortraitPhone() && designW > 0 && phoneW / designW >= 0.92) {
+    if (isPortraitPhone() && designW > 0 && phoneW / designW >= 0.88) {
       var sw = window.screen.width;
       var sh = window.screen.height;
       var narrow = Math.min(sw, sh);
