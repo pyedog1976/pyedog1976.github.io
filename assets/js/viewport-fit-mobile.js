@@ -1,10 +1,12 @@
 /**
- * 竖屏手机：整页（与 meta viewport 宽布局一致）整体等比缩小，完整塞进屏幕，不出现滚动条；
- * 多出来的区域由 .viewport-fit-outer 的 background（与站点 --bg 一致）铺满。
+ * 竖屏手机：整页（与 meta viewport 宽布局一致）整体 transform 缩放；以宽度对齐视口，
+ * 不出现横向滚动与两侧大块留白；纵向超出由 stage 裁切，无页面滚动条。
+ * 视口外区域由 .viewport-fit-outer 的 background（与站点 --bg 一致）铺满。
  *
  * 条件：max-device-width: 900px 且 orientation: portrait
- * 算法：scale = min(屏宽/scrollWidth, 屏高/scrollHeight)，transform 作用于 inner，origin 左上；
- * stage 为缩放后尺寸 + overflow:hidden。
+ * 算法：竖屏以「铺满屏宽」为先：scale = 屏宽/scrollWidth（略留边 0.998），
+ * 保证两栏与整页在水平方向占满手机；纵向超出视口部分由 stage overflow:hidden 裁掉（顶对齐、无横条留白）。
+ * transform 作用于 inner，origin 左上；stage 固定为视口 vw×vh。
  *
  * 注意：不得 inner.style.width = scrollWidth（与子元素 width:100% 正反馈会无限拉长页面）。
  * ResizeObserver 在 apply 期间 disconnect，避免布局回调套娃。
@@ -77,18 +79,17 @@
       }
       badMeasureRetries = 0;
 
-      var s = Math.min(vw / w, vh / h) * 0.992;
+      /* 宽度优先：水平铺满手机，避免 min(vw,w, vh/h) 被高度绑死导致两侧大黑边 */
+      var s = (vw / w) * 0.998;
 
       inner.style.transformOrigin = 'top left';
       inner.style.transform = 'scale(' + s + ')';
 
-      var sw = Math.round(w * s * 1000) / 1000;
-      var sh = Math.round(h * s * 1000) / 1000;
-
-      stage.style.width = sw + 'px';
-      stage.style.height = sh + 'px';
+      stage.style.width = vw + 'px';
+      stage.style.height = vh + 'px';
       stage.style.overflow = 'hidden';
       stage.style.flexShrink = '0';
+      stage.style.boxSizing = 'border-box';
     } finally {
       if (ro && isPortraitPhone()) {
         ro.observe(inner);
