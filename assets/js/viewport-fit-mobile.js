@@ -4,9 +4,10 @@
  * 视口外区域由 .viewport-fit-outer 的 background（与站点 --bg 一致）铺满。
  *
  * 条件：max-device-width: 900px 且 orientation: portrait
- * 算法：竖屏以「铺满屏宽」为先：scale = 屏宽/scrollWidth（略留边 0.998），
- * 保证两栏与整页在水平方向占满手机；纵向超出视口部分由 stage overflow:hidden 裁掉（顶对齐、无横条留白）。
- * transform 作用于 inner，origin 左上；stage 固定为视口 vw×vh。
+ * 算法：竖屏以「铺满屏宽」为先：scale = 可视宽/scrollWidth（略留边 0.998）。
+ * 站点 meta viewport 为 width=1280 时，layout clientWidth 往往≈1280，与 scrollWidth 同量级会导致 scale≈1、看起来「完全没变化」；
+ * 此时改用 visualViewport（若明显小于 layout）或 screen 窄边估算真实 CSS 宽度，再算缩放。
+ * transform 作用于 inner，origin 左上；stage 固定为当前读到的 vw×vh。
  *
  * 注意：不得 inner.style.width = scrollWidth（与子元素 width:100% 正反馈会无限拉长页面）。
  * ResizeObserver 在 apply 期间 disconnect，避免布局回调套娃。
@@ -24,6 +25,33 @@
 
   function isPortraitPhone() {
     return window.matchMedia('(max-device-width: 900px) and (orientation: portrait)').matches;
+  }
+
+  /**
+   * 在 width=1280 等「虚宽」布局下，outer.clientWidth 常等于 scrollWidth，scale 会变成 1。
+   * 返回更接近用户肉眼所见的视口宽高（CSS 像素量级）。
+   */
+  function effectiveViewportCssSize(layoutW) {
+    var vw = outer.clientWidth;
+    var vh = outer.clientHeight;
+    var vv = window.visualViewport;
+    if (vv && vv.width > 0 && vv.height > 0) {
+      if (vv.width + 2 < layoutW) {
+        vw = vv.width;
+        vh = vv.height;
+        return { vw: vw, vh: vh };
+      }
+    }
+    if (isPortraitPhone() && layoutW > 0 && vw / layoutW >= 0.92) {
+      var sw = window.screen.width;
+      var sh = window.screen.height;
+      var narrow = Math.min(sw, sh);
+      /* 排除 screen 为物理像素量级（如 1080）的误用：常见手机竖屏 CSS 宽度约 320–430 */
+      if (narrow > 240 && narrow <= 520 && narrow < vw * 0.92) {
+        vw = narrow;
+      }
+    }
+    return { vw: vw, vh: vh };
   }
 
   function clear() {
@@ -62,8 +90,10 @@
       document.documentElement.classList.add(CLS);
       bindImgLoads();
 
-      var vw = outer.clientWidth;
-      var vh = outer.clientHeight;
+      var layoutW = document.documentElement.clientWidth || outer.clientWidth;
+      var vp = effectiveViewportCssSize(layoutW);
+      var vw = vp.vw;
+      var vh = vp.vh;
       inner.style.width = '';
 
       var w = inner.scrollWidth;
@@ -104,6 +134,9 @@
   }
 
   window.addEventListener('resize', schedule);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', schedule, { passive: true });
+  }
   window.addEventListener('orientationchange', function () {
     setTimeout(apply, 200);
   });
