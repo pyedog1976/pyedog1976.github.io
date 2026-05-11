@@ -18,6 +18,20 @@
     outer.removeAttribute('style');
     stage.removeAttribute('style');
     inner.removeAttribute('style');
+    inner.querySelectorAll('img[data-vpfit-bound]').forEach(function (img) {
+      delete img.dataset.vpfitBound;
+    });
+  }
+
+  function bindImgLoads() {
+    inner.querySelectorAll('img').forEach(function (img) {
+      if (img.dataset.vpfitBound) return;
+      img.dataset.vpfitBound = '1';
+      if (!img.complete) {
+        img.addEventListener('load', schedule, { passive: true });
+        img.addEventListener('error', schedule, { passive: true });
+      }
+    });
   }
 
   function apply() {
@@ -27,9 +41,17 @@
     }
 
     document.documentElement.classList.add(CLS);
+    bindImgLoads();
+
+    /* 外層扣掉 safe-area 後，與 CSS padding-top 對齊，避免縮放比例用滿屏高度導致底部被裁 */
+    var safeTop = 0;
+    try {
+      var st = getComputedStyle(outer);
+      safeTop = parseFloat(st.paddingTop) || 0;
+    } catch (e) {}
 
     var vw = outer.clientWidth;
-    var vh = outer.clientHeight;
+    var vh = Math.max(0, outer.clientHeight - safeTop);
     var w = inner.scrollWidth;
     var h = inner.scrollHeight;
 
@@ -58,7 +80,7 @@
   var t;
   function schedule() {
     clearTimeout(t);
-    t = setTimeout(apply, 60);
+    t = setTimeout(apply, 80);
   }
 
   window.addEventListener('resize', schedule);
