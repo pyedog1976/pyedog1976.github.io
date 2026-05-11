@@ -6,7 +6,7 @@
  * 条件：max-device-width: 900px 且 orientation: portrait
  * 算法：双栏与电脑一致 = 按 layoutW（documentElement.clientWidth，通常与 meta 一致）排版；
  * scale = 真实可视宽 vw / layoutW，使整页横向正好铺满手机屏幕（不用 scrollWidth 做分母，避免被撑宽后反而缩得更小）。
- * meta width=1280 时须用 visualViewport 或 screen 窄边得到 vw，并把 outer 也收成 vw 宽，否则 flex 居中会在「虚宽 outer」两侧留大黑边。
+ * meta width=1280 时须用 visualViewport / innerWidth（明显小于 layoutW 时）或 screen 窄边估 vw，并把 outer 收成 vw 宽。
  * transform 作用于 inner，origin 左上；outer/stage 与 vw×vh 对齐。
  *
  * inner 必须按「布局视口」宽度排版（documentElement.clientWidth，与 meta width=1280 一致），
@@ -30,19 +30,21 @@
   }
 
   /**
-   * 在 width=1280 等「虚宽」布局下，outer.clientWidth 常≈layoutW，与真实屏宽无关；须单独估 vw/vh。
+   * 在 width=1280 等「虚宽」布局下，layoutW≈1280，须单独得到「肉眼可视」vw/vh（CSS 像素量级）。
+   * 注意：apply 末尾会把 outer 收成 vw 宽，下一轮若只用 outer.clientWidth 仍能得到 vw，但首轮应优先 vv / innerWidth。
    */
   function effectiveViewportCssSize(layoutW) {
+    var vv = window.visualViewport;
+    if (vv && vv.width > 0 && vv.height > 0 && vv.width + 2 < layoutW) {
+      return { vw: vv.width, vh: vv.height };
+    }
+    var iw = window.innerWidth;
+    var ih = window.innerHeight;
+    if (iw > 0 && ih > 0 && iw + 2 < layoutW) {
+      return { vw: iw, vh: ih };
+    }
     var vw = outer.clientWidth;
     var vh = outer.clientHeight;
-    var vv = window.visualViewport;
-    if (vv && vv.width > 0 && vv.height > 0) {
-      if (vv.width + 2 < layoutW) {
-        vw = vv.width;
-        vh = vv.height;
-        return { vw: vw, vh: vh };
-      }
-    }
     if (isPortraitPhone() && layoutW > 0 && vw / layoutW >= 0.92) {
       var sw = window.screen.width;
       var sh = window.screen.height;
@@ -111,8 +113,13 @@
       }
       badMeasureRetries = 0;
 
-      /* 与电脑同宽 layoutW 整块缩放到真实屏宽 vw，横向铺满、无居中留白 */
-      var s = vw / layoutW;
+      /*
+       * 代数：inner 定宽 layoutW、origin 左上、scale(s) 时横向视觉宽度 ≈ layoutW * s。
+       * 要铺满 stage（宽 vw）：layoutW * s = vw ⇒ s = vw / layoutW（与 scrollWidth 无关）。
+       */
+      var s = layoutW > 0 ? vw / layoutW : 1;
+      if (s > 0 && s < 0.04) s = 0.04;
+      if (s > 4) s = 4;
 
       inner.style.transformOrigin = 'top left';
       inner.style.transform = 'scale(' + s + ')';
