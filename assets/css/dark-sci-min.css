@@ -93,6 +93,17 @@ header {
   z-index: 1050 !important;        /* 始終在內容之上，避免刷新後主內容框覆蓋 About/Publications */
 }
 
+/* 手機 + meta viewport 寬布局（layout≥900）：fixed/sticky 導航相對視口固定會與整頁縮放脫節，改為文檔流 */
+@media (max-device-width: 767px) and (min-width: 900px) {
+  header nav#navbar.navbar {
+    position: relative !important;
+    top: auto !important;
+  }
+  body.fixed-top-nav {
+    padding-top: 0 !important;
+  }
+}
+
 /* 隱藏導航欄下方的「閱讀進度條」（那條會往右延伸的實線） */
 #progress,
 progress#progress,
@@ -1228,7 +1239,8 @@ tbody td {
 }
 
 /* mobile behavior unchanged (keep your logic) */
-@media (max-width: 767px) {
+/* 僅在「真窄屏設備」啟用：viewport 設 width=1280 時 layout 寬>767，避免誤觸發破壞桌面版縮放 */
+@media (max-width: 767px) and (max-device-width: 767px) {
   .about-right-col {
     padding-left: 0;
     border-left: none;
@@ -1312,7 +1324,7 @@ body > div,
 .history-col .about-profile-title-clone {
   margin-bottom: 0.05rem;   /* 比默認標題間距更小 */
 }
-@media (max-width: 767px) {
+@media (max-width: 767px) and (max-device-width: 767px) {
   .info-history-row {
     flex-direction: column;
   }
@@ -1437,7 +1449,7 @@ body > div,
   border-bottom-color: #fabd2f !important;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 767px) and (max-device-width: 767px) {
   .sysinfo-list { font-size: calc(13px * 0.95); }
 }
 
@@ -1492,7 +1504,7 @@ body > div,
 }
 
 /* mobile fallback */
-@media (max-width: 767px){
+@media (max-width: 767px) and (max-device-width: 767px) {
   .about-profile .profile-grid{
     grid-template-columns:1fr;
   }
@@ -1785,7 +1797,7 @@ body > div,
 }
 
 /* mobile: allow wrap by increasing height */
-@media (max-width: 767px) {
+@media (max-width: 767px) and (max-device-width: 767px) {
   .history-trace { height: 280px; width: 100%; }
   .trace-node .anno { font-size: calc(11.5px * 0.95); }
 }
