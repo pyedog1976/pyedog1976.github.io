@@ -15,8 +15,8 @@
 
     <!-- Standard metadata -->
     <meta charset="utf-8">
-    <!-- 按設備寬度排版：手機內容區可橫向鋪滿視口（不再用 width=1280 整頁縮小） -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover">
+    <!-- 固定排版寬≈筆電（與電腦同版式）；手機豎屏由 viewport-fit-mobile.js 按寬度縮放以橫向鋪滿 -->
+    <meta name="viewport" content="width=1280, maximum-scale=5, user-scalable=yes, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>
     {%- if site.title == "blank" -%}

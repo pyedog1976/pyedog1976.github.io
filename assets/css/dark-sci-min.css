@@ -93,8 +93,8 @@ header {
   z-index: 1050 !important;        /* 始終在內容之上，避免刷新後主內容框覆蓋 About/Publications */
 }
 
-/* 小屏 / device-width：導航改文檔流（原僅針對 width=1280 假寬；現一律 ≤991px） */
-@media (max-width: 991px) {
+/* 手機 + meta viewport 寬布局（layout≥900）：fixed/sticky 導航相對視口固定會與整頁縮放脫節，改為文檔流 */
+@media (max-device-width: 767px) and (min-width: 900px) {
   header nav#navbar.navbar {
     position: relative !important;
     top: auto !important;
@@ -1239,7 +1239,7 @@ tbody td {
 }
 
 /* mobile behavior unchanged (keep your logic) */
-/* 僅在真窄屏啟用（雙條件避免寬屏瀏覽器拉窄窗口時誤觸發） */
+/* 僅在「真窄屏設備」啟用：viewport 設 width=1280 時 layout 寬>767，避免誤觸發破壞桌面版縮放 */
 @media (max-width: 767px) and (max-device-width: 767px) {
   .about-right-col {
     padding-left: 0;
@@ -1818,4 +1818,35 @@ body .post-header h1.post-title .font-weight-bold {
 body .post-header h1.post-title {
   font-size: 35px !important;
   line-height: 1.3 !important;
+}
+
+/* ====== 16) 竖屏手机：与电脑同宽排版 + 宽度优先缩放横向铺满（viewport-fit-mobile.js） ====== */
+html.viewport-fit--portrait-mobile,
+html.viewport-fit--portrait-mobile body {
+  overflow: hidden !important;
+  height: 100% !important;
+  max-height: 100dvh !important;
+}
+html.viewport-fit--portrait-mobile body.fixed-top-nav {
+  padding-top: 0 !important;
+}
+html.viewport-fit--portrait-mobile .viewport-fit-outer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: env(safe-area-inset-top, 0px);
+  width: 100%;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+  background: var(--bg) !important;
+  box-sizing: border-box;
+}
+
+html.viewport-fit--portrait-mobile header nav#navbar.navbar {
+  position: relative !important;
+  top: auto !important;
 }
