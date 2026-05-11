@@ -93,8 +93,8 @@ header {
   z-index: 1050 !important;        /* 始終在內容之上，避免刷新後主內容框覆蓋 About/Publications */
 }
 
-/* 手機 + meta viewport 寬布局（layout≥900）：fixed/sticky 導航相對視口固定會與整頁縮放脫節，改為文檔流 */
-@media (max-device-width: 767px) and (min-width: 900px) {
+/* 小屏 / device-width：導航改文檔流（原僅針對 width=1280 假寬；現一律 ≤991px） */
+@media (max-width: 991px) {
   header nav#navbar.navbar {
     position: relative !important;
     top: auto !important;
@@ -1239,7 +1239,7 @@ tbody td {
 }
 
 /* mobile behavior unchanged (keep your logic) */
-/* 僅在「真窄屏設備」啟用：viewport 設 width=1280 時 layout 寬>767，避免誤觸發破壞桌面版縮放 */
+/* 僅在真窄屏啟用（雙條件避免寬屏瀏覽器拉窄窗口時誤觸發） */
 @media (max-width: 767px) and (max-device-width: 767px) {
   .about-right-col {
     padding-left: 0;

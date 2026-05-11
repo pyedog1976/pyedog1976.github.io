@@ -15,8 +15,8 @@
 
     <!-- Standard metadata -->
     <meta charset="utf-8">
-    <!-- 固定布局寬度≈常見筆電，手機瀏覽器會縮小整頁以貼近桌面版式（勿與 initial-scale=1 並用以免不縮放） -->
-    <meta name="viewport" content="width=1280, maximum-scale=5, user-scalable=yes, shrink-to-fit=no">
+    <!-- 按設備寬度排版：手機內容區可橫向鋪滿視口（不再用 width=1280 整頁縮小） -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>
     {%- if site.title == "blank" -%}
