@@ -1846,7 +1846,39 @@ html.viewport-fit--portrait-mobile .viewport-fit-outer {
   box-sizing: border-box;
 }
 
-/* 整頁 transform 縮放時，picture/figure 與 img 寬度鏈一致，避免快照與氣泡參考的「卡片寬」脫節 */
+/*
+ * 僅手機豎屏 + 整頁縮放（html.viewport-fit--portrait-mobile）：
+ * 略放大快照、加寬預覽列與可點區域；時間軸 scaleX 與新卡片寬對齊（不改桌面）。
+ */
+html.viewport-fit--portrait-mobile {
+  --pub-card-width: calc(270px * 1.22);
+  --pub-card-overlap: -1.18rem;
+}
+
+html.viewport-fit--portrait-mobile .about-section.about-pubs .pub-tag-timeline {
+  transform: scaleX(1.14);
+  transform-origin: left center;
+  will-change: transform;
+}
+
+html.viewport-fit--portrait-mobile .publications-two-cols ol.bibliography > li .row {
+  gap: 0.75rem;
+}
+
+html.viewport-fit--portrait-mobile .publications-two-cols ol.bibliography > li .preview {
+  flex: 0 0 23% !important;
+  max-width: 23% !important;
+  padding: 0.45rem 0.55rem 0.55rem 0.2rem;
+  margin: -0.2rem -0.15rem 0 -0.1rem;
+  box-sizing: border-box;
+}
+
+html.viewport-fit--portrait-mobile .publications-two-cols ol.bibliography > li .pub-details {
+  flex: 0 0 77% !important;
+  max-width: 77% !important;
+}
+
+/* 整頁 transform 縮放時，picture/figure 與 img 寬度鏈一致 */
 html.viewport-fit--portrait-mobile .publications-two-cols ol.bibliography > li .preview figure,
 html.viewport-fit--portrait-mobile .publications-two-cols ol.bibliography > li .preview picture {
   display: block;
@@ -1863,6 +1895,7 @@ html.viewport-fit--portrait-mobile .publications-two-cols ol.bibliography > li i
   object-fit: contain !important;
   box-sizing: border-box;
 }
+
 html.viewport-fit--portrait-mobile header nav#navbar.navbar {
   position: relative !important;
   top: auto !important;
