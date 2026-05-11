@@ -12,10 +12,6 @@
   <!-- Body -->
   <body class="{% if site.navbar_fixed %}fixed-top-nav{% endif %} {% unless site.footer_fixed %}sticky-bottom-footer{% endunless %}">
 
-    <div id="viewport-fit-outer" class="viewport-fit-outer">
-      <div id="viewport-fit-stage" class="viewport-fit-stage">
-        <div id="viewport-fit-inner" class="viewport-fit-inner">
-
     <!-- Header -->
     {%- include header.html %}
 
@@ -50,14 +46,8 @@
       {% endif %}
     </div>
 
-        </div><!-- /.viewport-fit-inner -->
-      </div><!-- /.viewport-fit-stage -->
-    </div><!-- /.viewport-fit-outer -->
-
     <!-- Footer
     {%- include footer.html %} -->
-
-    <script defer src="{{ '/assets/js/viewport-fit-mobile.js' | relative_url | bust_file_cache }}"></script>
 
     <!-- JavaScripts -->
     {% include scripts/jquery.html %}

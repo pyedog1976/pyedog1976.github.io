@@ -15,8 +15,8 @@
 
     <!-- Standard metadata -->
     <meta charset="utf-8">
-    <!-- 固定排版寬≈筆電（與電腦同版式）；手機豎屏由 viewport-fit-mobile.js 按寬度縮放以橫向鋪滿 -->
-    <meta name="viewport" content="width=1280, maximum-scale=5, user-scalable=yes, shrink-to-fit=no">
+    <!-- 与 Bootstrap / 媒体查询一致：视口=设备 CSS 宽度；勿用 width=1280，否则窄窗口 Mac 仍按「大屏」排版会错乱 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>
     {%- if site.title == "blank" -%}
