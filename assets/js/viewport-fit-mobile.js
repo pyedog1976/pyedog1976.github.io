@@ -1,6 +1,6 @@
 /**
  * 竖屏手机：整页（与 meta viewport 宽布局一致）整体等比缩小，完整塞进屏幕，不出现滚动条；
- * 多出来的区域由 .viewport-fit-outer 的 background（与站点 --bg）铺满；outer 内 flex 纵横居中整页。
+ * 多出来的区域由 .viewport-fit-outer 的 background（与站点 --bg）铺满；outer 为 flex：水平居中、竖向贴顶。
  *
  * 条件：max-device-width: 900px 且 orientation: portrait
  * 算法：scale = min(屏宽/scrollWidth, 屏高/scrollHeight) * 0.992，transform 作用于 inner，origin 左上；
