@@ -6,7 +6,8 @@
  *   不是手机硬件宽。手机宽勿盲信 visualViewport.width（iOS Chrome + width=1280 下偶发极小假值）；宽布局时优先 screen 窄边再回退。
  * - 缩放比例：**scale = phoneW / designW**（与电脑同版式 = 先在 designW 下排版，再整体乘比例画满手机宽）。
  *
- * 条件：竖屏 +（max-device-width:900px 或 粗指针且非巨屏设备）；Chrome iOS 上 screen 常为物理像素须除以 dpr。
+ * 条件：竖屏 +（max-device-width:900px 或 粗指针且非巨屏）；勿依赖 (hover:none)，Chrome iOS 常报成 hover。
+ * Chrome iOS：screen 常为物理像素；dpr 异常时仍尝试折算。
  * 注意：不得 inner.style.width = scrollWidth（与子元素 width:100% 正反馈会无限拉长页面）。
  * ResizeObserver 在 apply 期间 disconnect，避免布局回调套娃。
  */
@@ -21,34 +22,6 @@
   var badMeasureRetries = 0;
   var MAX_BAD_MEASURE = 50;
 
-  function isPortraitPhone() {
-    if (!window.matchMedia('(orientation: portrait)').matches) return false;
-    if (window.matchMedia('(max-device-width: 900px)').matches) return true;
-    /* iOS Chrome：max-device-width 偶不命中；粗指针 + 无 hover 近似手机/平板 */
-    if (
-      window.matchMedia('(pointer: coarse)').matches &&
-      window.matchMedia('(hover: none)').matches &&
-      !window.matchMedia('(min-device-width: 1100px)').matches
-    ) {
-      return true;
-    }
-    return false;
-  }
-
-  /** screen 短边：Chrome iOS 常给物理像素，除以 devicePixelRatio 得到接近 CSS 逻辑宽 */
-  function narrowScreenCssGuess() {
-    var sw = window.screen.width;
-    var sh = window.screen.height;
-    var n = Math.min(sw, sh);
-    var dpr = window.devicePixelRatio || 1;
-    if (n > 560 && dpr >= 1.5) {
-      var conv = Math.round(n / dpr);
-      if (conv >= 250 && conv <= 580) n = conv;
-    }
-    if (n > 220 && n <= 580) return n;
-    return 0;
-  }
-
   /** 从 meta viewport 读「排版宽」designW（如 width=1280）；没有数字则用 documentElement.clientWidth。 */
   function readDesignWidthFromViewportMeta() {
     var el = document.querySelector('meta[name="viewport"]');
@@ -60,6 +33,40 @@
       return Math.max(1, document.documentElement.clientWidth || window.innerWidth || 0);
     }
     return 0;
+  }
+
+  function isPortraitPhone() {
+    if (!window.matchMedia('(orientation: portrait)').matches) return false;
+    if (window.matchMedia('(max-device-width: 900px)').matches) return true;
+    /* Chrome iOS 常把 (hover:none) 报成 hover，勿依赖；粗指针 + 非巨屏即尝试缩放 */
+    if (
+      window.matchMedia('(pointer: coarse)').matches &&
+      !window.matchMedia('(min-device-width: 1100px)').matches
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  /** screen 短边：Chrome iOS 常给物理像素；用 dpr 折算，dpr 不可靠时再试 /3。 */
+  function narrowScreenCssGuess() {
+    var sw = window.screen.width;
+    var sh = window.screen.height;
+    var n = Math.min(sw, sh);
+    var dpr = window.devicePixelRatio || 1;
+    if (n > 560) {
+      var conv = Math.round(n / Math.max(dpr, 1.001));
+      if (conv >= 250 && conv <= 580) return conv;
+      conv = Math.round(n / 3);
+      if (conv >= 250 && conv <= 580) return conv;
+    }
+    if (n > 220 && n <= 580) return n;
+    return 0;
+  }
+
+  /** 竖屏触摸且仍拿不到窄边时的经验兜底（避免 scale≈1 完全无感） */
+  function fallbackPhoneWidthCss(designW) {
+    return Math.min(480, Math.max(300, Math.round(designW * 0.28)));
   }
 
   /**
@@ -160,6 +167,8 @@
         var guess = narrowScreenCssGuess();
         if (guess > 0) {
           phoneW = guess;
+        } else if (isPortraitPhone()) {
+          phoneW = fallbackPhoneWidthCss(designW);
         }
       }
 
@@ -238,4 +247,6 @@
     });
     ro.observe(inner);
   }
+  /* 首帧立即跑一次，避免只依赖 60ms debounce / load 时序导致长时间无样式 */
+  apply();
 })();
