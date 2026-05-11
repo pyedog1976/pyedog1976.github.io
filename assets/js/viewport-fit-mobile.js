@@ -4,10 +4,10 @@
  * 视口外区域由 .viewport-fit-outer 的 background（与站点 --bg 一致）铺满。
  *
  * 条件：max-device-width: 900px 且 orientation: portrait
- * 算法：竖屏以「铺满屏宽」为先：scale = 可视宽/scrollWidth（略留边 0.998）。
- * 站点 meta viewport 为 width=1280 时，layout clientWidth 往往≈1280，与 scrollWidth 同量级会导致 scale≈1、看起来「完全没变化」；
- * 此时改用 visualViewport（若明显小于 layout）或 screen 窄边估算真实 CSS 宽度，再算缩放。
- * transform 作用于 inner，origin 左上；stage 固定为当前读到的 vw×vh。
+ * 算法：双栏与电脑一致 = 按 layoutW（documentElement.clientWidth，通常与 meta 一致）排版；
+ * scale = 真实可视宽 vw / layoutW，使整页横向正好铺满手机屏幕（不用 scrollWidth 做分母，避免被撑宽后反而缩得更小）。
+ * meta width=1280 时须用 visualViewport 或 screen 窄边得到 vw，并把 outer 也收成 vw 宽，否则 flex 居中会在「虚宽 outer」两侧留大黑边。
+ * transform 作用于 inner，origin 左上；outer/stage 与 vw×vh 对齐。
  *
  * inner 必须按「布局视口」宽度排版（documentElement.clientWidth，与 meta width=1280 一致），
  * 不能默认 100% 跟 stage 变窄；否则双栏会在 ~390px 下重排，极窄且纵向巨长。
@@ -30,8 +30,7 @@
   }
 
   /**
-   * 在 width=1280 等「虚宽」布局下，outer.clientWidth 常等于 scrollWidth，scale 会变成 1。
-   * 返回更接近用户肉眼所见的视口宽高（CSS 像素量级）。
+   * 在 width=1280 等「虚宽」布局下，outer.clientWidth 常≈layoutW，与真实屏宽无关；须单独估 vw/vh。
    */
   function effectiveViewportCssSize(layoutW) {
     var vw = outer.clientWidth;
@@ -100,10 +99,9 @@
       inner.style.width = layoutW + 'px';
       inner.style.boxSizing = 'border-box';
 
-      var w = Math.max(inner.scrollWidth, layoutW);
       var h = inner.scrollHeight;
 
-      if (w < 1 || h < 1 || vw < 1 || vh < 1) {
+      if (layoutW < 1 || h < 1 || vw < 1 || vh < 1) {
         if (badMeasureRetries++ < MAX_BAD_MEASURE) {
           requestAnimationFrame(function () {
             requestAnimationFrame(apply);
@@ -113,11 +111,25 @@
       }
       badMeasureRetries = 0;
 
-      /* 宽度优先：水平铺满手机，避免 min(vw,w, vh/h) 被高度绑死导致两侧大黑边 */
-      var s = (vw / w) * 0.998;
+      /* 与电脑同宽 layoutW 整块缩放到真实屏宽 vw，横向铺满、无居中留白 */
+      var s = vw / layoutW;
 
       inner.style.transformOrigin = 'top left';
       inner.style.transform = 'scale(' + s + ')';
+
+      outer.style.position = 'fixed';
+      outer.style.left = '0';
+      outer.style.top = '0';
+      outer.style.right = 'auto';
+      outer.style.bottom = 'auto';
+      outer.style.width = vw + 'px';
+      outer.style.height = vh + 'px';
+      outer.style.maxWidth = '100%';
+      outer.style.boxSizing = 'border-box';
+      outer.style.display = 'flex';
+      outer.style.alignItems = 'flex-start';
+      outer.style.justifyContent = 'flex-start';
+      outer.style.overflow = 'hidden';
 
       stage.style.width = vw + 'px';
       stage.style.height = vh + 'px';
