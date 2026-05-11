@@ -26,6 +26,10 @@ jobs:
       with:
         ruby-version: '3.2.2'
         bundler-cache: true
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
     - name: Update _config.yml ⚙️
       uses: fjogeleit/yaml-update-action@v0.13.1
       with:
@@ -36,8 +40,8 @@ jobs:
     - name: Install and Build 🔧
       run: |
         pip3 install --upgrade jupyter
-        npm install -g mermaid.cli
-        npm install -g purgecss
+        # jekyll-diagrams 调用 mmdc；旧包 mermaid.cli 已弃用，在新 Node 上易安装失败
+        npm install -g @mermaid-js/mermaid-cli purgecss
         export JEKYLL_ENV=production
         bundle exec jekyll build --lsi
         purgecss -c purgecss.config.js
