@@ -552,6 +552,11 @@ tbody td {
     min-height: 0;
     height: auto;
   }
+
+  /* 桌面：仅略降 HISTORY 轨迹区高度（原 360px），不改文案与其它样式 */
+  .post .about-side-by-side .history-trace {
+    height: 300px;
+  }
 }
 
 .about-right-col h2 {
