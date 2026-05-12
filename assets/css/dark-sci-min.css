@@ -1895,17 +1895,31 @@ body .post-header h1.post-title {
   line-height: 1.3 !important;
 }
 
-/* ====== 16) Mobile/touch hotfix: preserve desktop composition without body scaling ====== */
+/* ====== 16) Mobile: keep desktop composition with scaled canvas ====== */
 @media (max-width: 767px) and (max-device-width: 767px) {
+  :root {
+    --site-canvas-width: 1180px;
+    --mobile-canvas-scale: min(1, calc(100vw / var(--site-canvas-width)));
+  }
+
   html,
   body {
     background: var(--bg) !important;
     overflow-x: hidden !important;
   }
 
-  /* keep desktop-like two-column composition */
+  body {
+    font-size: calc(18px * 0.95) !important;
+    width: var(--site-canvas-width);
+    min-height: calc(100dvh / var(--mobile-canvas-scale));
+    transform: scale(var(--mobile-canvas-scale));
+    transform-origin: top left;
+  }
+
+  /* keep desktop-like two-column composition (no mobile reflow) */
   .about-right-col {
     padding-left: 1.5rem !important;
+    border-left: none !important;
     border-top: none !important;
     padding-top: 0 !important;
     margin-top: 0 !important;
@@ -1922,35 +1936,71 @@ body .post-header h1.post-title {
     max-width: 53% !important;
   }
 
-  /* paper popups: hidden by default on mobile/touch */
+  /* paper popups: hidden by default on mobile */
   .publications-two-cols ol.bibliography > li .pub-details {
-    opacity: 0 !important;
-    pointer-events: none !important;
     display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
   }
   .publications-two-cols ol.bibliography > li.is-open .pub-details,
   .publications-two-cols ol.bibliography > li.active .pub-details {
-    opacity: 1 !important;
-    pointer-events: auto !important;
     display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
   }
 
-  /* keep desktop arrangement but keep snapshots inside publications section */
-  .publications-two-cols,
+  /* keep desktop arrangement, but constrain thumbnails inside publication section */
   .about-section.about-pubs,
-  .about-section.about-pubs .publications {
-    max-width: 100%;
-    overflow-x: hidden;
+  .about-section.about-pubs .publications,
+  .about-section.about-pubs .publications-two-cols,
+  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
   }
   .publications-two-cols ol.bibliography {
     flex-wrap: nowrap !important;
   }
+  .publications-two-cols ol.bibliography > li {
+    width: auto !important;
+    margin-left: var(--pub-card-overlap) !important;
+  }
+  .publications-two-cols ol.bibliography > li:first-child {
+    margin-left: 0 !important;
+  }
   .publications-two-cols ol.bibliography > li img.preview {
-    max-width: min(var(--pub-card-width), 36vw) !important;
+    width: var(--pub-card-width) !important;
+    max-width: min(var(--pub-card-width), 42vw) !important;
     height: auto !important;
   }
+
+  .about-section.about-pubs .pub-tag-timeline {
+    flex-wrap: nowrap !important;
+    white-space: nowrap !important;
+    row-gap: 0 !important;
+  }
+
   .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col {
-    right: 0 !important;
+    position: absolute !important;
+    right: -1.5rem !important;
+    top: 20% !important;
+    transform: translateY(-50%) !important;
+    max-width: 10rem !important;
+    width: auto !important;
+    margin-top: 0 !important;
+  }
+  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col .ascii-face {
+    min-width: 20ch !important;
+    max-width: none !important;
+    transform: translateX(var(--ascii-face-nudge-x)) !important;
+  }
+  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col .ascii-face::after {
+    position: absolute !important;
+    display: block !important;
+    right: 0.15rem !important;
+    top: 1.38rem !important;
+    white-space: pre !important;
   }
 
   /* keep ASCII layout, allow local horizontal scroll instead of reflow */
@@ -1966,21 +2016,25 @@ body .post-header h1.post-title {
   .trace-node .anno,
   .trace-node.piece .anno {
     white-space: nowrap !important;
+    max-width: none !important;
     overflow-wrap: normal !important;
   }
 }
 
-@media (hover: none) and (pointer: coarse) {
+@media (hover: none), (pointer: coarse) {
+  .publications-two-cols ol.bibliography > li .pub-details,
   .publications-two-cols ol.bibliography > li:hover .pub-details {
-    opacity: 0 !important;
-    pointer-events: none !important;
     display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
   }
   .publications-two-cols ol.bibliography > li.is-open .pub-details,
   .publications-two-cols ol.bibliography > li.active .pub-details {
-    opacity: 1 !important;
-    pointer-events: auto !important;
     display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
   }
 }
 
