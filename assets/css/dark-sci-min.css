@@ -553,9 +553,17 @@ tbody td {
     height: auto;
   }
 
-  /* 桌面：仅略降 HISTORY 轨迹区高度（原 360px），不改文案与其它样式 */
+  /* 桌面：双栏一起略缩纵向——左 HISTORY 轨迹 320px；左右首块 about-section 内边距对称略收；右栏 pub 组间距略减（等高 stretch 时整体变矮） */
   .post .about-side-by-side .history-trace {
-    height: 300px;
+    height: 320px;
+  }
+  .post .about-side-by-side .about-left-col > .about-section.about-intro,
+  .post .about-side-by-side .about-right-col > .about-section.about-pubs {
+    padding: 0.8rem 1.1rem 0.8rem 1.1rem !important;
+    margin-bottom: 0.95rem;
+  }
+  .post .about-side-by-side .about-section.about-pubs .publications-two-cols .pub-group {
+    margin-bottom: 0.65rem;
   }
 }
 
