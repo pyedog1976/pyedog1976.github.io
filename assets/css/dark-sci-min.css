@@ -554,6 +554,10 @@ tbody td {
   }
 
   /* 桌面：双栏一起略缩纵向——左 HISTORY 轨迹 320px；左右首块 about-section 内边距对称略收；右栏 pub 组间距略减（等高 stretch 时整体变矮） */
+  /* 右栏高度主要由横向快照 img.preview（--pub-card-width 定宽后按比例出高）撑开，在此略收窄快照宽度使整行一起变矮 */
+  .post .about-side-by-side {
+    --pub-card-width: calc(248px * 0.95);
+  }
   .post .about-side-by-side .history-trace {
     height: 320px;
   }
