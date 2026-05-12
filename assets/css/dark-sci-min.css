@@ -2064,6 +2064,12 @@ body .post-header h1.post-title {
     margin-top: 0 !important;
   }
 
+  /* 手机：论文快照略放大；顶部 timeline 标签（+CVPR'xx+ 等）同步略大 */
+  .about-section.about-pubs {
+    --pub-card-width: calc(292px * 0.95);
+    --pub-card-overlap: -0.88rem;
+  }
+
   .publications-two-cols ol.bibliography {
     flex-wrap: nowrap !important;
   }
@@ -2084,6 +2090,8 @@ body .post-header h1.post-title {
     flex-wrap: nowrap !important;
     white-space: nowrap !important;
     row-gap: 0 !important;
+    font-size: calc(21px * 0.95) !important;
+    gap: 0.26rem !important;
   }
 
   .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col {
