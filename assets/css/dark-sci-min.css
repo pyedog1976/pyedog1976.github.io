@@ -1919,6 +1919,10 @@ body .post-header h1.post-title {
 }
 
 /* Nav：CV 语言下拉 — 像素终端风（自定义面板，非系统菜单） */
+#navbar .nav-item-cv.dropdown {
+  position: relative;
+}
+
 #navbar .nav-item-cv .nav-cv-dropdown {
   min-width: 12.5rem;
   padding: 0 !important;
@@ -1931,54 +1935,55 @@ body .post-header h1.post-title {
     0 0 0 1px rgba(255, 204, 51, 0.18),
     0 16px 40px rgba(0, 0, 0, 0.55),
     0 0 22px rgba(255, 204, 51, 0.18) !important;
-  overflow: visible;
+  /* 裁切子项高亮，保证不超出圆角；尾巴改挂 li 伪元素避免被裁 */
+  overflow: hidden;
   z-index: 1060;
 }
 
-/* 小尾巴：从面板顶部伸出，略偏右对准上方 CV（dropdown-menu-right） */
-#navbar .nav-item-cv .nav-cv-dropdown::after {
+/* 小尾巴：挂在 li 上，从「CV」与面板之间伸出，略偏右对准 CV（dropdown-menu-right） */
+#navbar .nav-item-cv.dropdown.show::after {
   content: "";
   position: absolute;
-  z-index: 2;
-  top: -12px;
+  z-index: 1070;
+  top: calc(100% - 10px);
   right: 2.25rem;
   left: auto;
   width: 0;
   height: 0;
-  border-top: 0 solid transparent;
   border-left: 11px solid transparent;
   border-right: 11px solid transparent;
+  border-top: 0 solid transparent;
   border-bottom: 12px solid rgba(255, 204, 51, 0.65);
   filter: drop-shadow(0 0 10px rgba(255, 204, 51, 0.25));
   pointer-events: none;
 }
 
-/* 内层填充，与面板黑底连成一体（与 .pub-details 尾巴同思路） */
-#navbar .nav-item-cv .nav-cv-dropdown::before {
+#navbar .nav-item-cv.dropdown.show::before {
   content: "";
   position: absolute;
-  z-index: 3;
-  top: -10px;
+  z-index: 1071;
+  top: calc(100% - 9px);
   right: 2.25rem;
   left: auto;
   width: 0;
   height: 0;
-  border-top: 0 solid transparent;
   border-left: 9px solid transparent;
   border-right: 9px solid transparent;
+  border-top: 0 solid transparent;
   border-bottom: 10px solid #000000;
   pointer-events: none;
 }
 
-/* 内缘与 18px 外圆角对齐 */
+/* 内缘与 18px 外圆角对齐（勿用 border-radius:0!important 盖住首末项） */
 #navbar .nav-cv-dropdown .nav-cv-dropdown__item:first-child {
-  border-top-left-radius: 17px;
-  border-top-right-radius: 17px;
+  border-top-left-radius: 17px !important;
+  border-top-right-radius: 17px !important;
 }
 
 #navbar .nav-cv-dropdown .nav-cv-dropdown__item:last-child {
-  border-bottom-left-radius: 17px;
-  border-bottom-right-radius: 17px;
+  border-bottom: none !important;
+  border-bottom-left-radius: 17px !important;
+  border-bottom-right-radius: 17px !important;
 }
 
 #navbar .nav-cv-dropdown .nav-cv-dropdown__item {
@@ -1996,14 +2001,9 @@ body .post-header h1.post-title {
   text-decoration: none !important;
   line-height: 1.2 !important;
   white-space: nowrap;
-  border-radius: 0 !important;
   border-bottom: 1px solid rgba(250, 189, 47, 0.5) !important;
   background: #000000 !important;
   box-shadow: none !important;
-}
-
-#navbar .nav-cv-dropdown .nav-cv-dropdown__item:last-child {
-  border-bottom: none !important;
 }
 
 /* English：与导航一致的 Press Start 2P */
@@ -2028,6 +2028,19 @@ body .post-header h1.post-title {
   background-color: #fabd2f !important;
   outline: none !important;
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* 高亮块与容器圆角一致，避免直角溢出 */
+#navbar .nav-cv-dropdown .nav-cv-dropdown__item:first-child:hover,
+#navbar .nav-cv-dropdown .nav-cv-dropdown__item:first-child:focus {
+  border-top-left-radius: 17px !important;
+  border-top-right-radius: 17px !important;
+}
+
+#navbar .nav-cv-dropdown .nav-cv-dropdown__item:last-child:hover,
+#navbar .nav-cv-dropdown .nav-cv-dropdown__item:last-child:focus {
+  border-bottom-left-radius: 17px !important;
+  border-bottom-right-radius: 17px !important;
 }
 
 #navbar .nav-item-cv.show > .nav-link.dropdown-toggle {
