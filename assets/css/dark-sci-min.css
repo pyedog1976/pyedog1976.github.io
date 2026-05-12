@@ -1796,14 +1796,24 @@ body > div,
   transform: translate(-50%, 0);
 }
 
-/* mobile: allow wrap by increasing height */
+/* mobile：ASCII 框按栏宽缩字号，禁滚条；高度随 <pre> 避免裁切 */
 @media (max-width: 767px) {
-  .history-trace { height: 280px; width: 100%; }
+  .history-trace {
+    height: auto;
+    min-height: 260px;
+    width: 100%;
+    overflow: hidden;
+    container-type: inline-size;
+    container-name: htrace;
+  }
   .trace-node .anno { font-size: calc(11.5px * 0.95); }
 
   .trace-ascii-frame {
-    overflow-x: auto !important;
+    overflow: visible !important;
     max-width: 100%;
+    /* 最长行约 45 字宽；无 cqw 时用略小字号兜底 */
+    font-size: calc(11px * 0.95);
+    font-size: min(calc(15px * 0.95), calc(100cqw / 46));
   }
 
   .trace-node .anno,
@@ -2028,21 +2038,20 @@ body .post-header h1.post-title {
     white-space: pre !important;
   }
 
-  /* keep ASCII layout, allow local horizontal scroll instead of reflow */
+  /* HISTORY：与同断点全局规则一致，禁滚条、底框对齐（字号见上 htrace / cqw） */
   .history-trace {
-    overflow-x: auto !important;
-    overflow-y: visible !important;
+    height: auto !important;
+    min-height: 260px;
+    overflow: hidden !important;
+    container-type: inline-size;
+    container-name: htrace;
   }
   .trace-ascii-frame {
     white-space: pre !important;
-    overflow-x: auto !important;
+    overflow: visible !important;
     max-width: 100%;
-  }
-  .trace-node .anno,
-  .trace-node.piece .anno {
-    white-space: nowrap !important;
-    max-width: none !important;
-    overflow-wrap: normal !important;
+    font-size: calc(11px * 0.95);
+    font-size: min(calc(15px * 0.95), calc(100cqw / 46));
   }
 }
 
