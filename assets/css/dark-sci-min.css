@@ -77,6 +77,17 @@ body.fixed-top-nav {
   z-index: 1;
 }
 
+/* 全站画布包裹层：桌面不改动；真机在 §16 内固定 1180px + scale */
+#site-scale-outer,
+#site-scale-inner {
+  display: block;
+}
+#site-scale-inner {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+}
+
 /*
  * 勿與 .container 共用同一 z-index：二者為 body 下兄弟時，後出現的 .container
  * 會整塊蓋在 header 之上，導致主內容與導航文字視覺交叉（調 margin 無效）。
@@ -1811,27 +1822,39 @@ body .post-header h1.post-title {
   line-height: 1.3 !important;
 }
 
-/* ====== 16) 真机：meta viewport=1180 已把整页横向缩到屏宽；此处不再 zoom/transform，避免裁切或倍率叠加 ====== */
+/* ====== 16) 真机：1180px 桌面画布在 #site-scale-inner；横向 scale(100vw/1180)；outer 高度由 site-mobile-canvas-scale.js；不缩放 body ====== */
 @media (max-device-width: 767px) {
   html,
   body {
     background: var(--bg) !important;
-  }
-  html {
-    overflow-x: auto !important;
+    overflow-x: hidden !important;
   }
   body {
-    overflow-x: visible !important;
     font-size: calc(18px * 0.95) !important;
   }
 
-  #site-scale-outer,
-  #site-scale-inner {
-    display: block;
+  #site-scale-outer {
+    position: relative;
+    width: 100vw;
     max-width: 100%;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    box-sizing: border-box;
+    background: var(--bg) !important;
+    /* 高度由 site-mobile-canvas-scale.js = inner.scrollHeight * scale；inner 绝对定位不参与撑开 outer */
+  }
+  #site-scale-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1180px;
+    max-width: none;
+    box-sizing: border-box;
+    transform-origin: top left;
+    transform: scale(calc(100vw / 1180));
   }
 
-  /* 真机：viewport=1180 时 Bootstrap 仍按「≥768」走桌面栅格，这里强制 About 主区单栏（News / Publications 上下排）；USER INFO + HISTORY 仍用全局 .info-history-row 同行 47%/53% */
+  /* 内层逻辑宽度 1180（与桌面 md 栅格一致）；此处仍强制 About 主区单栏；USER INFO + HISTORY 保持全局 .info-history-row 同行 */
   .about-side-by-side {
     flex-direction: column !important;
     flex-wrap: nowrap !important;
@@ -1851,25 +1874,7 @@ body .post-header h1.post-title {
     margin-top: 1rem !important;
   }
 
-  /* 以下保留：论文气泡、出版物区、HISTORY ASCII 等 */
-  .publications-two-cols ol.bibliography > li .pub-details,
-  .publications-two-cols ol.bibliography > li:hover .pub-details,
-  .publications-two-cols ol.bibliography > li:not(.is-open):not(.active):hover .pub-details {
-    display: none !important;
-    opacity: 0 !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-    transform: translateX(-10px) !important;
-  }
-  .publications-two-cols ol.bibliography > li.is-open .pub-details,
-  .publications-two-cols ol.bibliography > li.active .pub-details,
-  .publications-two-cols ol.bibliography > li.is-open:hover .pub-details {
-    display: block !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
-    transform: translateX(0) !important;
-  }
+  /* 论文气泡、出版物区、HISTORY ASCII 等（.pub-details 显隐见 §17 触摸/coarse） */
 
   /* keep desktop arrangement, but constrain thumbnails inside publication section */
   .about-section.about-pubs,
@@ -1938,5 +1943,22 @@ body .post-header h1.post-title {
     white-space: nowrap !important;
     max-width: none !important;
     overflow-wrap: normal !important;
+  }
+}
+
+/* ====== 17) 触摸 / 粗指针：论文详情默认隐藏；点击展开见 pub-details-touch.js（不禁用双指缩放） ====== */
+@media (hover: none), (pointer: coarse) {
+  .pub-details {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+  .publications-two-cols ol.bibliography > li.is-open .pub-details,
+  .publications-two-cols ol.bibliography > li.active .pub-details {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
   }
 }

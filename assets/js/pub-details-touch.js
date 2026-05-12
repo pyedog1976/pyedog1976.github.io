@@ -3,7 +3,8 @@
  * 点击某条 li 切换 .is-open；点空白或其它处关闭。桌面不启用。
  */
 (function () {
-  if (!window.matchMedia('(max-device-width: 767px)').matches) return;
+  /* 与 coarse/hover:none 下默认隐藏 .pub-details 的 CSS 一致，桌面纯鼠标不启用 */
+  if (!window.matchMedia('(hover: none), (pointer: coarse)').matches) return;
 
   function pubsRoot() {
     return document.querySelector('.about-section.about-pubs .publications-two-cols');

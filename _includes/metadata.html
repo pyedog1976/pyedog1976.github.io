@@ -15,8 +15,8 @@
 
     <!-- Standard metadata -->
     <meta charset="utf-8">
-    <!-- 真机首屏横向缩到屏宽；不禁缩放、不封顶 maximum-scale，双指随意放大 -->
-    <meta name="viewport" content="width=1180, initial-scale=1, user-scalable=yes, shrink-to-fit=no">
+    <!-- 标准视口；整页横向「缩小桌面稿」由 #site-scale-inner 的 CSS transform + JS 高度完成，见 site-mobile-canvas-scale.js -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>
     {%- if site.title == "blank" -%}
