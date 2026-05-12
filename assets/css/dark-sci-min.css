@@ -1945,6 +1945,11 @@ body .post-header h1.post-title {
     font-size: calc(18px * 0.95) !important;
   }
 
+  /* 画布内 fixed 导航不占流，主内容顶会被挡；仅手机为 #site-scale-inner 下首个 container 留顶距 */
+  #site-scale-inner > .container.mt-5 {
+    padding-top: 3.65rem !important;
+  }
+
   .about-side-by-side {
     flex-direction: column !important;
     flex-wrap: nowrap !important;

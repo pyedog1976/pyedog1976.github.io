@@ -73,7 +73,11 @@
       return;
     }
 
-    applyCanvasStyles(outer, inner, vw);
+    var vwScale = vw;
+    if (vw < 768) {
+      vwScale = Math.max(280, vw - 4);
+    }
+    applyCanvasStyles(outer, inner, vwScale);
   }
 
   function init() {
