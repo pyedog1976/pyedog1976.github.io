@@ -85,16 +85,24 @@
                   {% endfor %}
                 </div>
               </li>
-              {%- else %}
-              <li class="nav-item {% if page.title == p.title %}active{% endif %}">
-                {% if p.title == "Publications" %}
-                <a class="nav-link" href="https://scholar.google.com/citations?hl=zh-CN&user=SibDXFQAAAAJ&view_op=list_works&sortby=pubdate" target="_blank" rel="noopener noreferrer">{{ p.title }}
+              {%- elsif p.title == "CV" %}
+              {%- assign _cv_zh = '/assets/pdf/cv_zh.pdf' | relative_url -%}
+              {%- assign _cv_en = '/assets/pdf/cv_en.pdf' | relative_url -%}
+              <li class="nav-item dropdown nav-item-cv {% if page.title == p.title %}active{% endif %}">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownCv" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ p.title }}
                   {%- if page.title == p.title -%}
                   <span class="sr-only">(current)</span>
                   {%- endif -%}
                 </a>
-                {% elsif p.title == "CV" %}
-                <a class="nav-link" href="{{ '/assets/pdf/yuyuanliu_cv.pdf' | relative_url }}" download="yuyuanliu_cv.pdf">{{ p.title }}
+                <div class="dropdown-menu dropdown-menu-right nav-cv-dropdown" aria-labelledby="navbarDropdownCv">
+                  <a class="dropdown-item" href="{{ _cv_zh }}" download="刘育源_CV.pdf" target="_blank" rel="noopener noreferrer">中文</a>
+                  <a class="dropdown-item" href="{{ _cv_en }}" download="yuyuan_CV.pdf" target="_blank" rel="noopener noreferrer">English</a>
+                </div>
+              </li>
+              {%- else %}
+              <li class="nav-item {% if page.title == p.title %}active{% endif %}">
+                {% if p.title == "Publications" %}
+                <a class="nav-link" href="https://scholar.google.com/citations?hl=zh-CN&user=SibDXFQAAAAJ&view_op=list_works&sortby=pubdate" target="_blank" rel="noopener noreferrer">{{ p.title }}
                   {%- if page.title == p.title -%}
                   <span class="sr-only">(current)</span>
                   {%- endif -%}

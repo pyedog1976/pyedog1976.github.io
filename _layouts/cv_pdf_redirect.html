@@ -1,5 +1,5 @@
 ---
-# 僅用於 /cv/：立即跳轉至 PDF，不再渲染舊 CV 內容頁
+# /cv/：选择中文或英文 PDF（导航栏亦有下拉）
 ---
 <!DOCTYPE html>
 <html lang="{{ site.lang | default: 'en' }}">
@@ -7,14 +7,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ page.title | default: 'CV' }}</title>
-  {%- assign cv_pdf = '/assets/pdf/yuyuanliu_cv.pdf' | relative_url -%}
-  <meta http-equiv="refresh" content="0; url={{ cv_pdf }}">
-  <link rel="canonical" href="{{ cv_pdf | absolute_url }}">
-  <script>
-    window.location.replace("{{ cv_pdf }}");
-  </script>
+  {%- assign cv_zh = '/assets/pdf/cv_zh.pdf' | relative_url -%}
+  {%- assign cv_en = '/assets/pdf/cv_en.pdf' | relative_url -%}
+  <link rel="canonical" href="{{ page.url | absolute_url }}">
 </head>
-<body style="background:#000;color:#ccc;font-family:system-ui,sans-serif;padding:2rem;">
-  <p><a href="{{ cv_pdf }}" download="yuyuanliu_cv.pdf" style="color:#fe8019;">Download CV (PDF)</a></p>
+<body style="background:#0d0d0d;color:#ebdbb2;font-family:JetBrains Mono,system-ui,sans-serif;padding:2rem;line-height:1.6;">
+  <p style="color:#fabd2f;font-weight:700;margin-bottom:1rem;">{{ page.title | default: 'CV' }}</p>
+  <p style="margin-bottom:0.75rem;">选择简历版本 / Choose a version:</p>
+  <ul style="list-style:none;padding:0;margin:0;">
+    <li style="margin-bottom:0.5rem;"><a href="{{ cv_zh }}" download="刘育源_CV.pdf" style="color:#fe8019;">中文（PDF）</a></li>
+    <li><a href="{{ cv_en }}" download="yuyuan_CV.pdf" style="color:#fe8019;">English (PDF)</a></li>
+  </ul>
+  <p style="margin-top:1.5rem;font-size:0.9rem;color:#a89984;">导航栏 <strong>CV</strong> 旁亦有下拉菜单。</p>
 </body>
 </html>
