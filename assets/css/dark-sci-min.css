@@ -621,7 +621,7 @@ tbody td {
   color: #fe8019 !important; /* 與 HISTORY 的 >> 一致 */
 }
 
-/* 與 HISTORY 完全一致：去掉標題後面的橫向虛線 */
+/* News / Selected Publications 標題後虛線：與主題框橫邊 #ffd84d 同色（勿用 --title-dash-color，會被灰棕覆蓋） */
 .about-section.about-news .about-section-title::after,
 .about-section.about-pubs .about-section-title::after {
   content: "" !important;
@@ -630,7 +630,7 @@ tbody td {
   min-width: 1rem !important;
   height: var(--title-dash-thickness) !important;
   margin-left: 0.35em !important;
-  background: repeating-linear-gradient(to right, var(--title-dash-color) 0, var(--title-dash-color) 8px, transparent 4px, transparent 18px) !important;
+  background: repeating-linear-gradient(to right, #ffd84d 0, #ffd84d 8px, transparent 4px, transparent 18px) !important;
 }
 
 /* HISTORY 標題恢復白色虛線，並強制大寫 */
