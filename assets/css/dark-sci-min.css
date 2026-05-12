@@ -1828,16 +1828,16 @@ body > div,
   }
 
   .history-trace .history-trace-svg {
-    top: calc(50% - 10px + 1rem);
+    top: calc(50% - 10px + 2rem);
   }
   .history-trace .trace-node.piece {
-    top: calc(var(--node-top) + 1rem);
+    top: calc(var(--node-top) + 2rem);
   }
   .history-trace .trace-node.flag {
-    top: calc(var(--node-top-flag) + 1rem);
+    top: calc(var(--node-top-flag) + 2rem);
   }
   .history-trace .trace-now {
-    top: calc(var(--node-top) + 1rem);
+    top: calc(var(--node-top) + 2rem);
   }
 
   .history-trace {
@@ -2043,6 +2043,12 @@ body .post-header h1.post-title {
     max-width: 100% !important;
     overflow-x: hidden !important;
   }
+
+  /* 首组 [*] 行：桌面用负 margin 贴近标题；手机 + 父级 overflow-x 会裁切，改为顶对齐 */
+  .about-section.about-pubs .publications-two-cols .pub-group:first-child .pub-group-intro {
+    margin-top: 0 !important;
+  }
+
   .publications-two-cols ol.bibliography {
     flex-wrap: nowrap !important;
   }
@@ -2115,16 +2121,16 @@ body .post-header h1.post-title {
     margin-right: 2rem !important;
   }
   .history-trace .history-trace-svg {
-    top: calc(50% - 10px + 1rem) !important;
+    top: calc(50% - 10px + 2rem) !important;
   }
   .history-trace .trace-node.piece {
-    top: calc(var(--node-top) + 1rem) !important;
+    top: calc(var(--node-top) + 2rem) !important;
   }
   .history-trace .trace-node.flag {
-    top: calc(var(--node-top-flag) + 1rem) !important;
+    top: calc(var(--node-top-flag) + 2rem) !important;
   }
   .history-trace .trace-now {
-    top: calc(var(--node-top) + 1rem) !important;
+    top: calc(var(--node-top) + 2rem) !important;
   }
 }
 
