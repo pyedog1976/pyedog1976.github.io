@@ -1229,80 +1229,6 @@ tbody td {
   -webkit-box-decoration-break: clone;
 }
 
-/* mobile behavior：真窄屏设备（视口与设备宽度均小） */
-@media (max-width: 767px) and (max-device-width: 767px) {
-  body {
-    font-size: calc(16px * 0.95);
-  }
-
-  .about-right-col {
-    padding-left: 0;
-    border-left: none;
-    border-top: 1px solid var(--border);
-    padding-top: 1rem;
-    margin-top: 1rem;
-  }
-  .publications-two-cols ol.bibliography > li .pub-details {
-    position: static;
-    transform: none;
-    margin-top: 0.5rem;
-    opacity: 1;
-    pointer-events: auto;
-  }
-  .publications-two-cols ol.bibliography > li .pub-details::after {
-    display: none;
-  }
-
-  .publications-two-cols ol.bibliography {
-    flex-wrap: wrap;
-    row-gap: 0.8rem;
-  }
-
-  .publications-two-cols ol.bibliography > li {
-    margin-left: 0;
-    width: 100%;
-  }
-
-  .publications-two-cols ol.bibliography > li img.preview {
-    width: 100% !important;
-    max-width: 100% !important;
-    height: auto;
-  }
-
-  /* mobile overflow guard: keep timeline/tags/sidebar inside viewport */
-  .about-section.about-pubs .pub-tag-timeline {
-    flex-wrap: wrap;
-    white-space: normal;
-    row-gap: 0.25rem;
-  }
-
-  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row {
-    overflow: hidden;
-  }
-
-  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col {
-    position: static;
-    transform: none;
-    max-width: 100%;
-    width: 100%;
-    margin-top: 0.4rem;
-  }
-
-  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col .ascii-face {
-    min-width: 0;
-    transform: none;
-    max-width: 100%;
-  }
-
-  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col .ascii-face::after {
-    position: static;
-    display: block;
-    right: auto;
-    top: auto;
-    white-space: normal;
-  }
-}
-
 /* ====== 14) Full width + no blue frame ====== */
 .container {
   max-width: none !important;
@@ -1936,19 +1862,24 @@ body .post-header h1.post-title {
     max-width: 53% !important;
   }
 
-  /* paper popups: hidden by default on mobile */
-  .publications-two-cols ol.bibliography > li .pub-details {
+  /* paper popups：默认隐藏；禁止误触 hover；仅 .is-open / .active 显示（由 pub-details-touch.js 切换） */
+  .publications-two-cols ol.bibliography > li .pub-details,
+  .publications-two-cols ol.bibliography > li:hover .pub-details,
+  .publications-two-cols ol.bibliography > li:not(.is-open):not(.active):hover .pub-details {
     display: none !important;
     opacity: 0 !important;
     visibility: hidden !important;
     pointer-events: none !important;
+    transform: translateX(-10px) !important;
   }
   .publications-two-cols ol.bibliography > li.is-open .pub-details,
-  .publications-two-cols ol.bibliography > li.active .pub-details {
+  .publications-two-cols ol.bibliography > li.active .pub-details,
+  .publications-two-cols ol.bibliography > li.is-open:hover .pub-details {
     display: block !important;
     opacity: 1 !important;
     visibility: visible !important;
     pointer-events: auto !important;
+    transform: translateX(0) !important;
   }
 
   /* keep desktop arrangement, but constrain thumbnails inside publication section */
@@ -1971,7 +1902,7 @@ body .post-header h1.post-title {
   }
   .publications-two-cols ol.bibliography > li img.preview {
     width: var(--pub-card-width) !important;
-    max-width: min(var(--pub-card-width), 42vw) !important;
+    max-width: var(--pub-card-width) !important;
     height: auto !important;
   }
 
@@ -2020,21 +1951,3 @@ body .post-header h1.post-title {
     overflow-wrap: normal !important;
   }
 }
-
-@media (hover: none), (pointer: coarse) {
-  .publications-two-cols ol.bibliography > li .pub-details,
-  .publications-two-cols ol.bibliography > li:hover .pub-details {
-    display: none !important;
-    opacity: 0 !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-  }
-  .publications-two-cols ol.bibliography > li.is-open .pub-details,
-  .publications-two-cols ol.bibliography > li.active .pub-details {
-    display: block !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
-  }
-}
-
