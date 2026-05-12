@@ -1796,9 +1796,8 @@ body > div,
   transform: translate(-50%, 0);
 }
 
-/* mobile：ASCII 框按栏宽缩字号，禁滚条；高度随 <pre> 避免裁切
-   定位盒用 fit-content 与 <pre> 实际字框同宽，SVG/节点 % 才与 + 括号对齐（不必另写一套 ASCII）
-   cqw 挂在 .history-col 上，避免「子 pre 宽度 ↔ 父 fit-content」循环 */
+/* mobile：trace 区仍占满 HISTORY 栏（width:100%）；ASCII 用 scaleX 把固定字符行横向拉到栏宽，不改 HTML/SVG
+   cqw 挂在 .history-col，分母 45ch ≈ 最长一行等宽字符数 */
 @media (max-width: 767px) {
   .info-history-row .history-col {
     container-type: inline-size;
@@ -1808,10 +1807,9 @@ body > div,
   .history-trace {
     height: auto;
     min-height: 260px;
-    width: fit-content;
-    max-width: 100%;
-    margin-left: auto;
-    margin-right: auto;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
     overflow: hidden;
   }
   .trace-node .anno { font-size: calc(11.5px * 0.95); }
@@ -1819,11 +1817,14 @@ body > div,
   .trace-ascii-frame {
     display: block;
     width: max-content;
-    max-width: 100%;
+    max-width: none;
     overflow: visible !important;
-    margin-left: auto;
-    margin-right: auto;
-    /* 最长行约 45 字宽；无 cqw 时用略小字号兜底 */
+    margin-left: 0;
+    margin-right: 0;
+    transform-origin: top left;
+    transform: scaleX(1);
+    transform: scaleX(calc(100cqw / 45ch));
+    /* 窄栏先缩字号防溢出；栏宽于字框时由 scaleX>1 横向「补满」+ 框 */
     font-size: calc(11px * 0.95);
     font-size: min(calc(15px * 0.95), calc(100cqw / 46));
   }
@@ -2050,24 +2051,26 @@ body .post-header h1.post-title {
     white-space: pre !important;
   }
 
-  /* HISTORY：fit-content 定位盒；字号 cqw 见 .history-col 容器 */
+  /* HISTORY：全宽 trace；ASCII 仅横向 scale 贴栏（与上段 767 一致） */
   .history-trace {
     height: auto !important;
     min-height: 260px;
-    width: fit-content !important;
-    max-width: 100%;
-    margin-left: auto !important;
-    margin-right: auto !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
     overflow: hidden !important;
   }
   .trace-ascii-frame {
     display: block !important;
     width: max-content !important;
+    max-width: none !important;
     white-space: pre !important;
     overflow: visible !important;
-    max-width: 100%;
-    margin-left: auto !important;
-    margin-right: auto !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    transform-origin: top left !important;
+    transform: scaleX(1) !important;
+    transform: scaleX(calc(100cqw / 45ch)) !important;
     font-size: calc(11px * 0.95);
     font-size: min(calc(15px * 0.95), calc(100cqw / 46));
   }
