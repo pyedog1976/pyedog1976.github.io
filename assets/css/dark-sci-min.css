@@ -2014,13 +2014,6 @@ body .post-header h1.post-title {
     margin-top: 1rem;
   }
 
-  /* 简介首段正文、News 列表：比 body 正文字号大 1px（仅手机） */
-  .about-section.about-intro article .clearfix > p,
-  .about-section.about-news .news .table tr th,
-  .about-section.about-news .news .table tr td {
-    font-size: calc(18px * 0.95 + 1px) !important;
-  }
-
   .about-side-by-side {
     flex-direction: column !important;
     flex-wrap: nowrap !important;
