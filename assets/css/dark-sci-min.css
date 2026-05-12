@@ -1924,13 +1924,61 @@ body .post-header h1.post-title {
   padding: 0 !important;
   margin-top: 0.35rem !important;
   background: #000000 !important;
-  border: 2px solid #fabd2f !important;
-  border-radius: 0 !important;
+  /* 外框与论文快照 .pub-details 气泡一致：圆角 + 金边 + 霓虹阴影 */
+  border: 1px solid rgba(255, 204, 51, 0.65) !important;
+  border-radius: 18px !important;
   box-shadow:
-    0 0 0 1px #000,
-    0 0 14px rgba(250, 189, 47, 0.38),
-    inset 0 0 28px rgba(250, 189, 47, 0.06) !important;
-  overflow: hidden;
+    0 0 0 1px rgba(255, 204, 51, 0.18),
+    0 16px 40px rgba(0, 0, 0, 0.55),
+    0 0 22px rgba(255, 204, 51, 0.18) !important;
+  overflow: visible;
+  z-index: 1060;
+}
+
+/* 小尾巴：从面板顶部伸出，略偏右对准上方 CV（dropdown-menu-right） */
+#navbar .nav-item-cv .nav-cv-dropdown::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  top: -12px;
+  right: 2.25rem;
+  left: auto;
+  width: 0;
+  height: 0;
+  border-top: 0 solid transparent;
+  border-left: 11px solid transparent;
+  border-right: 11px solid transparent;
+  border-bottom: 12px solid rgba(255, 204, 51, 0.65);
+  filter: drop-shadow(0 0 10px rgba(255, 204, 51, 0.25));
+  pointer-events: none;
+}
+
+/* 内层填充，与面板黑底连成一体（与 .pub-details 尾巴同思路） */
+#navbar .nav-item-cv .nav-cv-dropdown::before {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  top: -10px;
+  right: 2.25rem;
+  left: auto;
+  width: 0;
+  height: 0;
+  border-top: 0 solid transparent;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-bottom: 10px solid #000000;
+  pointer-events: none;
+}
+
+/* 内缘与 18px 外圆角对齐 */
+#navbar .nav-cv-dropdown .nav-cv-dropdown__item:first-child {
+  border-top-left-radius: 17px;
+  border-top-right-radius: 17px;
+}
+
+#navbar .nav-cv-dropdown .nav-cv-dropdown__item:last-child {
+  border-bottom-left-radius: 17px;
+  border-bottom-right-radius: 17px;
 }
 
 #navbar .nav-cv-dropdown .nav-cv-dropdown__item {
