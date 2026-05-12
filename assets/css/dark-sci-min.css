@@ -1831,7 +1831,8 @@ body .post-header h1.post-title {
     max-width: 100%;
   }
 
-  /* 真机：viewport=1180 时 Bootstrap 仍按「≥768」走桌面栅格，这里强制单栏全宽（仅 max-device，不动桌面） */
+  /* 真机：viewport=1180 时 Bootstrap 仍按「≥768」走桌面栅格，这里强制 About 主区单栏（News / Publications 上下排）；USER INFO + HISTORY 仍用全局 .info-history-row 同行 47%/53% */
+  .about-side-by-side {
     flex-direction: column !important;
     flex-wrap: nowrap !important;
     align-items: stretch !important;
@@ -1848,18 +1849,6 @@ body .post-header h1.post-title {
     border-top: 1px solid var(--border) !important;
     padding-top: 1rem !important;
     margin-top: 1rem !important;
-  }
-
-  .info-history-row {
-    flex-direction: column !important;
-    gap: 1rem !important;
-    margin-bottom: 0 !important;
-  }
-  .info-history-row .info-col,
-  .info-history-row .history-col {
-    flex: 0 0 auto !important;
-    max-width: 100% !important;
-    width: 100% !important;
   }
 
   /* 以下保留：论文气泡、出版物区、HISTORY ASCII 等 */
