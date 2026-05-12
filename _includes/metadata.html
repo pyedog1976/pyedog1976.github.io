@@ -15,8 +15,8 @@
 
     <!-- Standard metadata -->
     <meta charset="utf-8">
-    <!-- 与 Bootstrap / 媒体查询一致：视口=设备 CSS 宽度；勿用 width=1280，否则窄窗口 Mac 仍按「大屏」排版会错乱 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- 桌面画布宽≈1180：移动端初始即将整页缩放入屏；不禁缩放（勿设 maximum-scale=1 / user-scalable=no） -->
+    <meta name="viewport" content="width=1180, initial-scale=1, maximum-scale=5, user-scalable=yes, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>
     {%- if site.title == "blank" -%}
