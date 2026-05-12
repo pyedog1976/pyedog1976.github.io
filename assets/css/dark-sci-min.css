@@ -1802,8 +1802,8 @@ body > div,
   .info-history-row .history-col {
     container-type: inline-size;
     container-name: hcol;
-    /* 与左侧 USER INFO 卡片底对齐：手机 trace 为 auto 高时略矮，补栏底空白 */
-    padding-bottom: 1.5rem;
+    /* 整块 HISTORY 栏相对 USER INFO 下移（不垫栏底空白） */
+    margin-top: 1.5rem;
   }
 
   /* HISTORY 标题后虚线：与 News 同款顶到栏尾（桌面仍用 --history-dash-length 缩短） */
