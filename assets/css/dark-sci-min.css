@@ -1834,12 +1834,37 @@ body .post-header h1.post-title {
     overflow-x: hidden !important;
   }
 
-  body {
-    font-size: calc(18px * 0.95) !important;
-    width: var(--site-canvas-width);
-    min-height: calc(100dvh / var(--mobile-canvas-scale));
-    transform: scale(var(--mobile-canvas-scale));
-    transform-origin: top left;
+  /* WebKit/Blink：用 zoom 缩小「布局盒」，首屏可见整页；勿再只对 body 做 transform（会裁切） */
+  @supports (zoom: 1) {
+    body {
+      width: auto !important;
+      min-height: auto !important;
+      transform: none !important;
+    }
+    #site-scale-outer {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+    #site-scale-inner {
+      width: var(--site-canvas-width);
+      font-size: calc(18px * 0.95) !important;
+      zoom: min(1, calc(100vw / var(--site-canvas-width)));
+      min-height: 100dvh;
+    }
+  }
+
+  @supports not (zoom: 1) {
+    #site-scale-outer,
+    #site-scale-inner {
+      display: contents;
+    }
+    body {
+      font-size: calc(18px * 0.95) !important;
+      width: var(--site-canvas-width);
+      min-height: calc(100dvh / var(--mobile-canvas-scale));
+      transform: scale(var(--mobile-canvas-scale));
+      transform-origin: top left;
+    }
   }
 
   /* keep desktop-like two-column composition (no mobile reflow) */

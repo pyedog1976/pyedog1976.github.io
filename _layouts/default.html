@@ -12,6 +12,9 @@
   <!-- Body -->
   <body class="{% if site.navbar_fixed %}fixed-top-nav{% endif %} {% unless site.footer_fixed %}sticky-bottom-footer{% endunless %}">
 
+    <div id="site-scale-outer">
+    <div id="site-scale-inner">
+
     <!-- Header -->
     {%- include header.html %}
 
@@ -45,6 +48,9 @@
         {{ content }}
       {% endif %}
     </div>
+
+    </div><!-- /#site-scale-inner -->
+    </div><!-- /#site-scale-outer -->
 
     <!-- Footer
     {%- include footer.html %} -->
