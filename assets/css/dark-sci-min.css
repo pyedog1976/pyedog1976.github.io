@@ -1832,7 +1832,7 @@ body > div,
     background: repeating-linear-gradient(to right, #ffd84d 0, #ffd84d 8px, transparent 4px, transparent 18px) !important;
   }
 
-  /* 整条 trace（SVG + 棋子 + 旗子 + NOW）相对 ASCII 框整体下移 1rem */
+  /* 整条 trace（SVG + 棋子 + 旗子 + NOW）相对 ASCII 框整体下移 0.5rem */
   .history-trace-overlay {
     display: block;
     position: absolute;
@@ -1842,7 +1842,7 @@ body > div,
     height: 100%;
     z-index: 1;
     pointer-events: none;
-    transform: translateY(1rem);
+    transform: translateY(0.5rem);
   }
   .history-trace-overlay .trace-node,
   .history-trace-overlay .trace-now {
@@ -1856,7 +1856,7 @@ body > div,
     margin-left: 0;
     margin-right: 0;
     overflow: hidden;
-    padding-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
   }
   .trace-node .anno { font-size: calc(11.5px * 0.95); }
 
@@ -2116,7 +2116,7 @@ body .post-header h1.post-title {
     margin-left: 0 !important;
     margin-right: 0 !important;
     overflow: hidden !important;
-    padding-bottom: 1.25rem !important;
+    padding-bottom: 0.75rem !important;
   }
   .trace-ascii-frame {
     display: block !important;
