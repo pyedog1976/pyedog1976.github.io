@@ -1797,11 +1797,19 @@ body > div,
 }
 
 /* mobile：trace 区仍占满 HISTORY 栏（width:100%）；ASCII 用 scaleX 把固定字符行横向拉到栏宽，不改 HTML/SVG
-   cqw 挂在 .history-col，分母 45ch ≈ 最长一行等宽字符数 */
+   cqw 挂在 .history-col；分母 47ch 略大于字宽使框稍收，更贴 trace */
 @media (max-width: 767px) {
   .info-history-row .history-col {
     container-type: inline-size;
     container-name: hcol;
+  }
+
+  /* HISTORY 标题后虚线：与 News 同款顶到栏尾（桌面仍用 --history-dash-length 缩短） */
+  .history-col .about-profile-title-clone::after {
+    flex: 1 1 auto !important;
+    min-width: 1rem !important;
+    max-width: none !important;
+    background: repeating-linear-gradient(to right, #ffd84d 0, #ffd84d 8px, transparent 4px, transparent 18px) !important;
   }
 
   .history-trace {
@@ -1823,7 +1831,7 @@ body > div,
     margin-right: 0;
     transform-origin: top left;
     transform: scaleX(1);
-    transform: scaleX(calc(100cqw / 45ch));
+    transform: scaleX(calc(100cqw / 47ch));
     /* 窄栏先缩字号防溢出；栏宽于字框时由 scaleX>1 横向「补满」+ 框 */
     font-size: calc(11px * 0.95);
     font-size: min(calc(15px * 0.95), calc(100cqw / 46));
@@ -2070,7 +2078,7 @@ body .post-header h1.post-title {
     margin-right: 0 !important;
     transform-origin: top left !important;
     transform: scaleX(1) !important;
-    transform: scaleX(calc(100cqw / 45ch)) !important;
+    transform: scaleX(calc(100cqw / 47ch)) !important;
     font-size: calc(11px * 0.95);
     font-size: min(calc(15px * 0.95), calc(100cqw / 46));
   }
