@@ -2,7 +2,7 @@
     <header>
 
       <!-- Nav Bar we show the name forevershow -->
-      <nav id="navbar" class="navbar navbar-light navbar-expand-sm {% if site.navbar_fixed %}fixed-top{% else %}sticky-top{% endif %}">
+      <nav id="navbar" class="navbar navbar-light navbar-expand-xl {% if site.navbar_fixed %}fixed-top{% else %}sticky-top{% endif %}">
         <div class="container">
           {% if page.permalink != '/' -%}
           <a class="navbar-brand title font-weight-lighter" href="{{ site.baseurl }}/">
@@ -35,7 +35,7 @@
           </button>
 
           <div class="collapse navbar-collapse text-right" id="navbarNav">
-            <ul class="navbar-nav ml-auto flex-nowrap">
+            <ul class="navbar-nav ml-auto">
 
               {%- for page in site.pages -%}
 
@@ -88,15 +88,16 @@
               {%- elsif p.title == "CV" %}
               {%- assign _cv_zh = '/assets/pdf/cv_zh.pdf' | relative_url -%}
               {%- assign _cv_en = '/assets/pdf/cv_en.pdf' | relative_url -%}
-              <li class="nav-item nav-item-cv {% if page.title == p.title or page.url == '/cv/' %}active{% endif %}">
-                <div class="nav-cv-inline">
-                  <a class="nav-cv-heading" href="{{ '/cv/' | relative_url }}">CV</a>
-                  <a class="nav-cv-chip" href="{{ _cv_zh }}" download="刘育源_CV.pdf" target="_blank" rel="noopener noreferrer">中文</a>
-                  <a class="nav-cv-chip" href="{{ _cv_en }}" download="yuyuan_CV.pdf" target="_blank" rel="noopener noreferrer">English</a>
+              <li class="nav-item dropdown nav-item-cv {% if page.title == p.title %}active{% endif %}">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownCv" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ p.title }}
+                  {%- if page.title == p.title -%}
+                  <span class="sr-only">(current)</span>
+                  {%- endif -%}
+                </a>
+                <div class="dropdown-menu dropdown-menu-right nav-cv-dropdown" aria-labelledby="navbarDropdownCv">
+                  <a class="dropdown-item" href="{{ _cv_zh }}" download="刘育源_CV.pdf" target="_blank" rel="noopener noreferrer">中文</a>
+                  <a class="dropdown-item" href="{{ _cv_en }}" download="yuyuan_CV.pdf" target="_blank" rel="noopener noreferrer">English</a>
                 </div>
-                {%- if page.title == p.title or page.url == '/cv/' -%}
-                <span class="sr-only">(current)</span>
-                {%- endif -%}
               </li>
               {%- else %}
               <li class="nav-item {% if page.title == p.title %}active{% endif %}">
