@@ -1806,6 +1806,18 @@ body > div,
     margin-top: 1.5rem;
   }
 
+  /* USER INFO / HISTORY / NEWS / SELECTED PUBLICATIONS 大标题：桌面均为 Press Start 2P 17px；手机 +1px */
+  .about-profile .about-section-title,
+  .about-profile .about-section-title *,
+  .about-profile-title-clone,
+  .about-profile-title-clone *,
+  .about-section.about-news .about-section-title,
+  .about-section.about-news .about-section-title *,
+  .about-section.about-pubs .about-section-title,
+  .about-section.about-pubs .about-section-title * {
+    font-size: 18px !important;
+  }
+
   /* HISTORY 标题后虚线：与 News 同款顶到栏尾（桌面仍用 --history-dash-length 缩短） */
   .history-col .about-profile-title-clone::after {
     flex: 1 1 auto !important;
