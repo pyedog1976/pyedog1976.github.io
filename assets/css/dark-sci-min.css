@@ -1950,6 +1950,11 @@ body .post-header h1.post-title {
     padding-top: 3.65rem !important;
   }
 
+  /* 简介正文（article > .clearfix）：相对上方 USER INFO / HISTORY 整块下移 1rem */
+  .about-section.about-intro > article {
+    margin-top: 1rem;
+  }
+
   .about-side-by-side {
     flex-direction: column !important;
     flex-wrap: nowrap !important;
