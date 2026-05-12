@@ -1537,6 +1537,11 @@ body > div,
   overflow: visible;   /* 旗子彈窗可伸出，不被裁掉 */
 }
 
+/* SVG / 節點 / NOW 的父層：桌面不占布局；手機見 §16b 前一段 767 內 transform 下移 */
+.history-trace-overlay {
+  display: contents;
+}
+
 /* the connected path */
 .history-trace-svg {
   position: absolute;
@@ -1827,17 +1832,21 @@ body > div,
     background: repeating-linear-gradient(to right, #ffd84d 0, #ffd84d 8px, transparent 4px, transparent 18px) !important;
   }
 
-  .history-trace .history-trace-svg {
-    top: calc(50% - 10px + 2rem);
+  /* 整条 trace（SVG + 棋子 + 旗子 + NOW）相对 ASCII 框整体下移 1rem */
+  .history-trace-overlay {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    transform: translateY(1rem);
   }
-  .history-trace .trace-node.piece {
-    top: calc(var(--node-top) + 2rem);
-  }
-  .history-trace .trace-node.flag {
-    top: calc(var(--node-top-flag) + 2rem);
-  }
-  .history-trace .trace-now {
-    top: calc(var(--node-top) + 2rem);
+  .history-trace-overlay .trace-node,
+  .history-trace-overlay .trace-now {
+    pointer-events: auto;
   }
 
   .history-trace {
@@ -1847,6 +1856,7 @@ body > div,
     margin-left: 0;
     margin-right: 0;
     overflow: hidden;
+    padding-bottom: 1.25rem;
   }
   .trace-node .anno { font-size: calc(11.5px * 0.95); }
 
@@ -1865,11 +1875,16 @@ body > div,
     font-size: min(calc(15px * 0.95), calc(100cqw / 46));
   }
 
-  .trace-node .anno,
   .trace-node.piece .anno {
     white-space: normal;
     max-width: min(42vw, 180px);
     overflow-wrap: anywhere;
+  }
+
+  /* 旗子 hover 气泡：勿用 overflow-wrap:anywhere（会与窄 max-width 组合成逐字断行） */
+  .trace-node.flag .anno {
+    overflow-wrap: break-word;
+    word-break: normal;
   }
 
   .trace-node.flag .anno,
@@ -2101,6 +2116,7 @@ body .post-header h1.post-title {
     margin-left: 0 !important;
     margin-right: 0 !important;
     overflow: hidden !important;
+    padding-bottom: 1.25rem !important;
   }
   .trace-ascii-frame {
     display: block !important;
@@ -2119,18 +2135,6 @@ body .post-header h1.post-title {
 
   .history-col .about-profile-title-clone::after {
     margin-right: 2rem !important;
-  }
-  .history-trace .history-trace-svg {
-    top: calc(50% - 10px + 2rem) !important;
-  }
-  .history-trace .trace-node.piece {
-    top: calc(var(--node-top) + 2rem) !important;
-  }
-  .history-trace .trace-node.flag {
-    top: calc(var(--node-top-flag) + 2rem) !important;
-  }
-  .history-trace .trace-now {
-    top: calc(var(--node-top) + 2rem) !important;
   }
 }
 
