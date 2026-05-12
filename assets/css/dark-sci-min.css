@@ -3,7 +3,7 @@
    Keeps About/Publications layout (about-side-by-side, publications-two-cols, full width).
 */
 
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&family=Noto+Sans+SC:wght@500;700&display=swap");
 
 :root {
   --bg: #000000;
@@ -1918,9 +1918,72 @@ body .post-header h1.post-title {
   line-height: 1.3 !important;
 }
 
-/* Nav：CV 下拉菜单略宽（桌面/手机通用） */
+/* Nav：CV 语言下拉 — 像素终端风（自定义面板，非系统菜单） */
 #navbar .nav-item-cv .nav-cv-dropdown {
-  min-width: 7rem;
+  min-width: 12.5rem;
+  padding: 0 !important;
+  margin-top: 0.35rem !important;
+  background: #000000 !important;
+  border: 2px solid #fabd2f !important;
+  border-radius: 0 !important;
+  box-shadow:
+    0 0 0 1px #000,
+    0 0 14px rgba(250, 189, 47, 0.38),
+    inset 0 0 28px rgba(250, 189, 47, 0.06) !important;
+  overflow: hidden;
+}
+
+#navbar .nav-cv-dropdown .nav-cv-dropdown__item {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 2.75rem;
+  padding: 0.55rem 1rem !important;
+  margin: 0 !important;
+  width: 100%;
+  box-sizing: border-box;
+  font-weight: 500;
+  color: #f2f6ff !important;
+  text-align: center !important;
+  text-decoration: none !important;
+  line-height: 1.2 !important;
+  white-space: nowrap;
+  border-radius: 0 !important;
+  border-bottom: 1px solid rgba(250, 189, 47, 0.5) !important;
+  background: #000000 !important;
+  box-shadow: none !important;
+}
+
+#navbar .nav-cv-dropdown .nav-cv-dropdown__item:last-child {
+  border-bottom: none !important;
+}
+
+/* English：与导航一致的 Press Start 2P */
+#navbar .nav-cv-dropdown .nav-cv-dropdown__item--en {
+  font-family: "Press Start 2P", var(--font-ui), monospace !important;
+  font-size: 10px !important;
+  letter-spacing: 0.08em;
+}
+
+/* 中文：Press Start 无 CJK → VT323/等宽终端感 + Noto Sans SC 字形 */
+#navbar .nav-cv-dropdown .nav-cv-dropdown__item--zh {
+  font-family: "VT323", "Share Tech Mono", "Noto Sans SC", var(--font-body), monospace, sans-serif !important;
+  font-size: 18px !important;
+  letter-spacing: 0.12em;
+  font-weight: 500;
+}
+
+#navbar .nav-cv-dropdown .nav-cv-dropdown__item:hover,
+#navbar .nav-cv-dropdown .nav-cv-dropdown__item:focus {
+  color: #0c0c0c !important;
+  background: #fabd2f !important;
+  background-color: #fabd2f !important;
+  outline: none !important;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35) !important;
+}
+
+#navbar .nav-item-cv.show > .nav-link.dropdown-toggle {
+  color: #fabd2f !important;
 }
 
 /* ====== 16a) 布局宽度 <1180（含 iPhone、含「请求桌面网站」）：画布 + scale；高度由 viewport-1180-fit.js（内联 transform 优先） ====== */
@@ -1953,7 +2016,8 @@ body .post-header h1.post-title {
     flex-direction: column !important;
     align-items: flex-end !important;
   }
-  #site-scale-inner .navbar .nav-item.dropdown .dropdown-menu {
+  /* 其它导航下拉（非 CV）保持简易抽屉风 */
+  #site-scale-inner .navbar .nav-item.dropdown:not(.nav-item-cv) .dropdown-menu {
     position: static !important;
     float: none;
     border: 0;
@@ -1964,14 +2028,22 @@ body .post-header h1.post-title {
     min-width: 10rem;
     text-align: right;
   }
-  #site-scale-inner .navbar .dropdown-item {
+  #site-scale-inner .navbar .nav-item.dropdown:not(.nav-item-cv) .dropdown-item {
     color: rgba(242, 246, 255, 0.92) !important;
     padding: 0.35rem 0.75rem !important;
   }
-  #site-scale-inner .navbar .dropdown-item:hover,
-  #site-scale-inner .navbar .dropdown-item:focus {
+  #site-scale-inner .navbar .nav-item.dropdown:not(.nav-item-cv) .dropdown-item:hover,
+  #site-scale-inner .navbar .nav-item.dropdown:not(.nav-item-cv) .dropdown-item:focus {
     color: #fabd2f !important;
     background: rgba(250, 189, 47, 0.08) !important;
+  }
+
+  /* CV 语言下拉：画布内仍为静态定位，但保留全局终端金框黑底样式 */
+  #site-scale-inner .navbar .nav-item-cv .nav-cv-dropdown {
+    position: static !important;
+    float: none;
+    margin: 0.35rem 0 0 0 !important;
+    text-align: center;
   }
 
   #site-scale-outer {
