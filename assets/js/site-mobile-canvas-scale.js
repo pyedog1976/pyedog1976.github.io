@@ -1,13 +1,14 @@
 /**
  * 真机：固定 1180px 桌面画布在 #site-scale-inner 内排版，横向用 CSS transform 缩小到屏宽；
  * 外层 #site-scale-outer 预留缩放后的高度（transform 不改变文档流高度）。
- * 不缩放 body；桌面不满足 max-device-width 时不做任何事。
+ * 不缩放 body；视口宽度 >767 时不做任何事（与 §16 一致）。
+ * 注意：iOS Safari 上 max-device-width 常不可靠，故用 max-width 对齐 layout viewport。
  */
 (function () {
   var CANVAS_W = 1180;
 
   function isMobileCanvas() {
-    return window.matchMedia('(max-device-width: 767px)').matches;
+    return window.matchMedia('(max-width: 767px)').matches;
   }
 
   function update() {

@@ -1427,7 +1427,7 @@ body > div,
   border-bottom-color: #fabd2f !important;
 }
 
-@media (max-device-width: 767px) {
+@media (max-width: 767px) {
   .sysinfo-list { font-size: calc(13px * 0.95); }
 }
 
@@ -1482,7 +1482,7 @@ body > div,
 }
 
 /* mobile fallback */
-@media (max-device-width: 767px) {
+@media (max-width: 767px) {
   .about-profile .profile-grid{
     grid-template-columns:1fr;
   }
@@ -1775,7 +1775,7 @@ body > div,
 }
 
 /* mobile: allow wrap by increasing height */
-@media (max-device-width: 767px) {
+@media (max-width: 767px) {
   .history-trace { height: 280px; width: 100%; }
   .trace-node .anno { font-size: calc(11.5px * 0.95); }
 
@@ -1822,8 +1822,8 @@ body .post-header h1.post-title {
   line-height: 1.3 !important;
 }
 
-/* ====== 16) 真机：1180px 桌面画布在 #site-scale-inner；横向 scale(100vw/1180)；outer 高度由 site-mobile-canvas-scale.js；不缩放 body ====== */
-@media (max-device-width: 767px) {
+/* ====== 16) 窄视口（含 iPhone）：1180px 画布在 #site-scale-inner；scale(100vw/1180)；outer 高度见 site-mobile-canvas-scale.js。不用 max-device-width（Safari 常不匹配）。不缩放 body ====== */
+@media (max-width: 767px) {
   html,
   body {
     background: var(--bg) !important;
@@ -1851,6 +1851,7 @@ body .post-header h1.post-title {
     max-width: none;
     box-sizing: border-box;
     transform-origin: top left;
+    -webkit-transform: scale(calc(100vw / 1180));
     transform: scale(calc(100vw / 1180));
   }
 
