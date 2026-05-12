@@ -1257,10 +1257,15 @@ footer,
   padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
 }
 
-/* About 双栏：覆蓋 Bootstrap mt-5，避免與 body padding-top 疊加後空隙過大 */
+/* About 双栏：覆蓋 Bootstrap mt-5；桌面略增 padding-top，避免 fixed 导航 rgba(0,0,0,.85) 底边盖住首块 .about-section 顶黄线 */
 .container.mt-5:has(.about-side-by-side) {
   margin-top: 0.75rem !important;
   padding-top: 0.25rem !important;
+}
+@media (min-width: 768px) {
+  .container.mt-5:has(.about-side-by-side) {
+    padding-top: 0.85rem !important;
+  }
 }
 
 .container,
@@ -1286,28 +1291,6 @@ body > div,
 .about-side-by-side .row {
   background-color: transparent !important;
   background: none !important;
-}
-
-/* 桌面：双栏整行顶黄实线（与主题框 #ffd84d 一致）；避免与左右首块 .about-section 顶 border 叠成双条 */
-@media (min-width: 768px) {
-  .container.mt-5 .post .row.about-side-by-side {
-    position: relative;
-  }
-  .container.mt-5 .post .row.about-side-by-side::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: #ffd84d;
-    z-index: 2;
-    pointer-events: none;
-  }
-  .container.mt-5 .post .row.about-side-by-side > .about-left-col > .about-section.about-intro,
-  .container.mt-5 .post .row.about-side-by-side > .about-right-col > .about-section.about-pubs {
-    border-top: none !important;
-  }
 }
 
 /* =========================
