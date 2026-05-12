@@ -37,19 +37,21 @@
 html {
   min-height: 100%;
   background: var(--bg) !important;
-  overflow-y: hidden;
+  overflow-y: auto;
   overflow-x: hidden;  /* 防止出現橫向滾動條 */
 }
 
 body {
   min-height: 100vh;
+  min-height: 100dvh;
   background: transparent !important;
   color: var(--text) !important;
   font-family: var(--font-body) !important;
   font-size: calc(18px * 0.95);
   line-height: 1.6;
-  overflow-y: hidden;
+  overflow-y: auto;
   overflow-x: hidden;  /* 防止出現橫向滾動條 */
+  padding-bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px));
 }
 
 /* 固定導航：與主題默認 ~56px 對齊，略留一點給像素字導航欄即可（過大會整頁偏下） */
@@ -1229,6 +1231,10 @@ tbody td {
 
 /* mobile behavior：真窄屏设备（视口与设备宽度均小） */
 @media (max-width: 767px) and (max-device-width: 767px) {
+  body {
+    font-size: calc(16px * 0.95);
+  }
+
   .about-right-col {
     padding-left: 0;
     border-left: none;
@@ -1246,6 +1252,22 @@ tbody td {
   .publications-two-cols ol.bibliography > li .pub-details::after {
     display: none;
   }
+
+  .publications-two-cols ol.bibliography {
+    flex-wrap: wrap;
+    row-gap: 0.8rem;
+  }
+
+  .publications-two-cols ol.bibliography > li {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .publications-two-cols ol.bibliography > li img.preview {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto;
+  }
 }
 
 /* ====== 14) Full width + no blue frame ====== */
@@ -1254,7 +1276,15 @@ tbody td {
   width: 100% !important;
   padding-left: 1.5rem;
   padding-right: 1.5rem;
+  padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
   box-sizing: border-box;
+}
+
+main,
+footer,
+.footer,
+.sticky-bottom-footer {
+  padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
 }
 
 /* About 双栏：覆蓋 Bootstrap mt-5，避免與 body padding-top 疊加後空隙過大 */
