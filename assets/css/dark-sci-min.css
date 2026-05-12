@@ -1288,6 +1288,28 @@ body > div,
   background: none !important;
 }
 
+/* 桌面：双栏整行顶黄实线（与主题框 #ffd84d 一致）；避免与左右首块 .about-section 顶 border 叠成双条 */
+@media (min-width: 768px) {
+  .container.mt-5 .post .row.about-side-by-side {
+    position: relative;
+  }
+  .container.mt-5 .post .row.about-side-by-side::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: #ffd84d;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .container.mt-5 .post .row.about-side-by-side > .about-left-col > .about-section.about-intro,
+  .container.mt-5 .post .row.about-side-by-side > .about-right-col > .about-section.about-pubs {
+    border-top: none !important;
+  }
+}
+
 /* =========================
    PROFILE + HISTORY ROW
    ========================= */
