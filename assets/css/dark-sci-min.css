@@ -2231,7 +2231,7 @@ body .post-header h1.post-title {
     min-height: auto !important;
     --pub-card-width: calc(248px * 0.95);
     --pub-card-overlap: -1rem;
-    padding-bottom: calc(3rem + 4rem + 4rem + 1rem) !important;
+    padding-bottom: calc(3rem + 4rem + 4rem + 1rem - 1.5rem) !important;
     border-bottom: none !important;
     margin-bottom: 1.5rem !important;
   }
@@ -2383,7 +2383,7 @@ body .post-header h1.post-title {
     min-width: 20ch !important;
     max-width: none !important;
     font-size: calc(14px * 0.95 + 0.25rem) !important;
-    transform: translateX(calc(var(--ascii-face-nudge-x) - 2rem)) !important;
+    transform: translateX(calc(var(--ascii-face-nudge-x) - 4rem)) !important;
   }
   .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col .ascii-face::after {
     position: absolute !important;
