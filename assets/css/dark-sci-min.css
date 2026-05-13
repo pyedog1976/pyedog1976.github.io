@@ -2211,11 +2211,11 @@ body .post-header h1.post-title {
     margin-top: 0 !important;
   }
 
-  /* 手机：快照宽度与卡片重叠占比与桌面 About 右栏（.post .about-side-by-side @≥768）一致；整块底部加高 3rem */
+  /* 手机：快照宽度与卡片重叠占比与桌面 About 右栏一致；整块底部加高 3rem + 4rem */
   .about-section.about-pubs {
     --pub-card-width: calc(248px * 0.95);
     --pub-card-overlap: -1rem;
-    padding-bottom: 3rem !important;
+    padding-bottom: calc(3rem + 4rem) !important;
   }
 
   .publications-two-cols ol.bibliography {
@@ -2232,13 +2232,21 @@ body .post-header h1.post-title {
     width: var(--pub-card-width) !important;
     max-width: var(--pub-card-width) !important;
     height: auto !important;
-    /* 视觉 1.5× + 整体右移 1rem；占位仍由 width/margin 变量决定 */
-    transform: scale(1.5) translateX(1rem);
+    /* 每列首张：仅 1.5×，不右移 */
+    transform: scale(1.5);
     transform-origin: 0% 0%;
   }
 
-  /* 手机：在 1.5× 基础上保留原桌面悬停再 1.04× 的手感 */
+  .publications-two-cols ol.bibliography > li:nth-child(n + 2) img.preview {
+    transform: scale(1.5) translateX(1rem);
+  }
+
+  /* 手机：首张悬停仅 1.56×；第二张起保留右移 1rem */
   .publications-two-cols ol.bibliography > li:hover img.preview {
+    transform: scale(1.56);
+  }
+
+  .publications-two-cols ol.bibliography > li:nth-child(n + 2):hover img.preview {
     transform: scale(1.56) translateX(1rem);
   }
 
