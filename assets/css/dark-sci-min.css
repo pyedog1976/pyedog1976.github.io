@@ -2198,7 +2198,7 @@ body .post-header h1.post-title {
 
   /* 论文气泡、出版物区、HISTORY ASCII 等（.pub-details 显隐见 §17） */
 
-  /* 横滑：publications / two-cols 不裁切；两组论文与 timeline 均不换「滑动窗」 */
+  /* 横滑：publications / two-cols 不裁切；论文条窄屏在 ol 内横向滚动；timeline 不裁切 */
   .about-section.about-pubs .publications {
     max-width: 100% !important;
     overflow-x: visible !important;
@@ -2258,44 +2258,42 @@ body .post-header h1.post-title {
     margin-top: 0 !important;
   }
 
-  /* 手机：第一组论文横排不裁切、不换「滑动窗」——改换行展示全部卡片 */
-  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row > ol.bibliography {
-    flex-wrap: wrap !important;
+  /* 手机：与桌面相同横向叠卡（--pub-card-overlap）；窄屏仅在 ol 内横向滚动，避免整页撑宽 */
+  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row > ol.bibliography,
+  .about-section.about-pubs .pub-group-bottom ol.bibliography {
+    flex-wrap: nowrap !important;
     justify-content: flex-start !important;
-    row-gap: 1.25rem !important;
-    column-gap: 0.35rem !important;
-    overflow-x: visible !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch;
     width: 100% !important;
     min-width: 0 !important;
     max-width: 100% !important;
+    row-gap: 0 !important;
+    column-gap: 0 !important;
+    gap: 0 !important;
+    scrollbar-width: thin;
+  }
+  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row > ol.bibliography {
     padding-bottom: 6rem !important;
+  }
+  .about-section.about-pubs .pub-group-bottom ol.bibliography {
+    padding-bottom: 7rem !important;
   }
 
   .publications-two-cols ol.bibliography {
     flex-wrap: nowrap !important;
   }
   .publications-two-cols ol.bibliography > li {
+    flex: 0 0 auto !important;
     width: auto !important;
+    max-width: none !important;
+    min-width: 0 !important;
     margin-left: var(--pub-card-overlap) !important;
+    box-sizing: border-box !important;
   }
   .publications-two-cols ol.bibliography > li:first-child {
     margin-left: 0 !important;
-  }
-
-  /* 覆盖上一段：两组论文换行后不用负 margin 叠卡；每条 li 占满一行，避免 flex:0 0 auto 多卡同排累宽仍出横向滚轴 */
-  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row > ol.bibliography > li,
-  .about-section.about-pubs .pub-group-bottom ol.bibliography > li {
-    margin-left: 0 !important;
-    flex: 0 0 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    box-sizing: border-box !important;
-  }
-
-  /* bib 模板里 .row 默认 nowrap，窄屏易与双列一起撑出横向滚动 */
-  .about-section.about-pubs .publications-two-cols ol.bibliography > li .row {
-    flex-wrap: wrap !important;
-    min-width: 0 !important;
   }
   .publications-two-cols ol.bibliography > li img.preview {
     width: var(--pub-card-width) !important;
@@ -2320,20 +2318,9 @@ body .post-header h1.post-title {
     transform: scale(1.56) translateX(1rem);
   }
 
-  /* 第二组整体上移 1rem：上组下边距 6rem→5rem；第二组 ol 底留白略增，避免 1.5× 图被裁 */
+  /* 第二组整体上移 1rem：上组下边距 6rem→5rem；第二组 ol 底留白见上文合并规则 */
   .about-section.about-pubs .publications-two-cols > .pub-group-top {
     margin-bottom: 5rem !important;
-  }
-  .about-section.about-pubs .pub-group-bottom ol.bibliography {
-    flex-wrap: wrap !important;
-    justify-content: flex-start !important;
-    row-gap: 1.25rem !important;
-    column-gap: 0.35rem !important;
-    overflow-x: visible !important;
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
-    padding-bottom: 7rem !important;
   }
 
   .about-section.about-pubs .pub-group-top .pub-tag-timeline {
