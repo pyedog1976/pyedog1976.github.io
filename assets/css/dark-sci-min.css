@@ -2208,6 +2208,8 @@ body .post-header h1.post-title {
     max-width: 100% !important;
     overflow-x: visible !important;
     overflow-y: visible !important;
+    /* 侧栏绝对定位，为 epigraph + ASCII 预留底部空隙，避免压到第二组字 */
+    padding-bottom: 4.5rem !important;
   }
 
   .about-section.about-pubs .pub-group-bottom {
@@ -2229,9 +2231,9 @@ body .post-header h1.post-title {
     min-height: auto !important;
     --pub-card-width: calc(248px * 0.95);
     --pub-card-overlap: -1rem;
-    padding-bottom: calc(1rem + 2rem + 2rem + 3rem) !important;
+    padding-bottom: calc(3rem + 4rem + 4rem + 1rem) !important;
     border-bottom: none !important;
-    margin-bottom: 0.75rem !important;
+    margin-bottom: 1.5rem !important;
   }
 
   /* 手机单栏：勿沿用桌面「右栏 min-height:100% + flex min-height:0」，否则第二组快照易被裁切 */
@@ -2239,13 +2241,13 @@ body .post-header h1.post-title {
     min-height: auto !important;
   }
 
-  /* 底黄线：再上移 2rem（相对此前 bottom:1rem → 3rem），配合 padding 缩短整块高度 */
+  /* 底黄线：贴回区块下沿（与原先框底一致），由 padding-bottom 留出空隙 */
   .about-section.about-pubs::after {
     content: "";
     position: absolute;
     left: 0;
     right: 0;
-    bottom: 3rem;
+    bottom: 0;
     height: 3px;
     background: #ffd84d;
     pointer-events: none;
@@ -2255,6 +2257,14 @@ body .post-header h1.post-title {
 
   /* 首组 [*] 行：桌面用负 margin 贴近标题；手机 + 父级 overflow-x 会裁切，改为顶对齐 */
   .about-section.about-pubs .publications-two-cols .pub-group:first-child .pub-group-intro {
+    margin-top: 0 !important;
+  }
+
+  /* 第二组：自 [*] Robust… 一句起整块下移 1rem（intro 为组内首元素） */
+  .about-section.about-pubs .publications-two-cols .pub-group-bottom {
+    padding-top: 1rem !important;
+  }
+  .about-section.about-pubs .publications-two-cols .pub-group-bottom .pub-group-intro {
     margin-top: 0 !important;
   }
 
@@ -2268,14 +2278,14 @@ body .post-header h1.post-title {
     width: 100% !important;
     min-width: 0 !important;
     max-width: 100% !important;
-    row-gap: 1rem !important;
-    column-gap: 0.35rem !important;
+    row-gap: 1.35rem !important;
+    column-gap: 0.45rem !important;
   }
   .about-section.about-pubs .pub-group-top .pub-mllm-papers-row > ol.bibliography {
-    padding-bottom: 3.5rem !important;
+    padding-bottom: 5.5rem !important;
   }
   .about-section.about-pubs .pub-group-bottom ol.bibliography {
-    padding-bottom: 4rem !important;
+    padding-bottom: 5.5rem !important;
   }
 
   .publications-two-cols ol.bibliography {
@@ -2299,11 +2309,11 @@ body .post-header h1.post-title {
   }
 
   .about-section.about-pubs .publications-two-cols > .pub-group-top {
-    margin-bottom: 2.5rem !important;
+    margin-bottom: 5.5rem !important;
   }
 
   .about-section.about-pubs .publications-two-cols .pub-group {
-    margin-bottom: 0.55rem !important;
+    margin-bottom: 0.75rem !important;
   }
   .publications-two-cols ol.bibliography > li img.preview {
     width: var(--pub-card-width) !important;
@@ -2326,6 +2336,14 @@ body .post-header h1.post-title {
 
   .publications-two-cols ol.bibliography > li + li:hover img.preview {
     transform: scale(1.56) translateX(1rem);
+  }
+
+  /* wrap 下 translateX 会让换行后的快照与字叠在一起；手机去掉横向位移，仅保留缩放 */
+  .about-section.about-pubs .publications-two-cols ol.bibliography > li + li img.preview {
+    transform: scale(1.5) !important;
+  }
+  .about-section.about-pubs .publications-two-cols ol.bibliography > li + li:hover img.preview {
+    transform: scale(1.56) !important;
   }
 
   .about-section.about-pubs .pub-group-top .pub-tag-timeline {
