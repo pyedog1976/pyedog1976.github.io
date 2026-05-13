@@ -808,7 +808,7 @@ tbody td {
   vertical-align: baseline;
   pointer-events: auto;
   cursor: default;
-  transform: translateX(var(--ascii-face-nudge-x));
+  transform: translateX(calc(var(--ascii-face-nudge-x) - 4rem));
 }
 
 .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col .ascii-face::after {
@@ -2168,11 +2168,6 @@ body .post-header h1.post-title {
     transform-origin: top left;
     -webkit-transform: scale(calc(100vw / 1180));
     transform: scale(calc(100vw / 1180));
-  }
-
-  /* 与 1180 缩放画布同宽：不依赖 767，否则平板/横屏仍用桌面 -120px，看起来像「没动」 */
-  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col .ascii-face {
-    transform: translateX(calc(var(--ascii-face-nudge-x) - 4rem)) !important;
   }
 
   /* 取消右栏 Selected Publications 被 min-height:100% 撑满整列，否则只改 padding-bottom 视觉几乎不变 */
