@@ -2055,6 +2055,37 @@ body .post-header h1.post-title {
   color: #fabd2f !important;
 }
 
+/* 去掉悬浮/展开 CV 时外围白框（Bootstrap/MDB 的 focus ring / 默认阴影） */
+#navbar .nav-item-cv.dropdown,
+#navbar .nav-item-cv.dropdown.show,
+#navbar .nav-item-cv.dropdown:focus-within {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+#navbar .nav-item-cv .nav-link.dropdown-toggle,
+#navbar .nav-item-cv .nav-link.dropdown-toggle:focus,
+#navbar .nav-item-cv .nav-link.dropdown-toggle:focus-visible,
+#navbar .nav-item-cv.show > .nav-link.dropdown-toggle:focus,
+#navbar .nav-item-cv.show > .nav-link.dropdown-toggle:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#navbar .nav-item-cv .nav-cv-dropdown.show {
+  outline: none !important;
+}
+
+#navbar .nav-item-cv .nav-cv-dropdown:focus,
+#navbar .nav-item-cv .nav-cv-dropdown:focus-visible {
+  outline: none !important;
+  box-shadow:
+    0 0 0 1px rgba(255, 204, 51, 0.18),
+    0 16px 40px rgba(0, 0, 0, 0.55),
+    0 0 22px rgba(255, 204, 51, 0.18) !important;
+}
+
 /* ====== 16a) 布局宽度 <1180（含 iPhone、含「请求桌面网站」）：画布 + scale；高度由 viewport-1180-fit.js（内联 transform 优先） ====== */
 @media (max-width: 1179px) {
   html,
