@@ -1974,6 +1974,14 @@ body .post-header h1.post-title {
   pointer-events: none;
 }
 
+/* 电脑端（≥Bootstrap xl）：尾巴再向右约 1rem（减小 right） */
+@media (min-width: 1200px) {
+  #navbar .nav-item-cv.dropdown.show::after,
+  #navbar .nav-item-cv.dropdown.show::before {
+    right: 1.25rem;
+  }
+}
+
 /* 内缘与 18px 外圆角对齐（勿用 border-radius:0!important 盖住首末项） */
 #navbar .nav-cv-dropdown .nav-cv-dropdown__item:first-child {
   border-top-left-radius: 17px !important;
@@ -2060,53 +2068,45 @@ body .post-header h1.post-title {
     padding-top: 0 !important;
   }
 
-  /* 画布内：汉堡折叠展开层（复古终端抽屉），列式链接 + CV 下拉 */
+  /* 画布内：隐藏汉堡，导航与桌面一致横向排列（可换行） */
+  #site-scale-inner .navbar > .container {
+    flex-wrap: wrap !important;
+    align-items: center;
+  }
+  #site-scale-inner .navbar .navbar-toggler {
+    display: none !important;
+  }
+  #site-scale-inner .navbar .navbar-collapse.collapse {
+    display: flex !important;
+    flex-basis: auto !important;
+    flex-grow: 1 !important;
+    align-items: center;
+    height: auto !important;
+    visibility: visible !important;
+  }
+  #site-scale-inner .navbar .navbar-collapse.collapsing {
+    display: flex !important;
+    height: auto !important;
+    transition: none !important;
+  }
   #site-scale-inner .navbar-collapse {
     text-align: right;
-  }
-  #site-scale-inner .navbar-collapse.show {
-    margin-top: 0.4rem;
-    padding: 0.45rem 0.55rem;
-    background:
-      linear-gradient(180deg, rgba(20, 20, 20, 0.98), rgba(10, 10, 12, 0.96));
-    border: 1px solid #504945;
-    border-radius: 6px;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.65);
+    margin-top: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
   }
   #site-scale-inner .navbar-nav {
-    flex-direction: column !important;
-    align-items: flex-end !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    justify-content: flex-end;
+    align-items: center;
+    row-gap: 0.2rem;
   }
-  /* 其它导航下拉（非 CV）保持简易抽屉风 */
-  #site-scale-inner .navbar .nav-item.dropdown:not(.nav-item-cv) .dropdown-menu {
-    position: static !important;
-    float: none;
-    border: 0;
-    box-shadow: none;
-    background: rgba(0, 0, 0, 0.35);
-    padding: 0.15rem 0;
-    margin: 0.15rem 0 0 0;
-    min-width: 10rem;
-    text-align: right;
+  #site-scale-inner .navbar .nav-item.dropdown {
+    position: relative;
   }
-  #site-scale-inner .navbar .nav-item.dropdown:not(.nav-item-cv) .dropdown-item {
-    color: rgba(242, 246, 255, 0.92) !important;
-    padding: 0.35rem 0.75rem !important;
-  }
-  #site-scale-inner .navbar .nav-item.dropdown:not(.nav-item-cv) .dropdown-item:hover,
-  #site-scale-inner .navbar .nav-item.dropdown:not(.nav-item-cv) .dropdown-item:focus {
-    color: #fabd2f !important;
-    background: rgba(250, 189, 47, 0.08) !important;
-  }
-
-  /* CV 语言下拉：画布内仍为静态定位，但保留全局终端金框黑底样式 */
-  #site-scale-inner .navbar .nav-item-cv .nav-cv-dropdown {
-    position: static !important;
-    float: none;
-    margin: 0.35rem 0 0 0 !important;
-    text-align: center;
-  }
-
   #site-scale-outer {
     position: relative;
     width: 100vw;
