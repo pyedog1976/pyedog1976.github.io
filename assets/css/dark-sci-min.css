@@ -2231,6 +2231,14 @@ body .post-header h1.post-title {
     width: var(--pub-card-width) !important;
     max-width: var(--pub-card-width) !important;
     height: auto !important;
+    /* 视觉放大 1.2×；占位与重叠不变（transform 不参与布局），pub-details 定位不改 */
+    transform: scale(1.2);
+    transform-origin: 50% 0%;
+  }
+
+  /* 手机：在 1.2× 基础上保留原桌面悬停再 1.04× 的手感 */
+  .publications-two-cols ol.bibliography > li:hover img.preview {
+    transform: scale(1.248);
   }
 
   .about-section.about-pubs .pub-tag-timeline {
