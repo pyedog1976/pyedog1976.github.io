@@ -2198,11 +2198,16 @@ body .post-header h1.post-title {
 
   /* 论文气泡、出版物区、HISTORY ASCII 等（.pub-details 显隐见 §17） */
 
-  /* 横滑裁切：two-cols 与第二组 pub-group 保持 overflow 可见，避免第二行快照纵向被裁；横滑收在 publications / mllm 行 / timeline */
-  .about-section.about-pubs .publications,
+  /* 横滑：publications / two-cols 不裁切；两组论文与 timeline 均不换「滑动窗」 */
+  .about-section.about-pubs .publications {
+    max-width: 100% !important;
+    overflow-x: visible !important;
+  }
+
   .about-section.about-pubs .pub-group-top .pub-mllm-papers-row {
     max-width: 100% !important;
-    overflow-x: hidden !important;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
   }
 
   .about-section.about-pubs .pub-group-bottom {
@@ -2225,7 +2230,7 @@ body .post-header h1.post-title {
     --pub-card-width: calc(248px * 0.95);
     --pub-card-overlap: -1rem;
     padding-bottom: calc(3rem + 4rem + 4rem + 1rem) !important;
-    border-bottom: 1px solid #ffd84d !important;
+    border-bottom: none !important;
     margin-bottom: 1.5rem !important;
   }
 
@@ -2234,13 +2239,13 @@ body .post-header h1.post-title {
     min-height: auto !important;
   }
 
-  /* 底黄线加强层（与 border 同色，防亚像素裁切） */
+  /* 底黄线：整体上移 1rem（仅用 ::after，避免与 border 双轨） */
   .about-section.about-pubs::after {
     content: "";
     position: absolute;
     left: 0;
     right: 0;
-    bottom: 0;
+    bottom: 1rem;
     height: 3px;
     background: #ffd84d;
     pointer-events: none;
@@ -2253,6 +2258,19 @@ body .post-header h1.post-title {
     margin-top: 0 !important;
   }
 
+  /* 手机：第一组论文横排不裁切、不换「滑动窗」——改换行展示全部卡片 */
+  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row > ol.bibliography {
+    flex-wrap: wrap !important;
+    justify-content: flex-start !important;
+    row-gap: 1.25rem !important;
+    column-gap: 0.35rem !important;
+    overflow-x: visible !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    padding-bottom: 6rem !important;
+  }
+
   .publications-two-cols ol.bibliography {
     flex-wrap: nowrap !important;
   }
@@ -2262,6 +2280,22 @@ body .post-header h1.post-title {
   }
   .publications-two-cols ol.bibliography > li:first-child {
     margin-left: 0 !important;
+  }
+
+  /* 覆盖上一段：两组论文换行后不用负 margin 叠卡；每条 li 占满一行，避免 flex:0 0 auto 多卡同排累宽仍出横向滚轴 */
+  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row > ol.bibliography > li,
+  .about-section.about-pubs .pub-group-bottom ol.bibliography > li {
+    margin-left: 0 !important;
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* bib 模板里 .row 默认 nowrap，窄屏易与双列一起撑出横向滚动 */
+  .about-section.about-pubs .publications-two-cols ol.bibliography > li .row {
+    flex-wrap: wrap !important;
+    min-width: 0 !important;
   }
   .publications-two-cols ol.bibliography > li img.preview {
     width: var(--pub-card-width) !important;
@@ -2290,36 +2324,54 @@ body .post-header h1.post-title {
   .about-section.about-pubs .publications-two-cols > .pub-group-top {
     margin-bottom: 5rem !important;
   }
-  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row > ol.bibliography {
-    padding-bottom: 6rem !important;
-  }
   .about-section.about-pubs .pub-group-bottom ol.bibliography {
+    flex-wrap: wrap !important;
+    justify-content: flex-start !important;
+    row-gap: 1.25rem !important;
+    column-gap: 0.35rem !important;
+    overflow-x: visible !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
     padding-bottom: 7rem !important;
   }
 
-  .about-section.about-pubs .pub-tag-timeline {
+  .about-section.about-pubs .pub-group-top .pub-tag-timeline {
     flex-wrap: nowrap !important;
     white-space: nowrap !important;
     row-gap: 0 !important;
     font-size: calc(21px * 0.95) !important;
     gap: 0.26rem !important;
     max-width: 100% !important;
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch;
+    overflow-x: visible !important;
+  }
+
+  .about-section.about-pubs .pub-group-bottom .pub-tag-timeline {
+    flex-wrap: nowrap !important;
+    white-space: nowrap !important;
+    row-gap: 0 !important;
+    font-size: calc(21px * 0.95) !important;
+    gap: 0.26rem !important;
+    max-width: 100% !important;
+    overflow-x: visible !important;
   }
 
   .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col {
     position: absolute !important;
-    right: -1.5rem !important;
+    right: calc(-1.5rem + 2rem) !important;
     top: 20% !important;
     transform: translateY(-50%) !important;
-    max-width: 10rem !important;
+    max-width: 12rem !important;
     width: auto !important;
     margin-top: 0 !important;
+  }
+  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col .pub-mllm-code-epigraph {
+    font-size: calc(15px * 0.95 + 0.25rem) !important;
   }
   .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col .ascii-face {
     min-width: 20ch !important;
     max-width: none !important;
+    font-size: calc(14px * 0.95 + 0.25rem) !important;
     transform: translateX(var(--ascii-face-nudge-x)) !important;
   }
   .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col .ascii-face::after {
