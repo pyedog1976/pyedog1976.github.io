@@ -2197,25 +2197,28 @@ body .post-header h1.post-title {
 
   /* 论文气泡、出版物区、HISTORY ASCII 等（.pub-details 显隐见 §17） */
 
-  /* keep desktop arrangement, but constrain thumbnails inside publication section */
-  .about-section.about-pubs,
+  /* 横滑裁切只加在内层：外层 about-pubs 不设 overflow-x:hidden，避免底边黄线被裁掉 */
   .about-section.about-pubs .publications,
   .about-section.about-pubs .publications-two-cols,
-  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row {
+  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row,
+  .about-section.about-pubs .pub-group-bottom {
     max-width: 100% !important;
     overflow-x: hidden !important;
+  }
+
+  .about-section.about-pubs {
+    max-width: 100% !important;
+    overflow-x: visible !important;
+    --pub-card-width: calc(248px * 0.95);
+    --pub-card-overlap: -1rem;
+    /* 底部留白：原 3+4rem 再 +4rem 加高框体 */
+    padding-bottom: calc(3rem + 4rem + 4rem) !important;
+    border-bottom: 1px solid #ffd84d !important;
   }
 
   /* 首组 [*] 行：桌面用负 margin 贴近标题；手机 + 父级 overflow-x 会裁切，改为顶对齐 */
   .about-section.about-pubs .publications-two-cols .pub-group:first-child .pub-group-intro {
     margin-top: 0 !important;
-  }
-
-  /* 手机：快照宽度与卡片重叠占比与桌面 About 右栏一致；整块底部加高 3rem + 4rem */
-  .about-section.about-pubs {
-    --pub-card-width: calc(248px * 0.95);
-    --pub-card-overlap: -1rem;
-    padding-bottom: calc(3rem + 4rem) !important;
   }
 
   .publications-two-cols ol.bibliography {
