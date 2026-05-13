@@ -837,6 +837,17 @@ tbody td {
   animation: pub-mllm-cool-face 0.9s steps(1) forwards;
 }
 
+/* 触摸/粗指针：无稳定 :hover，用 :active 触发同一套帧动画（iOS 需可点 + cursor） */
+@media (hover: none), (pointer: coarse) {
+  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col .ascii-face {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col .ascii-face:active::after {
+    animation: pub-mllm-cool-face 0.9s steps(1) forwards;
+  }
+}
+
 @keyframes pub-mllm-cool-face {
   0% {
     content: "( -_- )";
@@ -2158,6 +2169,16 @@ body .post-header h1.post-title {
     -webkit-transform: scale(calc(100vw / 1180));
     transform: scale(calc(100vw / 1180));
   }
+
+  /* 与 1180 缩放画布同宽：不依赖 767，否则平板/横屏仍用桌面 -120px，看起来像「没动」 */
+  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col .ascii-face {
+    transform: translateX(calc(var(--ascii-face-nudge-x) - 4rem)) !important;
+  }
+
+  /* 取消右栏 Selected Publications 被 min-height:100% 撑满整列，否则只改 padding-bottom 视觉几乎不变 */
+  .about-right-col > .about-section.about-pubs {
+    min-height: 0 !important;
+  }
 }
 
 /* ====== 16b) 窄手机版式（与宽屏桌面不同）：About 主区单栏等；USER INFO + HISTORY 仍用全局 .info-history-row ====== */
@@ -2383,7 +2404,6 @@ body .post-header h1.post-title {
     min-width: 20ch !important;
     max-width: none !important;
     font-size: calc(14px * 0.95 + 0.25rem) !important;
-    transform: translateX(calc(var(--ascii-face-nudge-x) - 4rem)) !important;
   }
   .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col .ascii-face::after {
     position: absolute !important;
