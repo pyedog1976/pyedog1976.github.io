@@ -2232,22 +2232,34 @@ body .post-header h1.post-title {
     width: var(--pub-card-width) !important;
     max-width: var(--pub-card-width) !important;
     height: auto !important;
-    /* 每列首张：仅 1.5×，不右移 */
+    /* 每组 ol 内首张：仅 1.5×，不右移 */
     transform: scale(1.5);
     transform-origin: 0% 0%;
   }
 
-  .publications-two-cols ol.bibliography > li:nth-child(n + 2) img.preview {
+  /* 同组内从第二张起均右移 1rem（li+li 比 nth-child 更稳，避免 ol 内夹杂非 li 节点时失效） */
+  .publications-two-cols ol.bibliography > li + li img.preview {
     transform: scale(1.5) translateX(1rem);
   }
 
-  /* 手机：首张悬停仅 1.56×；第二张起保留右移 1rem */
+  /* 首张悬停仅 1.56×；第二张起保留右移 */
   .publications-two-cols ol.bibliography > li:hover img.preview {
     transform: scale(1.56);
   }
 
-  .publications-two-cols ol.bibliography > li:nth-child(n + 2):hover img.preview {
+  .publications-two-cols ol.bibliography > li + li:hover img.preview {
     transform: scale(1.56) translateX(1rem);
+  }
+
+  /* 手机：第一组（MLLM）与第二组（selected）论文行之间加高，并为每行快照下留空，避免 1.5× 图被裁 */
+  .about-section.about-pubs .publications-two-cols > .pub-group-top {
+    margin-bottom: 4rem !important;
+  }
+  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row > ol.bibliography {
+    padding-bottom: 4rem !important;
+  }
+  .about-section.about-pubs .pub-group-bottom ol.bibliography {
+    padding-bottom: 4rem !important;
   }
 
   .about-section.about-pubs .pub-tag-timeline {
