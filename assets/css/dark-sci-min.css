@@ -2211,10 +2211,10 @@ body .post-header h1.post-title {
     margin-top: 0 !important;
   }
 
-  /* 手机：论文快照略放大；顶部 timeline 标签（+CVPR'xx+ 等）同步略大 */
+  /* 手机：快照宽度与卡片重叠占比与桌面 About 右栏（.post .about-side-by-side @≥768）一致 */
   .about-section.about-pubs {
-    --pub-card-width: calc(292px * 0.95);
-    --pub-card-overlap: -0.88rem;
+    --pub-card-width: calc(248px * 0.95);
+    --pub-card-overlap: -1rem;
   }
 
   .publications-two-cols ol.bibliography {
