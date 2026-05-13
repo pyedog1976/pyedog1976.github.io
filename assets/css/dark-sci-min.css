@@ -2166,9 +2166,10 @@ body .post-header h1.post-title {
     font-size: calc(18px * 0.95) !important;
   }
 
-  /* 画布内 fixed 导航不占流，主内容顶会被挡；仅手机为 #site-scale-inner 下首个 container 留顶距 */
+  /* 画布内 fixed 导航不占流；底留白避免 #site-scale-outer 裁掉末块底黄线 */
   #site-scale-inner > .container.mt-5 {
     padding-top: 3.65rem !important;
+    padding-bottom: 4.5rem !important;
   }
 
   /* 简介正文（article > .clearfix）：相对上方 USER INFO / HISTORY 整块下移 1rem */
@@ -2209,11 +2210,29 @@ body .post-header h1.post-title {
   .about-section.about-pubs {
     max-width: 100% !important;
     overflow-x: visible !important;
+    overflow-y: visible !important;
+    position: relative;
     --pub-card-width: calc(248px * 0.95);
     --pub-card-overlap: -1rem;
-    /* 底部留白：原 3+4rem 再 +4rem 加高框体 */
-    padding-bottom: calc(3rem + 4rem + 4rem) !important;
+    /* 底部留白：原 3+4+4rem 再加一档，避免底框被裁 */
+    padding-bottom: calc(3rem + 4rem + 4rem + 2rem) !important;
     border-bottom: 1px solid #ffd84d !important;
+    /* 覆盖全局 .about-section:last-child { margin-bottom:0 }，否则底边贴齐画布易被裁 */
+    margin-bottom: 1.5rem !important;
+  }
+
+  /* 底黄线加强层（与 border 同色，防亚像素裁切） */
+  .about-section.about-pubs::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: #ffd84d;
+    pointer-events: none;
+    z-index: 24;
+    border-radius: 0;
   }
 
   /* 首组 [*] 行：桌面用负 margin 贴近标题；手机 + 父级 overflow-x 会裁切，改为顶对齐 */
@@ -2254,15 +2273,15 @@ body .post-header h1.post-title {
     transform: scale(1.56) translateX(1rem);
   }
 
-  /* 手机：第一组（MLLM）与第二组（selected）论文行之间加高，并为每行快照下留空，避免 1.5× 图被裁 */
+  /* 手机：第一组与第二组论文之间再拉开 2rem（原 4rem → 6rem）；ol 底留白加大以利 1.5× 图完整 */
   .about-section.about-pubs .publications-two-cols > .pub-group-top {
-    margin-bottom: 4rem !important;
+    margin-bottom: 6rem !important;
   }
   .about-section.about-pubs .pub-group-top .pub-mllm-papers-row > ol.bibliography {
-    padding-bottom: 4rem !important;
+    padding-bottom: 6rem !important;
   }
   .about-section.about-pubs .pub-group-bottom ol.bibliography {
-    padding-bottom: 4rem !important;
+    padding-bottom: 6rem !important;
   }
 
   .about-section.about-pubs .pub-tag-timeline {

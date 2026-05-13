@@ -46,8 +46,12 @@
     outer.style.overflowX = 'hidden';
     outer.style.overflowY = 'hidden';
     outer.style.boxSizing = 'border-box';
-    outer.style.height =
-      Math.max(1, Math.ceil(inner.scrollHeight * scale - 0.5)) + 'px';
+    var rawH = Math.max(1, Math.ceil(inner.scrollHeight * scale - 0.5));
+    /* 手机：避免底栏/底边框被 outer overflow-y:hidden 裁掉一截（取整 + 安全区） */
+    if (layoutViewportWidth() < 768) {
+      rawH += 48;
+    }
+    outer.style.height = rawH + 'px';
 
     inner.style.position = 'absolute';
     inner.style.top = '0';
