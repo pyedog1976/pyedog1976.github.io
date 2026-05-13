@@ -2395,8 +2395,8 @@ body .post-header h1.post-title {
     min-width: 20ch !important;
     max-width: none !important;
     font-size: calc(14px * 0.95 + 0.25rem) !important;
-    /* 仅手机：在 --ascii-face-nudge-x 基础上再左移 4rem；勿改桌面全局 */
-    transform: translateX(calc(var(--ascii-face-nudge-x) - 4rem)) !important;
+    /* 仅手机：在 --ascii-face-nudge-x 上再左移 4rem + 2rem（::after 各帧跟父级走） */
+    transform: translateX(calc(var(--ascii-face-nudge-x) - 4rem - 2rem)) !important;
     overflow: visible !important;
   }
   .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col .ascii-face::after {
