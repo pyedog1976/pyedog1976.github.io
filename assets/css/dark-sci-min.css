@@ -2171,8 +2171,9 @@ body .post-header h1.post-title {
   }
 }
 
-/* ====== 16a-md) 768–1179：整页禁止 CSS scale（字号正常）；#outer 内横纵滚动，保证可见横向滚条 ====== */
-@media (max-width: 1179px) and (min-width: 768px) {
+/* ====== 16a-md) 窄视口 + 键鼠环境：禁止 §16a 整页 CSS scale（字号正常）；#outer 横纵滚动。勿仅用 min-width:768，否则缩到 767 以下仍 scale 挤成一团 ====== */
+@media (max-width: 1179px) and (any-pointer: fine),
+  (max-width: 1179px) and (pointer: fine) {
   html,
   body {
     height: 100%;

@@ -12,6 +12,7 @@
  * 不走画布时在 html 上加 site-desktop-scroll-1180，与 CSS §16a-fine 一致。
  * 纯触控机（仅 coarse、有触摸点）仍走画布 + visualViewport。
  * 布局宽 ≥768（非手机 CSS）时一律走滚动模式，且 §16a-md 在 CSS 侧禁用整页 scale，避免仅靠 class 时仍被 scale 压小字体。
+ * update() 内 isDesktopKeyMouseNarrowNoScale：与 §16a-md 对齐，强制清掉 JS 内联 transform，避免与 CSS 打架。
  *
  * site-desktop-scroll-1180：内容保持 1180 逻辑宽，#site-scale-outer 为视口内取景框，横纵在同一容器内滚动；
  * Shift+滚轮 将纵向增量转为横向滚动（见 init 内 wheel）。
@@ -64,18 +65,18 @@
         }
       }
     } catch (e0) {}
-    /* 与 CSS max-width:767 手机版对齐：≥768 一律 1180 逻辑宽 + 滚动，禁止整页 scale（字体不被压小） */
+    /* 有精细指针（典型接鼠标/触控板）即走 1180+滚动，勿依赖窗口宽度 ≥768（缩到 600 仍要正常字 + 横滚） */
+    try {
+      if (window.matchMedia('(any-pointer: fine)').matches) return true;
+    } catch (eAp) {}
+    try {
+      if (window.matchMedia('(pointer: fine)').matches) return true;
+    } catch (ePf) {}
     try {
       var lw =
         window.innerWidth || document.documentElement.clientWidth || 0;
       if (lw >= 768) return true;
     } catch (eLw) {}
-    try {
-      if (window.matchMedia('(any-pointer: fine)').matches) return true;
-    } catch (e) {}
-    try {
-      if (window.matchMedia('(pointer: fine)').matches) return true;
-    } catch (e2) {}
     return maxTouchPoints() === 0;
   }
 
@@ -162,6 +163,27 @@
     inner.style.transform = t;
   }
 
+  /** 与 §16a-md 一致：键鼠窄屏不走 JS 画布（避免内联 transform 压过 CSS、或与 CSS 双轨打架） */
+  function isDesktopKeyMouseNarrowNoScale() {
+    try {
+      if (
+        window.matchMedia(
+          '(max-width: 767px) and (hover: none) and (pointer: coarse)'
+        ).matches
+      ) {
+        return false;
+      }
+    } catch (e0) {}
+    try {
+      if (window.matchMedia('(max-width: 1179px)').matches) {
+        if (window.matchMedia('(any-pointer: fine)').matches) return true;
+        if (window.matchMedia('(pointer: fine)').matches) return true;
+        if (maxTouchPoints() === 0) return true;
+      }
+    } catch (e1) {}
+    return false;
+  }
+
   function update() {
     var outer = document.getElementById('site-scale-outer');
     var inner = document.getElementById('site-scale-inner');
@@ -169,6 +191,11 @@
 
     var vwLayout = layoutViewportWidth();
     syncDesktopScrollClass(vwLayout);
+
+    if (isDesktopKeyMouseNarrowNoScale()) {
+      clearCanvasStyles(outer, inner);
+      return;
+    }
 
     if (!needsCanvas()) {
       clearCanvasStyles(outer, inner);
@@ -193,7 +220,7 @@
         var narrowMd = false;
         try {
           narrowMd = window.matchMedia(
-            '(max-width: 1179px) and (min-width: 768px)'
+            '(max-width: 1179px) and (any-pointer: fine), (max-width: 1179px) and (pointer: fine)'
           ).matches;
         } catch (eMq) {}
         if (
