@@ -77,7 +77,7 @@ body.fixed-top-nav {
   z-index: 1;
 }
 
-/* 全站画布包裹层：桌面不改动；窄于 1180px 时在 §16a 固定 1180px + scale（JS 内联优先） */
+/* 全站画布包裹层：桌面不改动；窄于 1180px 时在 §16a 固定 1180px + scale（JS 内联优先）；§16a-fine 键鼠电脑为滚动不换 scale */
 #site-scale-outer,
 #site-scale-inner {
   display: block;
@@ -2168,6 +2168,34 @@ body .post-header h1.post-title {
     transform-origin: top left;
     -webkit-transform: scale(calc(100vw / 1180));
     transform: scale(calc(100vw / 1180));
+  }
+}
+
+/* ====== 16a-fine) 键鼠电脑且视口 <1180：不整页 scale，固定 1180 宽；横滚在 #site-scale-outer、竖滚在 body（与 §16a 同序后段覆盖） ====== */
+@media (max-width: 1179px) and (pointer: fine) {
+  #site-scale-outer {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: visible;
+    height: auto;
+    min-height: 0;
+  }
+  #site-scale-inner {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: 1180px;
+    min-width: 1180px;
+    max-width: none;
+    box-sizing: border-box;
+    transform-origin: top left;
+    -webkit-transform: none !important;
+    transform: none !important;
+  }
+  /* 画布 scale 时曾去 padding；此处导航回到视口 fixed，恢复与全局一致的顶距 */
+  body.fixed-top-nav {
+    padding-top: 3.75rem !important;
   }
 }
 
