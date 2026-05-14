@@ -3,11 +3,25 @@
  * 用内联 transform 缩放到当前布局宽度；#site-scale-outer 高度 = scrollHeight * scale。
  * 不缩放 body。宽 >= 1180 时清除内联，恢复桌面。
  * 文件名避免含 “canvas” 以免部分广告拦截扩展误拦。
+ *
+ * 手机（CSS 宽 ≤767px）：双指缩放会改变 visualViewport，若仍用其 width 重算 scale，整页会「跟着缩」。
+ * 此处改用 innerWidth，并忽略 visualViewport 的 resize，仅保留 window resize / 方向变化等。
  */
 (function () {
   var CANVAS_W = 1180;
 
+  function isPhoneLayout() {
+    try {
+      return window.matchMedia('(max-width: 767px)').matches;
+    } catch (e) {
+      return (window.innerWidth || 0) < 768;
+    }
+  }
+
   function layoutViewportWidth() {
+    if (isPhoneLayout()) {
+      return window.innerWidth || document.documentElement.clientWidth || CANVAS_W;
+    }
     if (window.visualViewport && window.visualViewport.width > 0) {
       return window.visualViewport.width;
     }
@@ -90,6 +104,7 @@
       window.visualViewport.addEventListener(
         'resize',
         function () {
+          if (isPhoneLayout()) return;
           window.requestAnimationFrame(update);
         },
         { passive: true }
