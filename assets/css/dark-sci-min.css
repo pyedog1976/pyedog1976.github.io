@@ -2171,6 +2171,53 @@ body .post-header h1.post-title {
   }
 }
 
+/* ====== 16a-md) 768–1179：整页禁止 CSS scale（字号正常）；#outer 内横纵滚动，保证可见横向滚条 ====== */
+@media (max-width: 1179px) and (min-width: 768px) {
+  html,
+  body {
+    height: 100%;
+    max-height: 100vh;
+    max-height: 100dvh;
+    overflow: hidden !important;
+    box-sizing: border-box;
+  }
+  body.fixed-top-nav {
+    padding-top: 3.75rem !important;
+  }
+  #site-scale-outer {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100vh;
+    max-height: 100dvh;
+    min-height: 0;
+    overflow: auto !important;
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+    box-sizing: border-box;
+    background: var(--bg) !important;
+  }
+  #site-scale-inner {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    width: 1180px !important;
+    min-width: 1180px !important;
+    max-width: none !important;
+    box-sizing: border-box;
+    transform: none !important;
+    -webkit-transform: none !important;
+    transform-origin: top left;
+  }
+  /* 与 site-desktop-scroll 一致：导航在 1180 内不被 Bootstrap 过窄 max-width 压扁 */
+  #site-scale-inner .container {
+    max-width: 1140px !important;
+  }
+}
+
 /* ====== 16a-fine) 键鼠桌面窄视口：固定 1180 逻辑宽；#site-scale-outer 作「取景框」双向滚动（不按 scale 压扁整页） ====== */
 @media (max-width: 1179px) {
   /* 锁死整页 body 滚动，只在 outer 里平移，避免横纵滚动条分裂在两处 */
