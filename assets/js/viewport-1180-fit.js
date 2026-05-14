@@ -7,12 +7,13 @@
  * 手机（CSS 宽 ≤767px）：双指缩放会改变 visualViewport，若仍用其 width 重算 scale，整页会「跟着缩」。
  * 此处改用 innerWidth，并忽略 visualViewport 的 resize，仅保留 window resize / 方向变化等。
  *
- * 电脑（存在精细指针、且非手机布局）：整页 scale 会随窗口变窄而缩小；改为不走画布逻辑（见 §16a-fine），
- * 固定 1180px 版面，由 #site-scale-outer 横向滚动、body 纵向滚动。仍用布局宽度而非 visualViewport。
- * 触控平板等无 fine pointer 时仍可用 visualViewport（如 iPad 类场景）。
+ * 电脑（主交互为键鼠）：用 (hover:hover)+(pointer:fine) 识别，不用「视口≤767」——否则窄桌面窗会被当成手机而重新启用画布缩放。
+ * 不走画布时在 html 上加 site-desktop-scroll-1180，与 CSS §16a-fine 一致。仍用布局宽度而非 visualViewport。
+ * 触控平板等（hover:none 或 coarse）仍走画布 + visualViewport。
  */
 (function () {
   var CANVAS_W = 1180;
+  var CLS_DESKTOP_SCROLL = 'site-desktop-scroll-1180';
 
   function isPhoneLayout() {
     try {
@@ -31,9 +32,22 @@
     }
   }
 
-  /** 电脑端非手机：不启用 JS 画布（固定 1180 + 滚动由 CSS §16a-fine） */
+  /**
+   * 键鼠桌面：hover:hover 排除多数手机；pointer:fine 排除以 coarse 为主的平板。
+   * 勿用 !isPhoneLayout()：视口 <768 的窄桌面窗仍会 match (max-width:767px)，会误判成手机。
+   */
   function useScrollLayoutInsteadOfCanvas() {
-    return hasFinePointer() && !isPhoneLayout();
+    try {
+      return window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    } catch (e) {
+      return hasFinePointer();
+    }
+  }
+
+  function syncDesktopScrollClass(vwLayout) {
+    var on =
+      useScrollLayoutInsteadOfCanvas() && vwLayout < CANVAS_W;
+    document.documentElement.classList.toggle(CLS_DESKTOP_SCROLL, on);
   }
 
   function layoutWidthForScale() {
@@ -116,6 +130,7 @@
     if (!outer || !inner) return;
 
     var vwLayout = layoutViewportWidth();
+    syncDesktopScrollClass(vwLayout);
 
     if (!needsCanvas()) {
       clearCanvasStyles(outer, inner);
@@ -135,7 +150,7 @@
       window.visualViewport.addEventListener(
         'resize',
         function () {
-          if (isPhoneLayout() || hasFinePointer()) return;
+          if (isPhoneLayout() || useScrollLayoutInsteadOfCanvas()) return;
           window.requestAnimationFrame(update);
         },
         { passive: true }
