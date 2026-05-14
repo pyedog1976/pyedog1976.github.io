@@ -2242,7 +2242,7 @@ body .post-header h1.post-title {
     min-height: auto !important;
     --pub-card-width: calc(248px * 0.95);
     --pub-card-overlap: -1rem;
-    padding-bottom: calc(3rem + 4rem + 4rem + 1rem - 1.5rem - 1rem) !important;
+    padding-bottom: calc(3rem + 4rem + 4rem + 1rem - 1.5rem - 1rem - 1rem) !important;
     border-bottom: none !important;
     margin-bottom: 1.5rem !important;
   }
