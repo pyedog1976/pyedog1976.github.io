@@ -71,8 +71,7 @@
 
   /**
    * 仅「视口 ≥768 且 <1180」的窄屏键鼠桌机挂 site-desktop-scroll-1180（§16a-fine / §16c）。
-   * 视口 ≤767 时绝不挂：否则 §16c（同 max-width:767）会盖过 §16b，手机被压成双栏，破坏
-   * 「上：About+HISTORY+正文 → 中：News → 下：论文快照」三叠布局。
+   * 视口 ≤767 时绝不挂：否则 §16c 会盖过 §16b，手机三叠（Intro+News → 论文）被破坏。
    */
   function syncDesktopScrollClass(vwLayout) {
     var on =
