@@ -6,6 +6,10 @@
  *
  * 手机（CSS 宽 ≤767px）：双指缩放会改变 visualViewport，若仍用其 width 重算 scale，整页会「跟着缩」。
  * 此处改用 innerWidth，并忽略 visualViewport 的 resize，仅保留 window resize / 方向变化等。
+ *
+ * 电脑（存在精细指针）：Ctrl± 缩放时 visualViewport.width 常与布局宽度不一致，而 #site-scale-outer 为 100%
+ * 时以布局视口为宽；若仍用 vv.width 算 scale，会出现留白/裁切/与 100vw 系 CSS 错位。故同样用布局宽度
+ * 并忽略 vv.resize；触控平板等无 fine pointer 时仍可用 visualViewport（如 iPad 类场景）。
  */
 (function () {
   var CANVAS_W = 1180;
@@ -18,14 +22,34 @@
     }
   }
 
+  /** 典型键鼠电脑：避免用 visualViewport.width 参与窄屏画布缩放 */
+  function hasFinePointer() {
+    try {
+      return window.matchMedia('(pointer: fine)').matches;
+    } catch (e) {
+      return true;
+    }
+  }
+
+  function layoutWidthForScale() {
+    return (
+      window.innerWidth ||
+      document.documentElement.clientWidth ||
+      CANVAS_W
+    );
+  }
+
   function layoutViewportWidth() {
     if (isPhoneLayout()) {
-      return window.innerWidth || document.documentElement.clientWidth || CANVAS_W;
+      return layoutWidthForScale();
+    }
+    if (hasFinePointer()) {
+      return layoutWidthForScale();
     }
     if (window.visualViewport && window.visualViewport.width > 0) {
       return window.visualViewport.width;
     }
-    return window.innerWidth || document.documentElement.clientWidth || CANVAS_W;
+    return layoutWidthForScale();
   }
 
   function needsCanvas() {
@@ -104,7 +128,7 @@
       window.visualViewport.addEventListener(
         'resize',
         function () {
-          if (isPhoneLayout()) return;
+          if (isPhoneLayout() || hasFinePointer()) return;
           window.requestAnimationFrame(update);
         },
         { passive: true }
