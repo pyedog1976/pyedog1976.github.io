@@ -2171,7 +2171,7 @@ body .post-header h1.post-title {
   }
 }
 
-/* ====== 16a-fine) 键鼠桌面窄视口：不整页 scale；由 JS 加 html.site-desktop-scroll-1180（与 (hover:hover)+(pointer:fine) 一致，避免仅靠 pointer 与触控本不一致） ====== */
+/* ====== 16a-fine) 键鼠桌面窄视口：不整页 scale；由 JS 加 html.site-desktop-scroll-1180（含 Linux any-pointer / maxTouchPoints 回退，与媒体查询解耦） ====== */
 @media (max-width: 1179px) {
   html.site-desktop-scroll-1180 #site-scale-outer {
     width: 100%;

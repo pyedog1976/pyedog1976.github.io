@@ -7,9 +7,10 @@
  * 手机（CSS 宽 ≤767px）：双指缩放会改变 visualViewport，若仍用其 width 重算 scale，整页会「跟着缩」。
  * 此处改用 innerWidth，并忽略 visualViewport 的 resize，仅保留 window resize / 方向变化等。
  *
- * 电脑（主交互为键鼠）：用 (hover:hover)+(pointer:fine) 识别，不用「视口≤767」——否则窄桌面窗会被当成手机而重新启用画布缩放。
- * 不走画布时在 html 上加 site-desktop-scroll-1180，与 CSS §16a-fine 一致。仍用布局宽度而非 visualViewport。
- * 触控平板等（hover:none 或 coarse）仍走画布 + visualViewport。
+ * 电脑固定 1180+滚动：优先 (any-pointer:fine)（外接鼠标/触控板在 Linux 上常只有 any 为 fine）；
+ * 若媒体查询全否但 maxTouchPoints===0，按无触摸键鼠桌面回退（部分 Wayland/GTK 误报 hover/pointer）。
+ * 不走画布时在 html 上加 site-desktop-scroll-1180，与 CSS §16a-fine 一致。
+ * 纯触控机（仅 coarse、有触摸点）仍走画布 + visualViewport。
  */
 (function () {
   var CANVAS_W = 1180;
@@ -32,16 +33,40 @@
     }
   }
 
+  function maxTouchPoints() {
+    if (typeof navigator.maxTouchPoints === 'number') {
+      return navigator.maxTouchPoints;
+    }
+    if (typeof navigator.msMaxTouchPoints === 'number') {
+      return navigator.msMaxTouchPoints;
+    }
+    return 'ontouchstart' in window ? 1 : 0;
+  }
+
   /**
-   * 键鼠桌面：hover:hover 排除多数手机；pointer:fine 排除以 coarse 为主的平板。
-   * 勿用 !isPhoneLayout()：视口 <768 的窄桌面窗仍会 match (max-width:767px)，会误判成手机。
+   * 窄视口下用固定 1180+滚动、不用整页 scale。
+   * 典型纯触控手机仍走画布（避免接鼠标时 any-pointer:fine 误判）。
+   * any-pointer:fine 覆盖「主指针 coarse 但有鼠标」；maxTouchPoints===0 覆盖 Linux 上全误报为 coarse 的键鼠环境。
    */
   function useScrollLayoutInsteadOfCanvas() {
     try {
-      return window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-    } catch (e) {
-      return hasFinePointer();
-    }
+      if (maxTouchPoints() > 0) {
+        if (
+          window.matchMedia(
+            '(max-width: 767px) and (hover: none) and (pointer: coarse)'
+          ).matches
+        ) {
+          return false;
+        }
+      }
+    } catch (e0) {}
+    try {
+      if (window.matchMedia('(any-pointer: fine)').matches) return true;
+    } catch (e) {}
+    try {
+      if (window.matchMedia('(pointer: fine)').matches) return true;
+    } catch (e2) {}
+    return maxTouchPoints() === 0;
   }
 
   function syncDesktopScrollClass(vwLayout) {
@@ -60,6 +85,9 @@
 
   function layoutViewportWidth() {
     if (isPhoneLayout()) {
+      return layoutWidthForScale();
+    }
+    if (useScrollLayoutInsteadOfCanvas()) {
       return layoutWidthForScale();
     }
     if (hasFinePointer()) {
