@@ -11,11 +11,6 @@
  * 若媒体查询全否但 maxTouchPoints===0，按无触摸键鼠桌面回退（部分 Wayland/GTK 误报 hover/pointer）。
  * 不走画布时在 html 上加 site-desktop-scroll-1180，与 CSS §16a-fine 一致。
  * 纯触控机（仅 coarse、有触摸点）仍走画布 + visualViewport。
- * 布局宽 ≥768（非手机 CSS）时一律走滚动模式，且 §16a-md 在 CSS 侧禁用整页 scale，避免仅靠 class 时仍被 scale 压小字体。
- * update() 内 isDesktopKeyMouseNarrowNoScale：与 §16a-md 对齐，强制清掉 JS 内联 transform，避免与 CSS 打架。
- *
- * site-desktop-scroll-1180：内容保持 1180 逻辑宽，#site-scale-outer 为视口内取景框，横纵在同一容器内滚动；
- * Shift+滚轮 将纵向增量转为横向滚动（见 init 内 wheel）。
  */
 (function () {
   var CANVAS_W = 1180;
@@ -65,18 +60,12 @@
         }
       }
     } catch (e0) {}
-    /* 有精细指针（典型接鼠标/触控板）即走 1180+滚动，勿依赖窗口宽度 ≥768（缩到 600 仍要正常字 + 横滚） */
     try {
       if (window.matchMedia('(any-pointer: fine)').matches) return true;
-    } catch (eAp) {}
+    } catch (e) {}
     try {
       if (window.matchMedia('(pointer: fine)').matches) return true;
-    } catch (ePf) {}
-    try {
-      var lw =
-        window.innerWidth || document.documentElement.clientWidth || 0;
-      if (lw >= 768) return true;
-    } catch (eLw) {}
+    } catch (e2) {}
     return maxTouchPoints() === 0;
   }
 
@@ -163,27 +152,6 @@
     inner.style.transform = t;
   }
 
-  /** 与 §16a-md 一致：键鼠窄屏不走 JS 画布（避免内联 transform 压过 CSS、或与 CSS 双轨打架） */
-  function isDesktopKeyMouseNarrowNoScale() {
-    try {
-      if (
-        window.matchMedia(
-          '(max-width: 767px) and (hover: none) and (pointer: coarse)'
-        ).matches
-      ) {
-        return false;
-      }
-    } catch (e0) {}
-    try {
-      if (window.matchMedia('(max-width: 1179px)').matches) {
-        if (window.matchMedia('(any-pointer: fine)').matches) return true;
-        if (window.matchMedia('(pointer: fine)').matches) return true;
-        if (maxTouchPoints() === 0) return true;
-      }
-    } catch (e1) {}
-    return false;
-  }
-
   function update() {
     var outer = document.getElementById('site-scale-outer');
     var inner = document.getElementById('site-scale-inner');
@@ -191,11 +159,6 @@
 
     var vwLayout = layoutViewportWidth();
     syncDesktopScrollClass(vwLayout);
-
-    if (isDesktopKeyMouseNarrowNoScale()) {
-      clearCanvasStyles(outer, inner);
-      return;
-    }
 
     if (!needsCanvas()) {
       clearCanvasStyles(outer, inner);
@@ -209,38 +172,8 @@
     applyCanvasStyles(outer, inner, vwScale);
   }
 
-  /** 窄桌面滚动模式：Shift+滚轮 → 横向平移 outer（触控板原生 deltaX 仍由浏览器处理） */
-  function bindDesktopScrollWheelPan() {
-    var outer = document.getElementById('site-scale-outer');
-    if (!outer || outer.dataset.viewport1180WheelBound === '1') return;
-    outer.dataset.viewport1180WheelBound = '1';
-    outer.addEventListener(
-      'wheel',
-      function (e) {
-        var narrowMd = false;
-        try {
-          narrowMd = window.matchMedia(
-            '(max-width: 1179px) and (any-pointer: fine), (max-width: 1179px) and (pointer: fine)'
-          ).matches;
-        } catch (eMq) {}
-        if (
-          !document.documentElement.classList.contains(CLS_DESKTOP_SCROLL) &&
-          !narrowMd
-        ) {
-          return;
-        }
-        if (e.shiftKey && Math.abs(e.deltaY) >= Math.abs(e.deltaX)) {
-          outer.scrollLeft += e.deltaY;
-          e.preventDefault();
-        }
-      },
-      { passive: false }
-    );
-  }
-
   function init() {
     update();
-    bindDesktopScrollWheelPan();
     if (window.visualViewport) {
       window.visualViewport.addEventListener(
         'resize',

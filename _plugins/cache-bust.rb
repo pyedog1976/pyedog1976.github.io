@@ -43,7 +43,8 @@ module Jekyll
         end
 
         def bust_css_cache(file_name)
-            CacheDigester.new(file_name: file_name, directory: 'assets/_sass').digest!
+            # 原 assets/_sass 不存在于本仓库，会导致 digest 恒为 d41d8…（空串），main.css 永不被换缓存
+            CacheDigester.new(file_name: file_name, directory: '_sass').digest!
         end
     end
 end
