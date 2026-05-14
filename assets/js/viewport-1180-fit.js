@@ -7,9 +7,7 @@
  * 手机（CSS 宽 ≤767px）：双指缩放会改变 visualViewport，若仍用其 width 重算 scale，整页会「跟着缩」。
  * 此处改用 innerWidth，并忽略 visualViewport 的 resize，仅保留 window resize / 方向变化等。
  *
- * 电脑固定 1180+滚动：优先 (any-pointer:fine)（外接鼠标/触控板在 Linux 上常只有 any 为 fine）；
- * 若媒体查询全否但 maxTouchPoints===0，按无触摸键鼠桌面回退（部分 Wayland/GTK 误报 hover/pointer）。
- * 不走画布时在 html 上加 site-desktop-scroll-1180，与 CSS §16a-fine 一致。
+ * 键鼠类桌面（useScrollLayoutInsteadOfCanvas）：固定 1180px 画幅左上对齐，不等比缩小；视口不足时出现横/纵滚动（CSS §16a-fine，与 html.site-desktop-scroll-1180 一致）。
  * 纯触控机（仅 coarse、有触摸点）仍走画布 + visualViewport。
  */
 (function () {
@@ -70,15 +68,25 @@
   }
 
   /**
-   * 仅「视口 ≥768 且 <1180」的窄屏键鼠桌机挂 site-desktop-scroll-1180（§16a-fine / §16c）。
-   * 视口 ≤767 时绝不挂：否则 §16c 会盖过 §16b，手机三叠（Intro+News → 论文）被破坏。
+   * 键鼠类桌面挂 site-desktop-scroll-1180：768≤宽 时窄屏固定 1180+横向滚动；宽≥1180 且无触摸点时同样挂（宽屏左侧 1180 内容带，右侧留白，仍不 scale）。
+   * 宽≥1180 且带触摸点时不挂，避免大屏触控机误套桌面宽规则。视口宽度小于 768 时绝不挂，避免 §16c 盖过 §16b。
    */
   function syncDesktopScrollClass(vwLayout) {
-    var on =
-      useScrollLayoutInsteadOfCanvas() &&
-      vwLayout < CANVAS_W &&
-      vwLayout >= 768;
-    document.documentElement.classList.toggle(CLS_DESKTOP_SCROLL, on);
+    if (!useScrollLayoutInsteadOfCanvas()) {
+      document.documentElement.classList.toggle(CLS_DESKTOP_SCROLL, false);
+      return;
+    }
+    if (vwLayout < 768) {
+      document.documentElement.classList.toggle(CLS_DESKTOP_SCROLL, false);
+      return;
+    }
+    var narrow = vwLayout < CANVAS_W;
+    var wideMouseBand =
+      vwLayout >= CANVAS_W && maxTouchPoints() === 0;
+    document.documentElement.classList.toggle(
+      CLS_DESKTOP_SCROLL,
+      narrow || wideMouseBand
+    );
   }
 
   function layoutWidthForScale() {
