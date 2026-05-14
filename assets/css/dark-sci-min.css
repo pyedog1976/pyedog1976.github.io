@@ -1,6 +1,6 @@
 /* assets/css/dark-sci-min.css */
 /* Minimal dark theme: pure black background, no decorative elements.
-   Keeps About/Publications layout (about-side-by-side, publications-two-cols, full width).
+   Keeps About/Publications styling (publications-two-cols); 主排布见 about-page-layout.css + #about-page。
 */
 
 @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&family=Noto+Sans+SC:wght@500;700&display=swap");
@@ -60,11 +60,11 @@ body.fixed-top-nav {
 }
 
 /* 介紹段落：主題的 _base 對 p/div/span 直接設了 sans-serif，這裡覆蓋為 --font-body */
-.post .about-left-col .clearfix,
-.post .about-left-col .clearfix p,
-.post .about-left-col .clearfix div,
-.post .about-left-col .clearfix span,
-.post .about-left-col .clearfix li {
+.post .about-intro .clearfix,
+.post .about-intro .clearfix p,
+.post .about-intro .clearfix div,
+.post .about-intro .clearfix span,
+.post .about-intro .clearfix li {
   font-family: var(--font-body) !important;
 }
 
@@ -77,7 +77,7 @@ body.fixed-top-nav {
   z-index: 1;
 }
 
-/* 全站画布包裹层：桌面不改动；窄于 1180px 时在 §16a 固定 1180px + scale（JS 内联优先）；§16a-fine 由 html.site-desktop-scroll-1180 控制键鼠桌面为滚动不换 scale */
+/* 全站画布包裹层；窄视口见 §16a 文档流；About 首页 Grid 见 about-page-layout.css */
 #site-scale-outer,
 #site-scale-inner {
   display: block;
@@ -555,18 +555,18 @@ tbody td {
 
   /* 桌面：双栏一起略缩纵向——左 HISTORY 轨迹 320px；左右首块 about-section 内边距对称略收；右栏 pub 组间距略减（等高 stretch 时整体变矮） */
   /* 右栏高度主要由横向快照 img.preview（--pub-card-width 定宽后按比例出高）撑开，在此略收窄快照宽度使整行一起变矮 */
-  .post .about-side-by-side {
+  .post .about-page {
     --pub-card-width: calc(248px * 0.95);
   }
-  .post .about-side-by-side .history-trace {
+  .post .about-page .history-trace {
     height: 330px;
   }
-  .post .about-side-by-side .about-left-col > .about-section.about-intro,
-  .post .about-side-by-side .about-right-col > .about-section.about-pubs {
+  .post .about-page .about-intro,
+  .post .about-page .about-panel--publications {
     padding: 0.8rem 1.1rem 0.8rem 1.1rem !important;
     margin-bottom: 0.95rem;
   }
-  .post .about-side-by-side .about-section.about-pubs .publications-two-cols .pub-group {
+  .post .about-page .about-section.about-pubs .publications-two-cols .pub-group {
     margin-bottom: 0.65rem;
   }
 }
@@ -680,7 +680,7 @@ tbody td {
 }
 
 /* 右欄等高時拉滿欄高，底邊 border-bottom 貼齊欄位下沿（避免黃線懸在內容下方空白之上） */
-.about-right-col > .about-section.about-pubs {
+.about-page .about-section.about-pubs {
   align-self: stretch;
   width: 100%;
   box-sizing: border-box;
@@ -1286,12 +1286,12 @@ footer,
 }
 
 /* About 双栏：覆蓋 Bootstrap mt-5；桌面略增 padding-top，避免 fixed 导航 rgba(0,0,0,.85) 底边盖住首块 .about-section 顶黄线 */
-.container.mt-5:has(.about-side-by-side) {
+.container.mt-5:has(#about-page) {
   margin-top: 0.75rem !important;
   padding-top: 0.25rem !important;
 }
 @media (min-width: 768px) {
-  .container.mt-5:has(.about-side-by-side) {
+  .container.mt-5:has(#about-page) {
     padding-top: 0.85rem !important;
   }
 }
@@ -1336,7 +1336,7 @@ body > div,
   flex: 0 0 47%;
   max-width: 47%;
 }
-.info-history-row .history-col {
+.about-page .history-col {
   flex: 0 0 53%;
   max-width: 53%;
 }
@@ -1461,7 +1461,7 @@ body > div,
 }
 
 @media (max-width: 767px) {
-  html:not(.site-desktop-scroll-1180) .sysinfo-list { font-size: calc(13px * 0.95); }
+  .sysinfo-list { font-size: calc(13px * 0.95); }
 }
 
 /* =========================
@@ -1516,7 +1516,7 @@ body > div,
 
 /* mobile fallback */
 @media (max-width: 767px) {
-  html:not(.site-desktop-scroll-1180) .about-profile .profile-grid{
+  .about-profile .profile-grid{
     grid-template-columns:1fr;
   }
 }
@@ -1815,7 +1815,7 @@ body > div,
 /* mobile：trace 区仍占满 HISTORY 栏（width:100%）；ASCII 用 scaleX 把固定字符行横向拉到栏宽，不改 HTML/SVG
    cqw 挂在 .history-col；分母 48ch 与字宽匹配略收框 */
 @media (max-width: 767px) {
-  html:not(.site-desktop-scroll-1180) .info-history-row .history-col {
+  .about-page .history-col {
     container-type: inline-size;
     container-name: hcol;
     /* 整块 HISTORY 栏相对 USER INFO 下移（不垫栏底空白） */
@@ -1823,19 +1823,19 @@ body > div,
   }
 
   /* USER INFO / HISTORY / NEWS / SELECTED PUBLICATIONS 大标题：桌面均为 Press Start 2P 17px；手机 +1px */
-  html:not(.site-desktop-scroll-1180) .about-profile .about-section-title,
-  html:not(.site-desktop-scroll-1180) .about-profile .about-section-title *,
-  html:not(.site-desktop-scroll-1180) .about-profile-title-clone,
-  html:not(.site-desktop-scroll-1180) .about-profile-title-clone *,
-  html:not(.site-desktop-scroll-1180) .about-section.about-news .about-section-title,
-  html:not(.site-desktop-scroll-1180) .about-section.about-news .about-section-title *,
-  html:not(.site-desktop-scroll-1180) .about-section.about-pubs .about-section-title,
-  html:not(.site-desktop-scroll-1180) .about-section.about-pubs .about-section-title * {
+  .about-profile .about-section-title,
+  .about-profile .about-section-title *,
+  .about-profile-title-clone,
+  .about-profile-title-clone *,
+  .about-section.about-news .about-section-title,
+  .about-section.about-news .about-section-title *,
+  .about-section.about-pubs .about-section-title,
+  .about-section.about-pubs .about-section-title * {
     font-size: 18px !important;
   }
 
   /* HISTORY 标题后虚线：与 News 同款顶到栏尾（桌面仍用 --history-dash-length 缩短） */
-  html:not(.site-desktop-scroll-1180) .history-col .about-profile-title-clone::after {
+  .history-col .about-profile-title-clone::after {
     flex: 1 1 auto !important;
     min-width: 1rem !important;
     max-width: none !important;
@@ -1844,7 +1844,7 @@ body > div,
   }
 
   /* 整条 trace（SVG + 棋子 + 旗子 + NOW）相对 ASCII 框整体下移 0.5rem */
-  html:not(.site-desktop-scroll-1180) .history-trace-overlay {
+  .history-trace-overlay {
     display: block;
     position: absolute;
     left: 0;
@@ -1855,12 +1855,12 @@ body > div,
     pointer-events: none;
     transform: translateY(0.5rem);
   }
-  html:not(.site-desktop-scroll-1180) .history-trace-overlay .trace-node,
-  html:not(.site-desktop-scroll-1180) .history-trace-overlay .trace-now {
+  .history-trace-overlay .trace-node,
+  .history-trace-overlay .trace-now {
     pointer-events: auto;
   }
 
-  html:not(.site-desktop-scroll-1180) .history-trace {
+  .history-trace {
     height: auto;
     min-height: 260px;
     width: 100%;
@@ -1869,9 +1869,9 @@ body > div,
     overflow: hidden;
     padding-bottom: 0.75rem;
   }
-  html:not(.site-desktop-scroll-1180) .trace-node .anno { font-size: calc(11.5px * 0.95); }
+  .trace-node .anno { font-size: calc(11.5px * 0.95); }
 
-  html:not(.site-desktop-scroll-1180) .trace-ascii-frame {
+  .trace-ascii-frame {
     display: block;
     width: max-content;
     max-width: none;
@@ -1886,27 +1886,27 @@ body > div,
     font-size: min(calc(15px * 0.95), calc(100cqw / 46));
   }
 
-  html:not(.site-desktop-scroll-1180) .trace-node.piece .anno {
+  .trace-node.piece .anno {
     white-space: normal;
     max-width: min(42vw, 180px);
     overflow-wrap: anywhere;
   }
 
   /* 旗子 hover 气泡：勿用 overflow-wrap:anywhere（会与窄 max-width 组合成逐字断行） */
-  html:not(.site-desktop-scroll-1180) .trace-node.flag .anno {
+  .trace-node.flag .anno {
     overflow-wrap: break-word;
     word-break: normal;
   }
 
-  html:not(.site-desktop-scroll-1180) .trace-node.flag .anno,
-  html:not(.site-desktop-scroll-1180) .trace-now-anno {
+  .trace-node.flag .anno,
+  .trace-now-anno {
     min-width: 0;
     max-width: min(88vw, 320px);
     left: 50%;
     transform: translateX(-50%) translateY(6px);
   }
 
-  html:not(.site-desktop-scroll-1180) .trace-node.flag:hover .anno {
+  .trace-node.flag:hover .anno {
     transform: translateX(-50%) translateY(0);
   }
 }
@@ -2097,7 +2097,7 @@ body .post-header h1.post-title {
     0 0 22px rgba(255, 204, 51, 0.18) !important;
 }
 
-/* ====== 16a) 布局宽度 <1180（含 iPhone、含「请求桌面网站」）：画布 + scale；高度由 viewport-1180-fit.js（内联 transform 优先） ====== */
+/* ====== 16a) 布局宽度 <1180：窄视口仍用文档流，不用整页 transform scale；导航与 body 顶距保持可读 ====== */
 @media (max-width: 1179px) {
   html,
   body {
@@ -2105,12 +2105,10 @@ body .post-header h1.post-title {
     overflow-x: hidden !important;
   }
 
-  /* 导航在 #site-scale-inner 的 transform 内，已非视口 fixed；body 原 padding-top 只会在屏顶留黑条 */
   body.fixed-top-nav {
-    padding-top: 0 !important;
+    padding-top: 3.75rem !important;
   }
 
-  /* 画布内：隐藏汉堡，导航与桌面一致横向排列（可换行） */
   #site-scale-inner .navbar > .container {
     flex-wrap: wrap !important;
     align-items: center;
@@ -2151,86 +2149,57 @@ body .post-header h1.post-title {
   }
   #site-scale-outer {
     position: relative;
-    width: 100vw;
+    width: 100%;
     max-width: 100%;
     overflow-x: hidden;
-    overflow-y: hidden;
+    overflow-y: visible;
+    height: auto;
     box-sizing: border-box;
     background: var(--bg) !important;
   }
   #site-scale-inner {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 1180px;
-    max-width: none;
-    box-sizing: border-box;
-    transform-origin: top left;
-    -webkit-transform: scale(calc(100vw / 1180));
-    transform: scale(calc(100vw / 1180));
-  }
-}
-
-/* ====== 16a-fine) 键鼠桌面窄视口：不整页 scale；由 JS 加 html.site-desktop-scroll-1180（含 Linux any-pointer / maxTouchPoints 回退，与媒体查询解耦） ====== */
-@media (max-width: 1179px) {
-  html.site-desktop-scroll-1180 #site-scale-outer {
-    width: 100%;
-    max-width: 100%;
-    overflow-x: auto;
-    overflow-y: visible;
-    height: auto;
-    min-height: 0;
-  }
-  html.site-desktop-scroll-1180 #site-scale-inner {
     position: relative;
     top: auto;
     left: auto;
-    width: 1180px;
-    min-width: 1180px;
-    max-width: none;
+    width: 100%;
+    max-width: 1180px;
+    margin-left: auto;
+    margin-right: auto;
     box-sizing: border-box;
-    transform-origin: top left;
-    -webkit-transform: none !important;
-    transform: none !important;
-  }
-  html.site-desktop-scroll-1180 body.fixed-top-nav {
-    padding-top: 3.75rem !important;
-  }
-  /* Bootstrap .container 的 max-width 随视口变小，在固定 1180 内仍会把导航压成一条；按桌面内容宽放开 */
-  html.site-desktop-scroll-1180 #site-scale-inner .container {
-    max-width: 1140px !important;
+    transform: none;
+    -webkit-transform: none;
   }
 }
 
 /* ====== 16b) 窄手机版式（与宽屏桌面不同）：About 主区单栏等；USER INFO + HISTORY 仍用全局 .info-history-row ====== */
 @media (max-width: 767px) {
-  html:not(.site-desktop-scroll-1180) body {
+  body {
     font-size: calc(18px * 0.95) !important;
   }
 
   /* 画布内 fixed 导航不占流；底留白避免 #site-scale-outer 裁掉末块底黄线 */
-  html:not(.site-desktop-scroll-1180) #site-scale-inner > .container.mt-5 {
+  #site-scale-inner > .container.mt-5 {
     padding-top: 3.65rem !important;
     padding-bottom: 3.5rem !important;
   }
 
   /* 简介正文（article > .clearfix）：相对上方 USER INFO / HISTORY 整块下移 1rem */
-  html:not(.site-desktop-scroll-1180) .about-section.about-intro > article {
+  .about-section.about-intro > article {
     margin-top: 1rem;
   }
 
-  html:not(.site-desktop-scroll-1180) .about-side-by-side {
+  .about-side-by-side {
     flex-direction: column !important;
     flex-wrap: nowrap !important;
     align-items: stretch !important;
   }
-  html:not(.site-desktop-scroll-1180) .about-side-by-side .about-left-col,
-  html:not(.site-desktop-scroll-1180) .about-side-by-side .about-right-col {
+  .about-side-by-side .about-left-col,
+  .about-side-by-side .about-right-col {
     flex: 0 0 100% !important;
     max-width: 100% !important;
     width: 100% !important;
   }
-  html:not(.site-desktop-scroll-1180) .about-right-col {
+  .about-right-col {
     padding-left: 0 !important;
     border-left: none !important;
     border-top: 1px solid var(--border) !important;
@@ -2242,12 +2211,12 @@ body .post-header h1.post-title {
      底框高度：§16b 仅 max-width:767px 生效；留白由 section padding + ol padding + 上组 margin 共同决定 */
 
   /* 横滑：论文两行全部展开（wrap + 无负 margin），不在 ol 内横向滚动 */
-  html:not(.site-desktop-scroll-1180) .about-section.about-pubs .publications {
+  .about-section.about-pubs .publications {
     max-width: 100% !important;
     overflow-x: visible !important;
   }
 
-  html:not(.site-desktop-scroll-1180) .about-section.about-pubs .pub-group-top .pub-mllm-papers-row {
+  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row {
     max-width: 100% !important;
     overflow-x: visible !important;
     overflow-y: visible !important;
@@ -2255,18 +2224,18 @@ body .post-header h1.post-title {
     padding-bottom: 3.5rem !important;
   }
 
-  html:not(.site-desktop-scroll-1180) .about-section.about-pubs .pub-group-bottom {
+  .about-section.about-pubs .pub-group-bottom {
     max-width: 100% !important;
     overflow: visible !important;
   }
 
-  html:not(.site-desktop-scroll-1180) .about-section.about-pubs .publications-two-cols {
+  .about-section.about-pubs .publications-two-cols {
     max-width: 100% !important;
     overflow: visible !important;
     min-height: auto !important;
   }
 
-  html:not(.site-desktop-scroll-1180) .about-section.about-pubs {
+  .about-section.about-pubs {
     max-width: 100% !important;
     overflow-x: visible !important;
     overflow-y: visible !important;
@@ -2280,12 +2249,12 @@ body .post-header h1.post-title {
   }
 
   /* 手机单栏：取消右栏 pubs min-height:100%，与 padding 配合才看得出框高变化 */
-  html:not(.site-desktop-scroll-1180) .about-right-col > .about-section.about-pubs {
+  .about-page .about-section.about-pubs {
     min-height: 0 !important;
   }
 
   /* 底黄线：贴回区块下沿（与原先框底一致），由 padding-bottom 留出空隙 */
-  html:not(.site-desktop-scroll-1180) .about-section.about-pubs::after {
+  .about-section.about-pubs::after {
     content: "";
     position: absolute;
     left: 0;
@@ -2299,21 +2268,21 @@ body .post-header h1.post-title {
   }
 
   /* 首组 [*] 行：桌面用负 margin 贴近标题；手机 + 父级 overflow-x 会裁切，改为顶对齐 */
-  html:not(.site-desktop-scroll-1180) .about-section.about-pubs .publications-two-cols .pub-group:first-child .pub-group-intro {
+  .about-section.about-pubs .publications-two-cols .pub-group:first-child .pub-group-intro {
     margin-top: 0 !important;
   }
 
   /* 第二组：自 [*] Robust… 一句起整块下移 1rem（intro 为组内首元素） */
-  html:not(.site-desktop-scroll-1180) .about-section.about-pubs .publications-two-cols .pub-group-bottom {
+  .about-section.about-pubs .publications-two-cols .pub-group-bottom {
     padding-top: 1rem !important;
   }
-  html:not(.site-desktop-scroll-1180) .about-section.about-pubs .publications-two-cols .pub-group-bottom .pub-group-intro {
+  .about-section.about-pubs .publications-two-cols .pub-group-bottom .pub-group-intro {
     margin-top: 0 !important;
   }
 
   /* 手机：两行论文均不换横向滚动条——wrap 全展开；叠卡负 margin 在换行下取消 */
-  html:not(.site-desktop-scroll-1180) .about-section.about-pubs .pub-group-top .pub-mllm-papers-row > ol.bibliography,
-  html:not(.site-desktop-scroll-1180) .about-section.about-pubs .pub-group-bottom ol.bibliography {
+  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row > ol.bibliography,
+  .about-section.about-pubs .pub-group-bottom ol.bibliography {
     flex-wrap: wrap !important;
     justify-content: flex-start !important;
     overflow-x: visible !important;
@@ -2324,17 +2293,17 @@ body .post-header h1.post-title {
     row-gap: 1.35rem !important;
     column-gap: 0.45rem !important;
   }
-  html:not(.site-desktop-scroll-1180) .about-section.about-pubs .pub-group-top .pub-mllm-papers-row > ol.bibliography {
+  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row > ol.bibliography {
     padding-bottom: 4.5rem !important;
   }
-  html:not(.site-desktop-scroll-1180) .about-section.about-pubs .pub-group-bottom ol.bibliography {
+  .about-section.about-pubs .pub-group-bottom ol.bibliography {
     padding-bottom: 4.5rem !important;
   }
 
-  html:not(.site-desktop-scroll-1180) .publications-two-cols ol.bibliography {
+  .publications-two-cols ol.bibliography {
     flex-wrap: wrap !important;
   }
-  html:not(.site-desktop-scroll-1180) .publications-two-cols ol.bibliography > li {
+  .publications-two-cols ol.bibliography > li {
     flex: 0 0 auto !important;
     width: auto !important;
     max-width: none !important;
@@ -2342,23 +2311,23 @@ body .post-header h1.post-title {
     margin-left: var(--pub-card-overlap) !important;
     box-sizing: border-box !important;
   }
-  html:not(.site-desktop-scroll-1180) .publications-two-cols ol.bibliography > li:first-child {
+  .publications-two-cols ol.bibliography > li:first-child {
     margin-left: 0 !important;
   }
 
-  html:not(.site-desktop-scroll-1180) .about-section.about-pubs .pub-group-top .pub-mllm-papers-row > ol.bibliography > li,
-  html:not(.site-desktop-scroll-1180) .about-section.about-pubs .pub-group-bottom ol.bibliography > li {
+  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row > ol.bibliography > li,
+  .about-section.about-pubs .pub-group-bottom ol.bibliography > li {
     margin-left: 0 !important;
   }
 
-  html:not(.site-desktop-scroll-1180) .about-section.about-pubs .publications-two-cols > .pub-group-top {
+  .about-section.about-pubs .publications-two-cols > .pub-group-top {
     margin-bottom: 4.5rem !important;
   }
 
-  html:not(.site-desktop-scroll-1180) .about-section.about-pubs .publications-two-cols .pub-group {
+  .about-section.about-pubs .publications-two-cols .pub-group {
     margin-bottom: 0.75rem !important;
   }
-  html:not(.site-desktop-scroll-1180) .publications-two-cols ol.bibliography > li img.preview {
+  .publications-two-cols ol.bibliography > li img.preview {
     width: var(--pub-card-width) !important;
     max-width: var(--pub-card-width) !important;
     height: auto !important;
@@ -2368,28 +2337,28 @@ body .post-header h1.post-title {
   }
 
   /* 同组内从第二张起均右移 1rem（li+li 比 nth-child 更稳，避免 ol 内夹杂非 li 节点时失效） */
-  html:not(.site-desktop-scroll-1180) .publications-two-cols ol.bibliography > li + li img.preview {
+  .publications-two-cols ol.bibliography > li + li img.preview {
     transform: scale(1.5) translateX(1rem);
   }
 
   /* 首张悬停仅 1.56×；第二张起保留右移 */
-  html:not(.site-desktop-scroll-1180) .publications-two-cols ol.bibliography > li:hover img.preview {
+  .publications-two-cols ol.bibliography > li:hover img.preview {
     transform: scale(1.56);
   }
 
-  html:not(.site-desktop-scroll-1180) .publications-two-cols ol.bibliography > li + li:hover img.preview {
+  .publications-two-cols ol.bibliography > li + li:hover img.preview {
     transform: scale(1.56) translateX(1rem);
   }
 
   /* wrap 下 translateX 会让换行后的快照与字叠在一起；手机去掉横向位移，仅保留缩放 */
-  html:not(.site-desktop-scroll-1180) .about-section.about-pubs .publications-two-cols ol.bibliography > li + li img.preview {
+  .about-section.about-pubs .publications-two-cols ol.bibliography > li + li img.preview {
     transform: scale(1.5) !important;
   }
-  html:not(.site-desktop-scroll-1180) .about-section.about-pubs .publications-two-cols ol.bibliography > li + li:hover img.preview {
+  .about-section.about-pubs .publications-two-cols ol.bibliography > li + li:hover img.preview {
     transform: scale(1.56) !important;
   }
 
-  html:not(.site-desktop-scroll-1180) .about-section.about-pubs .pub-group-top .pub-tag-timeline {
+  .about-section.about-pubs .pub-group-top .pub-tag-timeline {
     flex-wrap: nowrap !important;
     white-space: nowrap !important;
     row-gap: 0 !important;
@@ -2399,7 +2368,7 @@ body .post-header h1.post-title {
     overflow-x: visible !important;
   }
 
-  html:not(.site-desktop-scroll-1180) .about-section.about-pubs .pub-group-bottom .pub-tag-timeline {
+  .about-section.about-pubs .pub-group-bottom .pub-tag-timeline {
     flex-wrap: nowrap !important;
     white-space: nowrap !important;
     row-gap: 0 !important;
@@ -2409,7 +2378,7 @@ body .post-header h1.post-title {
     overflow-x: visible !important;
   }
 
-  html:not(.site-desktop-scroll-1180) .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col {
+  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col {
     position: absolute !important;
     right: calc(-1.5rem + 2rem) !important;
     top: 20% !important;
@@ -2419,11 +2388,11 @@ body .post-header h1.post-title {
     margin-top: 0 !important;
     overflow: visible !important;
   }
-  html:not(.site-desktop-scroll-1180) .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col .pub-mllm-code-epigraph {
+  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col .pub-mllm-code-epigraph {
     font-size: calc(15px * 0.95 + 0.25rem) !important;
     transform: translateX(-1rem) !important;
   }
-  html:not(.site-desktop-scroll-1180) .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col .ascii-face {
+  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col .ascii-face {
     min-width: 20ch !important;
     max-width: none !important;
     font-size: calc(14px * 0.95 + 0.25rem) !important;
@@ -2431,7 +2400,7 @@ body .post-header h1.post-title {
     transform: translateX(var(--ascii-face-nudge-x)) translateX(-4rem) translateX(-2rem) !important;
     overflow: visible !important;
   }
-  html:not(.site-desktop-scroll-1180) .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col .ascii-face::after {
+  .about-section.about-pubs .pub-group-top .pub-mllm-papers-row .pub-mllm-sidebar-col .ascii-face::after {
     position: absolute !important;
     display: block !important;
     right: 0.15rem !important;
@@ -2440,7 +2409,7 @@ body .post-header h1.post-title {
   }
 
   /* HISTORY：全宽 trace；ASCII 仅横向 scale 贴栏（与上段 767 一致） */
-  html:not(.site-desktop-scroll-1180) .history-trace {
+  .history-trace {
     height: auto !important;
     min-height: 260px;
     width: 100% !important;
@@ -2449,7 +2418,7 @@ body .post-header h1.post-title {
     overflow: hidden !important;
     padding-bottom: 0.75rem !important;
   }
-  html:not(.site-desktop-scroll-1180) .trace-ascii-frame {
+  .trace-ascii-frame {
     display: block !important;
     width: max-content !important;
     max-width: none !important;
@@ -2464,63 +2433,8 @@ body .post-header h1.post-title {
     font-size: min(calc(15px * 0.95), calc(100cqw / 46));
   }
 
-  html:not(.site-desktop-scroll-1180) .history-col .about-profile-title-clone::after {
+  .history-col .about-profile-title-clone::after {
     margin-right: 2rem !important;
-  }
-}
-
-/* ====== 16c) 键鼠固定 1180+横滚：视口 ≤767 时 Bootstrap col-md / .container 仍按视口断点；在内层强制桌面双栏与宽容器 ====== */
-@media (max-width: 767px) {
-  html.site-desktop-scroll-1180 .row.about-side-by-side {
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    margin-left: -15px;
-    margin-right: -15px;
-  }
-  html.site-desktop-scroll-1180 .about-side-by-side .about-left-col {
-    flex: 0 0 48% !important;
-    max-width: 48% !important;
-    width: 48% !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-self: stretch !important;
-    min-height: 0 !important;
-  }
-  html.site-desktop-scroll-1180 .about-side-by-side .about-right-col {
-    flex: 0 0 52% !important;
-    max-width: 52% !important;
-    width: 52% !important;
-    align-self: stretch !important;
-    min-height: 0 !important;
-    height: auto !important;
-    padding-left: 1.5rem !important;
-    border-top: none !important;
-    padding-top: 0 !important;
-    margin-top: 0 !important;
-  }
-  html.site-desktop-scroll-1180 .post .about-side-by-side {
-    --pub-card-width: calc(248px * 0.95);
-  }
-  html.site-desktop-scroll-1180 .post .about-side-by-side .history-trace {
-    height: 330px;
-  }
-  html.site-desktop-scroll-1180 .post .about-side-by-side .about-left-col > .about-section.about-intro,
-  html.site-desktop-scroll-1180 .post .about-side-by-side .about-right-col > .about-section.about-pubs {
-    padding: 0.8rem 1.1rem 0.8rem 1.1rem !important;
-    margin-bottom: 0.95rem;
-  }
-  html.site-desktop-scroll-1180 .post .about-side-by-side .about-section.about-pubs .publications-two-cols .pub-group {
-    margin-bottom: 0.65rem;
-  }
-  html.site-desktop-scroll-1180 .container.mt-5:has(.about-side-by-side) {
-    padding-top: 0.85rem !important;
-  }
-  html.site-desktop-scroll-1180 .publications-two-cols ol.bibliography {
-    flex-wrap: nowrap !important;
-  }
-  html.site-desktop-scroll-1180 #site-scale-inner .navbar-nav {
-    column-gap: 0.65rem;
-    flex-wrap: wrap !important;
   }
 }
 
@@ -2541,17 +2455,9 @@ body .post-header h1.post-title {
   }
 }
 
-/* 固定 1180+横滚的键鼠桌面：Linux 常 match (pointer:coarse)，仍应显示论文气泡（与桌面一致） */
-html.site-desktop-scroll-1180 .publications-two-cols .pub-details {
-  display: block !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: auto !important;
-}
-
 /* 视口 >767 且 ≤991（如 iPhone「请求桌面网站」常见 ~980px）时 §16b 不命中；至少取消右栏 pubs 的 min-height:100% 拉伸 */
 @media (min-width: 768px) and (max-width: 991px) {
-  .about-right-col > .about-section.about-pubs {
+  .about-page .about-section.about-pubs {
     min-height: 0 !important;
   }
 }
