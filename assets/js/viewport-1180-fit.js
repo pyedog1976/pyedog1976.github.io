@@ -10,9 +10,15 @@
  * 电脑（存在精细指针）：Ctrl± 缩放时 visualViewport.width 常与布局宽度不一致，而 #site-scale-outer 为 100%
  * 时以布局视口为宽；若仍用 vv.width 算 scale，会出现留白/裁切/与 100vw 系 CSS 错位。故同样用布局宽度
  * 并忽略 vv.resize；触控平板等无 fine pointer 时仍可用 visualViewport（如 iPad 类场景）。
+ *
+ * 电脑拖拽变窄：若仍按当前 innerWidth 重算 scale，整页会随窗口持续「缩小」。在 fine pointer 下于 <1180
+ * 内用「当前曾达到的最大布局宽度」作为 scale 基准：继续拖窄时基准不降低，缩放不变；在仍 <1180 时拉宽
+ * 则基准可升高以利用空间。回到 ≥1180 时清除。窗口窄于当前基准时 outer 允许横向滚动。手机/触控不走此逻辑。
  */
 (function () {
   var CANVAS_W = 1180;
+  /** 电脑端：<1180 内用于固定「不再随拖窄而缩小」的 scale 的基准宽度（取本段内曾达到的最大布局宽） */
+  var fineDesktopScaleBasisW = null;
 
   function isPhoneLayout() {
     try {
@@ -76,17 +82,22 @@
     inner.style.transform = '';
   }
 
-  function applyCanvasStyles(outer, inner, vw) {
+  function applyCanvasStyles(outer, inner, vw, vwLayout) {
     var scale = vw / CANVAS_W;
     outer.style.position = 'relative';
     outer.style.width = '100%';
     outer.style.maxWidth = '100vw';
-    outer.style.overflowX = 'hidden';
+    var allowHScroll =
+      hasFinePointer() &&
+      !isPhoneLayout() &&
+      fineDesktopScaleBasisW !== null &&
+      vwLayout < vw;
+    outer.style.overflowX = allowHScroll ? 'auto' : 'hidden';
     outer.style.overflowY = 'hidden';
     outer.style.boxSizing = 'border-box';
     var rawH = Math.max(1, Math.ceil(inner.scrollHeight * scale - 0.5));
     /* 手机：避免底栏/底边框被 outer overflow-y:hidden 裁掉一截（取整 + 安全区） */
-    if (layoutViewportWidth() < 768) {
+    if (isPhoneLayout()) {
       rawH += 48;
     }
     outer.style.height = rawH + 'px';
@@ -108,18 +119,36 @@
     var inner = document.getElementById('site-scale-inner');
     if (!outer || !inner) return;
 
-    var vw = layoutViewportWidth();
+    var vwLayout = layoutViewportWidth();
+
+    if (hasFinePointer() && !isPhoneLayout()) {
+      if (vwLayout >= CANVAS_W) {
+        fineDesktopScaleBasisW = null;
+      } else {
+        if (fineDesktopScaleBasisW === null) {
+          fineDesktopScaleBasisW = vwLayout;
+        } else {
+          fineDesktopScaleBasisW = Math.max(fineDesktopScaleBasisW, vwLayout);
+        }
+      }
+    } else {
+      fineDesktopScaleBasisW = null;
+    }
 
     if (!needsCanvas()) {
       clearCanvasStyles(outer, inner);
       return;
     }
 
-    var vwScale = vw;
-    if (vw < 768) {
-      vwScale = Math.max(280, vw - 4);
+    var basisForScale = vwLayout;
+    if (hasFinePointer() && !isPhoneLayout() && fineDesktopScaleBasisW !== null) {
+      basisForScale = fineDesktopScaleBasisW;
     }
-    applyCanvasStyles(outer, inner, vwScale);
+    var vwScale = basisForScale;
+    if (isPhoneLayout() && vwLayout < 768) {
+      vwScale = Math.max(280, vwLayout - 4);
+    }
+    applyCanvasStyles(outer, inner, vwScale, vwLayout);
   }
 
   function init() {
