@@ -2171,15 +2171,34 @@ body .post-header h1.post-title {
   }
 }
 
-/* ====== 16a-fine) 键鼠桌面窄视口：不整页 scale；由 JS 加 html.site-desktop-scroll-1180（含 Linux any-pointer / maxTouchPoints 回退，与媒体查询解耦） ====== */
+/* ====== 16a-fine) 键鼠桌面窄视口：固定 1180 逻辑宽；#site-scale-outer 作「取景框」双向滚动（不按 scale 压扁整页） ====== */
 @media (max-width: 1179px) {
+  /* 锁死整页 body 滚动，只在 outer 里平移，避免横纵滚动条分裂在两处 */
+  html.site-desktop-scroll-1180 {
+    height: 100%;
+    max-height: 100vh;
+    max-height: 100dvh;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+  html.site-desktop-scroll-1180 body {
+    overflow: hidden !important;
+    height: 100%;
+    max-height: 100vh;
+    max-height: 100dvh;
+    box-sizing: border-box;
+  }
   html.site-desktop-scroll-1180 #site-scale-outer {
     width: 100%;
     max-width: 100%;
-    overflow-x: auto;
-    overflow-y: visible;
-    height: auto;
+    height: 100%;
+    max-height: 100vh;
+    max-height: 100dvh;
     min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+    box-sizing: border-box;
   }
   html.site-desktop-scroll-1180 #site-scale-inner {
     position: relative;

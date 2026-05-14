@@ -11,6 +11,9 @@
  * 若媒体查询全否但 maxTouchPoints===0，按无触摸键鼠桌面回退（部分 Wayland/GTK 误报 hover/pointer）。
  * 不走画布时在 html 上加 site-desktop-scroll-1180，与 CSS §16a-fine 一致。
  * 纯触控机（仅 coarse、有触摸点）仍走画布 + visualViewport。
+ *
+ * site-desktop-scroll-1180：内容保持 1180 逻辑宽，#site-scale-outer 为视口内取景框，横纵在同一容器内滚动；
+ * Shift+滚轮 将纵向增量转为横向滚动（见 init 内 wheel）。
  */
 (function () {
   var CANVAS_W = 1180;
@@ -172,8 +175,27 @@
     applyCanvasStyles(outer, inner, vwScale);
   }
 
+  /** 窄桌面滚动模式：Shift+滚轮 → 横向平移 outer（触控板原生 deltaX 仍由浏览器处理） */
+  function bindDesktopScrollWheelPan() {
+    var outer = document.getElementById('site-scale-outer');
+    if (!outer || outer.dataset.viewport1180WheelBound === '1') return;
+    outer.dataset.viewport1180WheelBound = '1';
+    outer.addEventListener(
+      'wheel',
+      function (e) {
+        if (!document.documentElement.classList.contains(CLS_DESKTOP_SCROLL)) return;
+        if (e.shiftKey && Math.abs(e.deltaY) >= Math.abs(e.deltaX)) {
+          outer.scrollLeft += e.deltaY;
+          e.preventDefault();
+        }
+      },
+      { passive: false }
+    );
+  }
+
   function init() {
     update();
+    bindDesktopScrollWheelPan();
     if (window.visualViewport) {
       window.visualViewport.addEventListener(
         'resize',
