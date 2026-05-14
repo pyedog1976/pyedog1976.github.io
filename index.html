@@ -4,16 +4,16 @@
   <!-- Head -->
   <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="icon" href="/favicon.ico?v=1778798998">
-    <link rel="icon" type="image/png" sizes="80x80" href="/favicon.png?v=1778798998">
-    <link rel="icon" type="image/png" href="/assets/img/favicon-morty.png?v=1778798998">
-    <link rel="shortcut icon" href="/assets/img/favicon-morty.png?v=1778798998">
+<link rel="icon" href="/favicon.ico?v=1778799815">
+    <link rel="icon" type="image/png" sizes="80x80" href="/favicon.png?v=1778799815">
+    <link rel="icon" type="image/png" href="/assets/img/favicon-morty.png?v=1778799815">
+    <link rel="shortcut icon" href="/assets/img/favicon-morty.png?v=1778799815">
 <!-- Metadata, OpenGraph and Schema.org -->
     
 
     <!-- Standard metadata -->
     <meta charset="utf-8">
-    <!-- 标准视口；首页 About 为文档流 + Grid（about-page-layout.css），整页不再用 transform scale -->
+    <!-- 标准视口；整页横向缩小由 #site-scale-inner + viewport-1180-fit.js（内联 transform + outer 高度） -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>​</title>
@@ -48,9 +48,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="/assets/css/dark-sci-min.css?6224b72f20bac6427e3454c4e6712e8d&amp;v=1778798998">
-<link rel="stylesheet" href="/assets/css/about-page-layout.css?4e53c9161cb0383ad9d69d5624fe70ba">
-<link rel="canonical" href="https://www.yuyuanliu.com/">
+    <link rel="stylesheet" href="/assets/css/dark-sci-min.css?120fd10365201913714743b5f78e91d7&amp;v=1778799815">
+    <link rel="canonical" href="https://www.yuyuanliu.com/">
 
     <!-- Dark Mode -->
     
@@ -122,73 +121,81 @@
     <!-- Content -->
     <div class="container mt-5">
       
-        <!-- about.html: 文档流 + Grid（见 about-page-layout.css）；顺序：身份/USER INFO → HISTORY → 简介 → News → Publications -->
+        <!-- about.html: left = original content (name, intro, News), right = Selected Publications, same row -->
       <div class="post">
-        <div class="about-page" id="about-page">
-          <section class="about-panel about-panel--identity" aria-label="Identity and user info">
-            <header class="post-header">
-              <h1 class="post-title">
-                <span class="font-weight-bold">Yuyuan Liu</span>
-                 
-              </h1>
-              <p class="desc"></p>
-            </header>
+        <div class="row about-side-by-side">
+          <!-- Left: 三个主题框之一 = Introduction，之二 = News -->
+          <div class="col-md-6 about-left-col">
+            <div class="about-section about-intro">
 
-            <div class="about-profile">
-              <div class="profile-grid">
-                <div class="profile-left">
-                  <h2 class="about-section-title">
-                    <span class="about-section-prefix">&gt;&gt;</span> USER INFO
-                  </h2>
-                  <ul class="sysinfo-list">
-                    <li>
-                      <span class="k">loc</span><span class="c">:</span>
-                      <span class="v">
-                        <span class="ent">oxford</span>, <span class="muted">united kingdom</span>
-                      </span>
-                    </li>
-                    <li>
-                      <span class="k">role</span><span class="c">:</span>
-                      <span class="v">
-                        postdoctoral <span class="kw">researcher</span>
-                      </span>
-                    </li>
-                    <li>
-                      <span class="k">affil</span><span class="c">:</span>
-                      <span class="v">
-                        depart. of engineering sci., <span class="ent">university of oxford</span>
-                      </span>
-                    </li>
-                    <li>
-                      <span class="k">proj</span><span class="c">:</span>
-                      <span class="v">
-                        <span class="v">human-ai collaboration</span>
-                      </span>
-                    </li>
-                    <li>
-                      <span class="k">focus</span><span class="c">:</span>
-                      <span class="v">
-                        <span class="kw">lvlms</span> · <span class="ent">reasoning</span> · <span class="kw2">percept.</span>
-                      </span>
-                    </li>
-                    <li>
-                      <span class="k">email</span><span class="c">:</span>
-                      <span class="v">
-                        <span class="linkish">yuyuan dot liu@eng.ox.ac.uk</span>
-                      </span>
-                    </li>
-                  </ul>
+              <!-- USER INFO 與 HISTORY 並排（左側含 Yuyuan Liu 標題 + USER INFO，右側為 HISTORY） -->
+              <div class="info-history-row">
+                <div class="info-col">
+                  <header class="post-header">
+                    <h1 class="post-title">
+                      <span class="font-weight-bold">Yuyuan Liu</span>
+                       
+                    </h1>
+                    <p class="desc"></p>
+                  </header>
+
+                  <div class="about-profile">
+                    <div class="profile-grid">
+                      <div class="profile-left">
+                        <h2 class="about-section-title">
+                          <span class="about-section-prefix">&gt;&gt;</span> USER INFO
+                        </h2>
+                        <ul class="sysinfo-list">
+                          <li>
+                            <span class="k">loc</span><span class="c">:</span>
+                            <span class="v">
+                              <span class="ent">oxford</span>, <span class="muted">united kingdom</span>
+                            </span>
+                          </li>
+                          <li>
+                            <span class="k">role</span><span class="c">:</span>
+                            <span class="v">
+                              postdoctoral <span class="kw">researcher</span>
+                            </span>
+                          </li>
+                          <li>
+                            <span class="k">affil</span><span class="c">:</span>
+                            <span class="v">
+                              depart. of engineering sci., <span class="ent">university of oxford</span>
+                            </span>
+                          </li>
+                          <li>
+                            <span class="k">proj</span><span class="c">:</span>
+                            <span class="v">
+                              <span class="v">human-ai collaboration</span>
+                            </span>
+                          </li>
+                          <li>
+                            <span class="k">focus</span><span class="c">:</span>
+                            <span class="v">
+                              <span class="kw">lvlms</span> · <span class="ent">reasoning</span> · <span class="kw2">percept.</span>
+                            </span>
+                          </li>
+                          <li>
+                            <span class="k">email</span><span class="c">:</span>
+                            <span class="v">
+                              <span class="linkish">yuyuan dot liu@eng.ox.ac.uk</span>
+                            </span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </section>
 
-          <section class="about-panel about-panel--history history-col" aria-label="History timeline">
-            <h2 class="about-section-title about-profile-title-clone">
-              <span class="about-section-prefix">&gt;&gt;</span> HISTORY
-            </h2>
-            <div class="history-trace">
-              <pre class="trace-ascii-frame" aria-hidden="true">
+                <div class="history-col">
+                  <h2 class="about-section-title about-profile-title-clone">
+                    <span class="about-section-prefix">&gt;&gt;</span> HISTORY
+                  </h2>
+                  <!-- 三行蛇形軌跡 HISTORY -->
+                  <div class="history-trace">
+                    <!-- ASCII '+'' frame：用 <pre> 一次性畫完整邊框，左側與 '>' 結合成 old-school terminal prompt 風格 -->
+                      <pre class="trace-ascii-frame" aria-hidden="true">
 <span class="prompt">&gt;</span>
 <span class="prompt">&gt;</span> +++++++++++++++++++++++++++++++++++++++++++
 <span class="prompt">&gt;</span> +                                         +
@@ -206,85 +213,92 @@
 <span class="prompt">&gt;</span> +                                         +
 <span class="prompt">&gt;</span> +                                         +
 <span class="prompt">&gt;</span> +                                         +
-<span class="prompt">&gt;</span> +                                         +
-<span class="prompt">&gt;</span> +                                         +
-<span class="prompt">&gt;</span> +                                         +
 <span class="prompt">&gt;</span> +++++++++++++++++++++++++++++++++++++++++++
 </pre>
-              <div class="history-trace-overlay">
-                <svg class="history-trace-svg" viewbox="0 0 1000 220" preserveaspectratio="none" aria-hidden="true">
-                  <path class="trace-path" d="M 40 40
+                    <!-- 手机端用 .history-trace-overlay 整体下移 trace（0.5rem）；桌面 display:contents 不占布局 -->
+                    <div class="history-trace-overlay">
+                    <!-- connected serpentine path -->
+                    <svg class="history-trace-svg" viewbox="0 0 1000 220" preserveaspectratio="none" aria-hidden="true">
+                      <!-- main connected trace -->
+                      <path class="trace-path" d="M 40 40
                                L 960 40
                                L 960 110
                                L 40 110
                                L 40 180
                                L 550 180"></path>
-                  <path class="trace-arrow" d="M 550 180 L 630 180"></path>
-                  <path class="trace-arrow-head" d="M 630 180 L 598 174 L 598 186 Z"></path>
-                </svg>
+                      <!-- arrow + cursor：線段 550→610，箭頭尖在 630 指向右 -->
+                      <path class="trace-arrow" d="M 550 180 L 630 180"></path>
+                      <path class="trace-arrow-head" d="M 630 180 L 598 174 L 598 186 Z"></path>
+                    </svg>
 
-                <div class="trace-node piece" style="--node-left:15%;--node-top:calc(31.815% - 10px);">
-                  <div class="icon">♟</div>
-                  <div class="anno">2014<br>bsc start</div>
-                </div>
+                    <!-- pieces (experience) -->
+                    <div class="trace-node piece" style="--node-left:15%;--node-top:calc(31.815% - 10px);">
+                      <div class="icon">♟</div>  <!-- BSc: pawn -->
+                      <div class="anno">2014<br>bsc start</div>
+                    </div>
 
-                <div class="trace-node piece" style="--node-left:52%;--node-top:calc(31.815% - 10px);">
-                  <div class="icon">♟</div>
-                  <div class="anno">2019<br>hons</div>
-                </div>
+                    <div class="trace-node piece" style="--node-left:52%;--node-top:calc(31.815% - 10px);">
+                      <div class="icon">♟</div>  <!-- BSc (hons): pawn -->
+                      <div class="anno">2019<br>hons</div>
+                    </div>
 
-                <div class="trace-node flag" style="--node-left:56%;--node-top-flag:calc(27.27% - 28px);">
-                  <div class="icon">⚑</div>
-                  <div class="anno">University of Adelaide Alumni Scholarship (International)</div>
-                </div>
+                    <!-- 左側旗子：scholarship -->
+                    <div class="trace-node flag" style="--node-left:56%;--node-top-flag:calc(27.27% - 28px);">
+                      <div class="icon">⚑</div>
+                      <div class="anno">University of Adelaide Alumni Scholarship (International)</div>
+                    </div>
 
-                <div class="trace-node flag" style="--node-left:64%;--node-top-flag:calc(31.815% - 28px);">
-                  <div class="icon">⚑</div>
-                  <div class="anno">Finalist of Minister’s Research and Innovation Award (AI for Health)</div>
-                </div>
-                <div class="trace-node piece" style="--node-left:74%;--node-top:calc(31.815% - 10px);">
-                  <div class="icon">♞</div>
-                  <div class="anno">2021.1<br>phd start</div>
-                </div>
+                    <!-- 2019 hons 右側旗子：Finalist award -->
+                    <div class="trace-node flag" style="--node-left:64%;--node-top-flag:calc(31.815% - 28px);">
+                      <div class="icon">⚑</div>
+                      <div class="anno">Finalist of Minister’s Research and Innovation Award (AI for Health)</div>
+                    </div> 
+                    <div class="trace-node piece" style="--node-left:74%;--node-top:calc(31.815% - 10px);">
+                      <div class="icon">♞</div>  <!-- PhD start: knight -->
+                      <div class="anno">2021.1<br>phd start</div>    
+                    </div>
 
-                <div class="trace-node flag" style="--node-left:78%;--node-top-flag:calc(27.27% - 28px);">
-                  <div class="icon">⚑</div>
-                  <div class="anno">Computer &amp; Mathematical Sciences Divisional PhD Scholarship</div>
-                </div>
+                    <!-- 2021 phd start 右側旗子：Divisional PhD Scholarship -->
+                    <div class="trace-node flag" style="--node-left:78%;--node-top-flag:calc(27.27% - 28px);"> 
+                      <div class="icon">⚑</div>
+                      <div class="anno">Computer &amp; Mathematical Sciences Divisional PhD Scholarship</div>
+                    </div>
 
-                <div class="trace-node piece" style="--node-left:52%;--node-top:calc(54.54% - 10px);">
-                  <div class="icon">♞</div>
-                  <div class="anno">2024.6<br>phd finish</div>
-                </div>
+                    <div class="trace-node piece" style="--node-left:52%;--node-top:calc(54.54% - 10px);">
+                      <div class="icon">♞</div>  <!-- PhD finish: knight -->
+                      <div class="anno">2024.6<br>phd finish</div>
+                    </div>
 
-                <div class="trace-node piece" style="--node-left:22%;--node-top:calc(74.9925% - 10px);">
-                  <div class="icon">♜</div>
-                  <div class="anno">2024.11<br>postdoc</div>
-                </div>
+                    <div class="trace-node piece" style="--node-left:22%;--node-top:calc(74.9925% - 10px);">
+                      <div class="icon">♜</div>  <!-- Postdoc: rook -->
+                      <div class="anno">2024.11<br>postdoc</div>
+                    </div>
 
-                <div class="trace-node flag" style="--node-left:42%;--node-top-flag:calc(54.54% - 28px);">
-                  <div class="icon">⚑</div>
-                  <div class="anno">Receiver of Dean’s Commendation for Doctoral Thesis Excellence</div>
-                </div>
+                    <!-- 2024 PhD finish 附近旗子：Dean's commendation -->
+                    <div class="trace-node flag" style="--node-left:42%;--node-top-flag:calc(54.54% - 28px);">
+                      <div class="icon">⚑</div>
+                      <div class="anno">Receiver of Dean’s Commendation for Doctoral Thesis Excellence</div>
+                    </div>
 
-                <div class="trace-node flag" style="--node-left:25%;--node-top-flag:calc(70.4475% - 28px);">
-                  <div class="icon">⚑</div>
-                  <div class="anno">Funded by the Turing AI World-Leading Researcher (WLR) Fellowship</div>
-                </div>
+                    <div class="trace-node flag" style="--node-left:25%;--node-top-flag:calc(70.4475% - 28px);">
+                      <div class="icon">⚑</div>
+                      <div class="anno">Funded by the Turing AI World-Leading Researcher (WLR) Fellowship</div>
+                    </div>
 
-                <div class="trace-now" style="--node-left:74%;--node-top:calc(72.72% - 10px);--now-font-size:18px;">
-                  <span class="trace-now-label">Now!</span>
-                  <div class="trace-now-anno">"Open to Work"</div>
+                    <!-- end label：手動控制同 trace-node；hover 顯示 Open to Work! 彈窗 -->
+                    <div class="trace-now" style="--node-left:74%;--node-top:calc(72.72% - 10px);--now-font-size:18px;">
+                      <span class="trace-now-label">Now!</span>
+                      <div class="trace-now-anno">"Open to Work"</div>
+                    </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </section>
 
-          <div class="about-section about-intro">
-            
-            <article>
-              <div class="clearfix">
-                <p>
+              <article>
+                
+                <div class="clearfix">
+                  <p>
   I am a Postdoctoral Researcher at the Department of Engineering Science, <span class="mentor-name">University of Oxford</span>. Previously, I received my PhD from the Australian Institute for Machine Learning at the <span class="mentor-name">Adelaide University</span>, where I was fortunate to be supervised by Prof. Gustavo Carneiro, Prof. Vasileios Belagiannis, and Prof. Ian Reid. My research focuses on visual understanding and multimodal intelligence across natural images, point clouds, and medical imaging, with an emphasis on real-world challenges such as limited data, noisy labels, and OoD inputs.
   <span class="retro-highlight-line retro-with-prefix">Recently, I have been working on LVLMs, focusing on reasoning and multimodal perception for complex visual tasks through post-training.</span>
   <span class="inline-icon-cloud">
@@ -316,16 +330,15 @@
   <span class="retro-highlight-line">I build MLLMs better at truly seeing and reasoning about the visual world.</span>
 </p>
 
-              </div>
-            </article>
-          </div>
+                </div>
+              </article>
+            </div>
 
-          <div class="about-section about-news">
-            <h2 class="about-section-title">
-              <span class="about-section-prefix">&gt;&gt;</span>
-              <a href="/news/" style="color: inherit;">News</a>
-            </h2>
-                      <div class="news">
+            <div class="about-section about-news">
+              <h2 class="about-section-title">
+<span class="about-section-prefix">&gt;&gt;</span> <a href="/news/" style="color: inherit;">News</a>
+</h2>
+                        <div class="news">
             <div class="table-responsive" style="max-height: 60vw">
               <table class="table table-sm table-borderless">
               
@@ -368,23 +381,28 @@
               </table>
             </div>
           </div>
+            </div>
+
+            
           </div>
-          
-          <aside class="about-panel about-panel--publications about-section about-pubs" aria-label="Selected publications">
-            <h2 class="about-section-title">
-              <span class="about-section-prefix">&gt;&gt;</span> <span>Selected Publications</span>
-            </h2>
-            <div class="publications publications-two-cols">
-              <div class="pub-group pub-group-top">
-                <p class="pub-group-intro"><span class="pub-group-intro-mark">[*]</span> Multimodal learning and reasoning with foundation models.</p>
-                <div class="pub-tag-timeline" aria-label="upcoming publication tag timeline">
-                  <span class="pub-tag-item"><span class="tag tag-venue-cvpr">CVPR'26</span><span class="sep">----------</span></span>
-                  <span class="pub-tag-item"><span class="tag tag-venue-cvpr">CVPRF'26</span><span class="sep">--------</span></span>
-                  <span class="pub-tag-item"><span class="tag tag-venue-cvpr">Arxiv'26</span><span class="sep">-----------</span></span>
-                  <span class="pub-tag-item"><span class="tag tag-venue-cvpr">CVPR'24</span><span class="sep">--------------------------</span></span>
-                </div>
-                <div class="pub-mllm-papers-row">
-                  <ol class="bibliography">
+
+          <!-- Right: 三个主题框之三 = Selected Publications -->
+          <div class="col-md-6 about-right-col">
+            <div class="about-section about-pubs">
+              <h2 class="about-section-title">
+<span class="about-section-prefix">&gt;&gt;</span> <span>Selected Publications</span>
+</h2>
+              <div class="publications publications-two-cols">
+                <div class="pub-group pub-group-top">
+                  <p class="pub-group-intro"><span class="pub-group-intro-mark">[*]</span> Multimodal learning and reasoning with foundation models.</p>
+                  <div class="pub-tag-timeline" aria-label="upcoming publication tag timeline">
+                    <span class="pub-tag-item"><span class="tag tag-venue-cvpr">CVPR'26</span><span class="sep">----------</span></span>
+                    <span class="pub-tag-item"><span class="tag tag-venue-cvpr">CVPRF'26</span><span class="sep">--------</span></span>
+                    <span class="pub-tag-item"><span class="tag tag-venue-cvpr">Arxiv'26</span><span class="sep">-----------</span></span>
+                    <span class="pub-tag-item"><span class="tag tag-venue-cvpr">CVPR'24</span><span class="sep">--------------------------</span></span>
+                  </div>
+                  <div class="pub-mllm-papers-row">
+                    <ol class="bibliography">
 <li>
 <!-- _layouts/bib.html -->
       <div class="row">
@@ -599,23 +617,23 @@
       </div>
 </li>
 </ol>
-                  <div class="pub-mllm-sidebar-col">
-                    <p class="pub-mllm-code-epigraph" role="note">/* In progress, as always. */</p>
-                    <span class="ascii-face" aria-label="ASCII mood"></span>
+                    <div class="pub-mllm-sidebar-col">
+                      <p class="pub-mllm-code-epigraph" role="note">/* In progress, as always. */</p>
+                      <span class="ascii-face" aria-label="ASCII mood"></span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div class="pub-group pub-group-bottom">
-                <p class="pub-group-intro"><span class="pub-group-intro-mark">[*]</span> Robust learning under distribution shift and imperfect labels.</p>
-                <div class="pub-tag-timeline" aria-label="publication tag timeline">
-                  <span class="pub-tag-item"><span class="tag">TMI'25</span><span class="sep">------------</span></span>
-                  <span class="pub-tag-item"><span class="tag">ECCV'24</span><span class="sep">-----------</span></span>
-                  <span class="pub-tag-item"><span class="tag">ICCV'23</span><span class="sep">----------</span></span>
-                  <span class="pub-tag-item"><span class="tag">ECCV'22</span><span class="sep">----------</span></span>
-                  <span class="pub-tag-item"><span class="tag tag-venue-cvpr">CVPR'22</span><span class="sep">-------------------------</span></span>
-                </div>
-                <ol class="bibliography">
+                <div class="pub-group pub-group-bottom">
+                  <p class="pub-group-intro"><span class="pub-group-intro-mark">[*]</span> Robust learning under distribution shift and imperfect labels.</p>
+                  <div class="pub-tag-timeline" aria-label="publication tag timeline">
+                    <span class="pub-tag-item"><span class="tag">TMI'25</span><span class="sep">------------</span></span>
+                    <span class="pub-tag-item"><span class="tag">ECCV'24</span><span class="sep">-----------</span></span>
+                    <span class="pub-tag-item"><span class="tag">ICCV'23</span><span class="sep">----------</span></span>
+                    <span class="pub-tag-item"><span class="tag">ECCV'22</span><span class="sep">----------</span></span>
+                    <span class="pub-tag-item"><span class="tag tag-venue-cvpr">CVPR'22</span><span class="sep">-------------------------</span></span>
+                  </div>
+                  <ol class="bibliography">
 <li>
 <!-- _layouts/bib.html -->
       <div class="row">
@@ -890,9 +908,10 @@
       </div>
 </li>
 </ol>
+                </div>
               </div>
             </div>
-          </aside>
+          </div>
         </div>
       </div>
 
@@ -912,7 +931,7 @@
     </footer> -->
 
     <!-- 同步加载：在 inner 闭合后立即算高度，避免 absolute 画布 outer 高度为 0 的闪屏 -->
-    <script src="/assets/js/viewport-1180-fit.js?64935a36d5c0878e468c5f2372f8b3ce"></script>
+    <script src="/assets/js/viewport-1180-fit.js?9315436f0fc6d7a2bef73b9ead0b98b0"></script>
     <script defer src="/assets/js/pub-details-touch.js?6c58aef30352c34caf058fe4ff0146b9"></script>
 
     <!-- JavaScripts -->
