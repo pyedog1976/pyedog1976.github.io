@@ -2469,7 +2469,7 @@ body .post-header h1.post-title {
   }
 }
 
-/* ====== 16c) 键鼠固定 1180+横滚：视口 ≤767 时 Bootstrap col-md / .container 仍按视口断点；在内层强制桌面双栏与宽容器 ====== */
+/* ====== 16c) 键鼠固定 1180+横滚：仅 html.site-desktop-scroll-1180 时生效；该类由 viewport-1180-fit.js 仅在 vw≥768 且 <1180 时挂上，避免与手机 §16b 三叠冲突 ====== */
 @media (max-width: 767px) {
   html.site-desktop-scroll-1180 .row.about-side-by-side {
     flex-direction: row !important;
