@@ -2105,6 +2105,12 @@ body .post-header h1.post-title {
     overflow-x: hidden !important;
   }
 
+  /* 仅键鼠桌面窄窗口（html.site-desktop-scroll-1180）：解禁横向滚动，避免 §16a 的 body overflow-x 挡掉裁切后的横条；宽≥1180 不挂类，全局布局不变 */
+  html.site-desktop-scroll-1180,
+  html.site-desktop-scroll-1180 body {
+    overflow-x: auto !important;
+  }
+
   /* 导航在 #site-scale-inner 的 transform 内，已非视口 fixed；body 原 padding-top 只会在屏顶留黑条 */
   body.fixed-top-nav {
     padding-top: 0 !important;
