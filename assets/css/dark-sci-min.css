@@ -77,7 +77,7 @@ body.fixed-top-nav {
   z-index: 1;
 }
 
-/* 全站画布包裹层：键鼠桌面由 html.site-desktop-scroll-1180 固定 1180px 左上、不 scale+滚动（§16a-fine）；其余窄视口 §16a 为 scale 画布（JS 内联优先） */
+/* 全站画布包裹层：桌面不改动；窄于 1180px 时在 §16a 固定 1180px + scale（JS 内联优先）；§16a-fine 由 html.site-desktop-scroll-1180 控制键鼠桌面为滚动不换 scale */
 #site-scale-outer,
 #site-scale-inner {
   display: block;
@@ -2105,12 +2105,6 @@ body .post-header h1.post-title {
     overflow-x: hidden !important;
   }
 
-  /* 键鼠桌面固定 1180+裁切左上：允许视口级横向滚动，否则 body 的 overflow-x:hidden 会挡掉 #site-scale-outer 的滚动条 */
-  html.site-desktop-scroll-1180,
-  html.site-desktop-scroll-1180 body {
-    overflow-x: auto !important;
-  }
-
   /* 导航在 #site-scale-inner 的 transform 内，已非视口 fixed；body 原 padding-top 只会在屏顶留黑条 */
   body.fixed-top-nav {
     padding-top: 0 !important;
@@ -2177,8 +2171,8 @@ body .post-header h1.post-title {
   }
 }
 
-/* ====== 16a-fine) 键鼠桌面：固定 1180px 画幅左上、不整页 scale；窄视口由 §16a 配合 html overflow 解禁横向滚动；宽屏同规则（JS 在 maxTouchPoints===0 时挂类） ====== */
-@media (min-width: 768px) {
+/* ====== 16a-fine) 键鼠桌面窄视口：不整页 scale；由 JS 加 html.site-desktop-scroll-1180（含 Linux any-pointer / maxTouchPoints 回退，与媒体查询解耦） ====== */
+@media (max-width: 1179px) {
   html.site-desktop-scroll-1180 #site-scale-outer {
     width: 100%;
     max-width: 100%;
@@ -2189,8 +2183,8 @@ body .post-header h1.post-title {
   }
   html.site-desktop-scroll-1180 #site-scale-inner {
     position: relative;
-    top: 0;
-    left: 0;
+    top: auto;
+    left: auto;
     width: 1180px;
     min-width: 1180px;
     max-width: none;
