@@ -2171,40 +2171,17 @@ body .post-header h1.post-title {
   }
 }
 
-/* ====== 16a-fine) 键鼠桌面窄视口：固定 1180 左上、不 scale；仅此刻锁定视角——html/body 不滚，唯 #site-scale-outer 在视口内（顶栏下）横纵滚动 ====== */
+/* ====== 16a-fine) 键鼠桌面窄视口：固定 1180 左上、不 scale；外层相对定位 + 横向滚动（不用 fixed 锁 html，避免与 body padding / 进度条 / 双滚动冲突） ====== */
 @media (max-width: 1179px) {
-  html.site-desktop-scroll-1180,
-  html.site-desktop-scroll-1180 body {
-    height: 100%;
-    overflow: hidden !important;
-  }
-
-  /* 顶栏 fixed 在视口；滚动区从栏下开始，避免 body padding 与 fixed 叠出双空白 */
-  html.site-desktop-scroll-1180 body.fixed-top-nav {
-    padding-top: 0 !important;
-  }
-
   html.site-desktop-scroll-1180 #site-scale-outer {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 0;
-    width: auto !important;
-    max-width: none !important;
-    overflow: auto;
+    position: relative;
+    width: 100%;
+    max-width: 100%;
     overflow-x: auto;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    box-sizing: border-box;
-    background: var(--bg) !important;
+    overflow-y: visible;
+    height: auto;
     min-height: 0;
   }
-
-  html.site-desktop-scroll-1180 body.fixed-top-nav #site-scale-outer {
-    top: 3.75rem;
-  }
-
   html.site-desktop-scroll-1180 #site-scale-inner {
     position: relative;
     top: auto;
@@ -2216,6 +2193,9 @@ body .post-header h1.post-title {
     transform-origin: top left;
     -webkit-transform: none !important;
     transform: none !important;
+  }
+  html.site-desktop-scroll-1180 body.fixed-top-nav {
+    padding-top: 3.75rem !important;
   }
   /* Bootstrap .container 的 max-width 随视口变小，在固定 1180 内仍会把导航压成一条；按桌面内容宽放开 */
   html.site-desktop-scroll-1180 #site-scale-inner .container {

@@ -60,6 +60,29 @@
         }
       }
     } catch (e0) {}
+    /**
+     * 纯 coarse 触控机但视口已是「桌面窄窗」形态（宽 768–1179）时，同样走固定 1180+滚动，
+     * 避免整页 scale 把版面压糊。典型手机横屏：orientation landscape 且视口高度较小，仍走画布。
+     */
+    try {
+      var w =
+        window.innerWidth ||
+        document.documentElement.clientWidth ||
+        0;
+      var h =
+        window.innerHeight ||
+        document.documentElement.clientHeight ||
+        0;
+      if (w >= 768 && w < CANVAS_W && maxTouchPoints() > 0) {
+        var landscape = false;
+        try {
+          landscape = window.matchMedia('(orientation: landscape)').matches;
+        } catch (eOr) {}
+        if (!(landscape && h < 520)) {
+          return true;
+        }
+      }
+    } catch (eNarrowTouch) {}
     try {
       if (window.matchMedia('(any-pointer: fine)').matches) return true;
     } catch (e) {}
