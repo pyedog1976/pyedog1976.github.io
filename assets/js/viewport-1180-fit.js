@@ -70,14 +70,12 @@
   }
 
   /**
-   * 仅「视口 ≥768 且 <1180」的窄屏键鼠桌机挂 site-desktop-scroll-1180（§16a-fine / §16c）。
-   * 视口 ≤767 时绝不挂：否则 §16c 会盖过 §16b，手机三叠（Intro+News → 论文）被破坏。
+   * 键鼠桌面且视口 <1180：挂 site-desktop-scroll-1180（§16a-fine / §16c）。
+   * 勿要求 vw≥768：否则桌面窗口缩到 ≤767 仍会走 §16b 手机叠栏。
+   * 真手机（useScrollLayout=false）不挂类，§16b 不变。
    */
   function syncDesktopScrollClass(vwLayout) {
-    var on =
-      useScrollLayoutInsteadOfCanvas() &&
-      vwLayout < CANVAS_W &&
-      vwLayout >= 768;
+    var on = useScrollLayoutInsteadOfCanvas() && vwLayout < CANVAS_W;
     document.documentElement.classList.toggle(CLS_DESKTOP_SCROLL, on);
   }
 
