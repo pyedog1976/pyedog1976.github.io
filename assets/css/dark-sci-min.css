@@ -1866,12 +1866,8 @@ body > div,
     width: 100%;
     margin-left: 0;
     margin-right: 0;
-    overflow-x: visible;
-    overflow-y: hidden;
+    overflow: hidden;
     padding-bottom: 0.75rem;
-  }
-  html:not(.site-desktop-scroll-1180) .info-history-row .history-col {
-    overflow-x: visible;
   }
   html:not(.site-desktop-scroll-1180) .trace-node .anno { font-size: calc(11.5px * 0.95); }
 
@@ -1883,7 +1879,9 @@ body > div,
     margin-left: 0;
     margin-right: 0;
     transform-origin: top left;
-    /* 横向 scaleX 由 viewport-1180-fit.js（手机画布） */
+    transform: scaleX(1);
+    transform: scaleX(calc(100cqw / 48ch));
+    /* 窄栏先缩字号防溢出；栏宽于字框时由 scaleX>1 横向「补满」+ 框 */
     font-size: calc(11px * 0.95);
     font-size: min(calc(15px * 0.95), calc(100cqw / 46));
   }
@@ -2422,8 +2420,7 @@ html.site-desktop-scroll-1180 body.fixed-top-nav {
     width: 100% !important;
     margin-left: 0 !important;
     margin-right: 0 !important;
-    overflow-x: visible !important;
-    overflow-y: hidden !important;
+    overflow: hidden !important;
     padding-bottom: 0.75rem !important;
   }
   html:not(.site-desktop-scroll-1180) .trace-ascii-frame {
@@ -2435,6 +2432,8 @@ html.site-desktop-scroll-1180 body.fixed-top-nav {
     margin-left: 0 !important;
     margin-right: 0 !important;
     transform-origin: top left !important;
+    transform: scaleX(1) !important;
+    transform: scaleX(calc(100cqw / 48ch)) !important;
     font-size: calc(11px * 0.95);
     font-size: min(calc(15px * 0.95), calc(100cqw / 46));
   }
