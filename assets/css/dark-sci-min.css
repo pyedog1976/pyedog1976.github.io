@@ -2492,20 +2492,48 @@ html.site-desktop-scroll-1180 body.fixed-top-nav {
   }
 }
 
-/* ===== 键鼠桌面固定参考视口 1854px：outer 取景裁切；inner 禁 scale，宽由 JS 锁定 ===== */
-html.site-desktop-scroll-1180,
-html.site-desktop-scroll-1180 body {
-  overflow-x: auto !important;
+/* ===== 键鼠桌面固定参考视口 1854px：inner 禁 scale，宽由 JS 锁定 ===== */
+/* 宽屏：纵向在 body；窄屏：#site-scale-outer 单容器横纵滚，高度贴视口，滚轴角对齐 */
+@media (min-width: 1854px) {
+  html.site-desktop-scroll-1180,
+  html.site-desktop-scroll-1180 body {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+  html.site-desktop-scroll-1180 #site-scale-outer {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+  }
 }
 
-html.site-desktop-scroll-1180 #site-scale-outer {
-  position: relative !important;
-  width: 100% !important;
-  max-width: 100vw !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-  overflow-x: auto !important;
-  overflow-y: visible !important;
+@media (max-width: 1853px) {
+  html.site-desktop-scroll-1180,
+  html.site-desktop-scroll-1180 body {
+    overflow: hidden !important;
+    padding-bottom: 0 !important;
+  }
+  html.site-desktop-scroll-1180 body.fixed-top-nav #site-scale-outer {
+    height: calc(100dvh - 3.75rem);
+    max-height: calc(100dvh - 3.75rem);
+  }
+  html.site-desktop-scroll-1180 body:not(.fixed-top-nav) #site-scale-outer {
+    height: 100dvh;
+    max-height: 100dvh;
+  }
+  html.site-desktop-scroll-1180 #site-scale-outer {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    overflow: auto !important;
+  }
 }
 
 html.site-desktop-scroll-1180 #site-scale-inner {

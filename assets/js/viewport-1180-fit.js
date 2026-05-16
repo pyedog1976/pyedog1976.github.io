@@ -302,10 +302,22 @@
     outer.style.position = 'relative';
     outer.style.width = '100%';
     outer.style.maxWidth = '100vw';
-    outer.style.overflowX = center ? 'hidden' : 'auto';
-    outer.style.overflowY = 'visible';
     outer.style.boxSizing = 'border-box';
-    outer.style.height = '';
+    if (center) {
+      outer.style.overflowX = 'hidden';
+      outer.style.overflowY = 'visible';
+      outer.style.height = '';
+      outer.style.maxHeight = '';
+    } else {
+      outer.style.overflowX = 'auto';
+      outer.style.overflowY = 'auto';
+      var h =
+        'calc(100dvh - ' +
+        (document.body.classList.contains('fixed-top-nav') ? '3.75rem' : '0px') +
+        ')';
+      outer.style.height = h;
+      outer.style.maxHeight = h;
+    }
 
     inner.style.setProperty('width', DESKTOP_REF_W + 'px', 'important');
     inner.style.setProperty('min-width', DESKTOP_REF_W + 'px', 'important');
