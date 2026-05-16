@@ -213,6 +213,7 @@
           applyLayoutChainLocks(inner);
         }
         applyDesktopOuter(outer, inner, layoutViewportWidth());
+        scheduleNudgeHistoryAsciiFrameRight();
       });
     });
   }
@@ -378,6 +379,33 @@
     desktopCaptureAttempts = 0;
   }
 
+  /** 桌面：+ 框仅向右多 1rem（scaleX 锚点左上，不拉满栏宽） */
+  function nudgeHistoryAsciiFrameRight() {
+    var pre = document.querySelector('#site-scale-inner .trace-ascii-frame');
+    if (!pre) return;
+    if (!isDesktopClipBrowser()) {
+      pre.style.removeProperty('transform');
+      pre.style.removeProperty('-webkit-transform');
+      pre.style.removeProperty('transform-origin');
+      return;
+    }
+    pre.style.setProperty('transform', 'none', 'important');
+    pre.style.setProperty('-webkit-transform', 'none', 'important');
+    var w = pre.getBoundingClientRect().width;
+    if (w < 1) return;
+    var sx = (w + 16) / w;
+    var t = 'scaleX(' + sx + ')';
+    pre.style.setProperty('transform', t, 'important');
+    pre.style.setProperty('-webkit-transform', t, 'important');
+    pre.style.setProperty('transform-origin', 'top left', 'important');
+  }
+
+  function scheduleNudgeHistoryAsciiFrameRight() {
+    window.requestAnimationFrame(function () {
+      window.requestAnimationFrame(nudgeHistoryAsciiFrameRight);
+    });
+  }
+
   function applyDesktopRefCanvas(outer, inner) {
     var vw = layoutViewportWidth();
     syncDesktopScrollClass(true);
@@ -400,11 +428,13 @@
         applyLayoutChainLocks(inner);
       }
       applyDesktopOuter(outer, inner, vw);
+      scheduleNudgeHistoryAsciiFrameRight();
       return;
     }
 
     layoutLocked = false;
     scheduleDesktopCapture(inner);
+    scheduleNudgeHistoryAsciiFrameRight();
   }
 
   function update() {

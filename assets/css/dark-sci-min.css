@@ -2529,6 +2529,10 @@ html.site-desktop-scroll-1180 .post .about-side-by-side {
 }
 html.site-desktop-scroll-1180 .post .about-side-by-side .history-trace {
   height: 330px;
+  overflow: visible;
+}
+html.site-desktop-scroll-1180 .info-history-row .history-col {
+  overflow-x: visible;
 }
 html.site-desktop-scroll-1180 .container.mt-5:has(.about-side-by-side) {
   padding-top: 0.85rem !important;
