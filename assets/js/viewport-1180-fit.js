@@ -9,8 +9,8 @@
  *
  * 电脑固定 1180+滚动：优先 (any-pointer:fine)（外接鼠标/触控板在 Linux 上常只有 any 为 fine）；
  * 若媒体查询全否但 maxTouchPoints===0，按无触摸键鼠桌面回退（部分 Wayland/GTK 误报 hover/pointer）。
- * 桌面（视口 ≥768）：固定 1180 画布由 dark-sci-min.css 末尾 §99 强制，本脚本不 scale。
- * 手机（≤767）仍走画布 scale + §16b。
+ * 不走画布时在 html 上加 site-desktop-scroll-1180，与 CSS §16a-fine 一致。
+ * 纯触控机（仅 coarse、有触摸点）仍走画布 + visualViewport。
  */
 (function () {
   var CANVAS_W = 1180;
@@ -165,14 +165,9 @@
 
     var vwLayout = layoutViewportWidth();
     syncDesktopScrollClass(vwLayout);
-    clearCanvasStyles(outer, inner);
-
-    /* 桌面 ≥768：§99 CSS 固定 1180 + 裁切，禁止 JS scale */
-    if (!isPhoneLayout()) {
-      return;
-    }
 
     if (!needsCanvas()) {
+      clearCanvasStyles(outer, inner);
       return;
     }
 
