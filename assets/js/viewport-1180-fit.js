@@ -1,20 +1,11 @@
 /**
- * 窄视口（含 iPhone「请求桌面网站」、visualViewport）：在 #site-scale-inner 内固定 1180px 排版，
- * 用内联 transform 缩放到当前布局宽度；#site-scale-outer 高度 = scrollHeight * scale。
- * 不缩放 body。宽 >= 1180 时清除内联，恢复桌面。
- * 文件名避免含 “canvas” 以免部分广告拦截扩展误拦。
- *
- * 手机（CSS 宽 ≤767px）：双指缩放会改变 visualViewport，若仍用其 width 重算 scale，整页会「跟着缩」。
- * 此处改用 innerWidth，并忽略 visualViewport 的 resize，仅保留 window resize / 方向变化等。
- *
- * 电脑固定 1180+滚动：优先 (any-pointer:fine)（外接鼠标/触控板在 Linux 上常只有 any 为 fine）；
- * 若媒体查询全否但 maxTouchPoints===0，按无触摸键鼠桌面回退（部分 Wayland/GTK 误报 hover/pointer）。
- * 不走画布时在 html 上加 site-desktop-scroll-1180，与 CSS §16a-fine 一致。
- * 纯触控机（仅 coarse、有触摸点）仍走画布 + visualViewport。
+ * 手机（≤767 触控）：#site-scale-inner 1180px + scale 缩到视口（§16a + applyCanvasStyles）。
+ * 键鼠桌面：宽屏时实测并锁定 #site-scale-inner 宽度；变窄后只由 #site-scale-outer 裁切，不改内部布局。
  */
 (function () {
   var CANVAS_W = 1180;
   var CLS_DESKTOP_SCROLL = 'site-desktop-scroll-1180';
+  var frozenDesktopCanvasW = 0;
 
   function isPhoneLayout() {
     try {
@@ -24,7 +15,6 @@
     }
   }
 
-  /** 典型键鼠电脑：避免用 visualViewport.width 参与窄屏画布缩放 */
   function hasFinePointer() {
     try {
       return window.matchMedia('(pointer: fine)').matches;
@@ -43,11 +33,6 @@
     return 'ontouchstart' in window ? 1 : 0;
   }
 
-  /**
-   * 窄视口下用固定 1180+滚动、不用整页 scale。
-   * 典型纯触控手机仍走画布（避免接鼠标时 any-pointer:fine 误判）。
-   * any-pointer:fine 覆盖「主指针 coarse 但有鼠标」；maxTouchPoints===0 覆盖 Linux 上全误报为 coarse 的键鼠环境。
-   */
   function useScrollLayoutInsteadOfCanvas() {
     try {
       if (maxTouchPoints() > 0) {
@@ -69,13 +54,11 @@
     return maxTouchPoints() === 0;
   }
 
-  /**
-   * 键鼠桌面且视口 <1180：挂 site-desktop-scroll-1180（§16a-fine / §16c）。
-   * 勿要求 vw≥768：否则桌面窗口缩到 ≤767 仍会走 §16b 手机叠栏。
-   * 真手机（useScrollLayout=false）不挂类，§16b 不变。
-   */
   function syncDesktopScrollClass(vwLayout) {
-    var on = useScrollLayoutInsteadOfCanvas() && vwLayout < CANVAS_W;
+    var on =
+      useScrollLayoutInsteadOfCanvas() &&
+      !isPhoneLayout() &&
+      vwLayout < CANVAS_W;
     document.documentElement.classList.toggle(CLS_DESKTOP_SCROLL, on);
   }
 
@@ -110,6 +93,21 @@
     return layoutViewportWidth() < CANVAS_W;
   }
 
+  /** 宽屏时记录 inner 实际排版宽（≥1180 视口下与全屏桌面一致） */
+  function captureDesktopCanvasWidth(inner) {
+    if (!inner) return;
+    var rect = inner.getBoundingClientRect();
+    var w = Math.max(
+      CANVAS_W,
+      Math.round(rect.width) || 0,
+      inner.scrollWidth || 0,
+      inner.offsetWidth || 0
+    );
+    if (w > frozenDesktopCanvasW) {
+      frozenDesktopCanvasW = w;
+    }
+  }
+
   function clearCanvasStyles(outer, inner) {
     if (!outer || !inner) return;
     outer.style.height = '';
@@ -123,11 +121,29 @@
     inner.style.top = '';
     inner.style.left = '';
     inner.style.width = '';
+    inner.style.minWidth = '';
     inner.style.maxWidth = '';
+    inner.style.marginLeft = '';
     inner.style.boxSizing = '';
     inner.style.transformOrigin = '';
     inner.style.webkitTransform = '';
     inner.style.transform = '';
+  }
+
+  /** 仅设置 #site-scale-inner 锁定宽；子元素不改 */
+  function applyDesktopFrozenCanvas(inner) {
+    var w = frozenDesktopCanvasW || CANVAS_W;
+    inner.style.position = 'relative';
+    inner.style.top = '0';
+    inner.style.left = '0';
+    inner.style.marginLeft = '0';
+    inner.style.width = w + 'px';
+    inner.style.minWidth = w + 'px';
+    inner.style.maxWidth = 'none';
+    inner.style.boxSizing = 'border-box';
+    inner.style.transformOrigin = 'top left';
+    inner.style.webkitTransform = 'none';
+    inner.style.transform = 'none';
   }
 
   function applyCanvasStyles(outer, inner, vw) {
@@ -162,10 +178,29 @@
     if (!outer || !inner) return;
 
     var vwLayout = layoutViewportWidth();
+    var desktopClip = useScrollLayoutInsteadOfCanvas() && !isPhoneLayout();
+
+    if (desktopClip && vwLayout >= CANVAS_W) {
+      syncDesktopScrollClass(vwLayout);
+      clearCanvasStyles(outer, inner);
+      captureDesktopCanvasWidth(inner);
+      return;
+    }
+
+    if (desktopClip && vwLayout < CANVAS_W) {
+      if (frozenDesktopCanvasW === 0) {
+        frozenDesktopCanvasW = CANVAS_W;
+      }
+      syncDesktopScrollClass(vwLayout);
+      clearCanvasStyles(outer, inner);
+      applyDesktopFrozenCanvas(inner);
+      return;
+    }
+
     syncDesktopScrollClass(vwLayout);
+    clearCanvasStyles(outer, inner);
 
     if (!needsCanvas()) {
-      clearCanvasStyles(outer, inner);
       return;
     }
 
@@ -202,13 +237,31 @@
     var inner = document.getElementById('site-scale-inner');
     if (inner && typeof ResizeObserver !== 'undefined') {
       var ro = new ResizeObserver(function () {
+        if (
+          useScrollLayoutInsteadOfCanvas() &&
+          !isPhoneLayout() &&
+          layoutViewportWidth() >= CANVAS_W
+        ) {
+          captureDesktopCanvasWidth(inner);
+        }
         window.requestAnimationFrame(update);
       });
       ro.observe(inner);
     }
 
     window.addEventListener('load', function () {
-      window.requestAnimationFrame(update);
+      window.requestAnimationFrame(function () {
+        update();
+        var innerEl = document.getElementById('site-scale-inner');
+        if (
+          innerEl &&
+          useScrollLayoutInsteadOfCanvas() &&
+          layoutViewportWidth() >= CANVAS_W
+        ) {
+          captureDesktopCanvasWidth(innerEl);
+          update();
+        }
+      });
     });
   }
 
