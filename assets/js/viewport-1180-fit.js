@@ -9,8 +9,9 @@
  *
  * 电脑固定 1180+滚动：优先 (any-pointer:fine)（外接鼠标/触控板在 Linux 上常只有 any 为 fine）；
  * 若媒体查询全否但 maxTouchPoints===0，按无触摸键鼠桌面回退（部分 Wayland/GTK 误报 hover/pointer）。
- * 不走画布时在 html 上加 site-desktop-scroll-1180，与 CSS §16a-fine 一致。
+ * 不走画布时在 html 上加 site-desktop-scroll-1180，与 CSS §16a-fine 一致（1180 固定宽 + 视口裁切，不 scale）。
  * 纯触控机（仅 coarse、有触摸点）仍走画布 + visualViewport。
+ * 视口 768–1179 且键鼠：§16a 的 scale 不生效（html:not(.site-desktop-scroll-1180)），避免与 fine 路径冲突。
  */
 (function () {
   var CANVAS_W = 1180;
@@ -130,6 +131,7 @@
     inner.style.transformOrigin = '';
     inner.style.webkitTransform = '';
     inner.style.transform = '';
+    inner.style.marginLeft = '';
   }
 
   function applyCanvasStyles(outer, inner, vw) {
