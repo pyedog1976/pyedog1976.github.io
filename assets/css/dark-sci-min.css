@@ -2529,14 +2529,6 @@ html.site-desktop-scroll-1180 .post .about-side-by-side {
 }
 html.site-desktop-scroll-1180 .post .about-side-by-side .history-trace {
   height: 330px;
-  overflow: hidden;
-}
-html.site-desktop-scroll-1180 .trace-ascii-frame {
-  display: block;
-  width: max-content;
-  max-width: none;
-  white-space: pre;
-  font-size: calc(15px * 0.95) !important;
 }
 html.site-desktop-scroll-1180 .container.mt-5:has(.about-side-by-side) {
   padding-top: 0.85rem !important;
