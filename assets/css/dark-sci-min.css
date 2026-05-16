@@ -2501,9 +2501,17 @@ html.site-desktop-scroll-1180 .publications-two-cols .pub-details {
     transform-origin: top left !important;
   }
 
-  /* 避免 viewport<768 时 Bootstrap/§16b 把双栏打成单列；宽度由 JS 快照像素锁定 */
+  /*
+   * 桌面裁剪模式：不依赖 viewport 的 @media (min-width:768)，强制双栏行方向。
+   * 各层像素宽由 JS mergeLayoutSnap 锁定，不在此写 container/col 的 width。
+   */
   html.site-desktop-scroll-1180 #site-scale-inner .about-side-by-side {
     flex-direction: row !important;
     flex-wrap: nowrap !important;
+  }
+
+  html.site-desktop-scroll-1180 #site-scale-inner .about-side-by-side .about-left-col,
+  html.site-desktop-scroll-1180 #site-scale-inner .about-side-by-side .about-right-col {
+    flex-shrink: 0 !important;
   }
 }

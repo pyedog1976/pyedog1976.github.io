@@ -1,13 +1,12 @@
 /**
  * 手机（≤767 触控）：1180px 画布 + scale（§16a）。
- * 键鼠桌面：宽屏快照父链像素宽；变窄后仅 #site-scale-outer 裁切，子树宽度不再随 viewport 变。
+ * 键鼠桌面：快照父链最大像素宽（仅 merge 变宽、不在窄视口重采），窄窗只裁切 #site-scale-outer。
  */
 (function () {
   var CANVAS_W = 1180;
   var CLS_DESKTOP_SCROLL = 'site-desktop-scroll-1180';
   var ATTR_FROZEN = 'data-desktop-layout-frozen';
 
-  /** 与 About 页黄框相关的父链（自上而下） */
   var LAYOUT_CHAIN = [
     { key: 'inner', find: function (root) { return root; } },
     {
@@ -150,9 +149,22 @@
     return Math.round(el.getBoundingClientRect().width) || 0;
   }
 
-  /** 宽屏自然排版下快照父链宽度 */
-  function captureLayoutChain(inner) {
-    if (!inner) return;
+  /** 只增不减：避免在窄视口重采把 723 覆盖成 563 */
+  function mergeLayoutSnap(snap) {
+    if (!snap || !snap.intro || !snap.pubs) return;
+    if (!frozenLayout) {
+      frozenLayout = snap;
+      return;
+    }
+    var k;
+    for (k in snap) {
+      if (snap.hasOwnProperty(k) && snap[k] > (frozenLayout[k] || 0)) {
+        frozenLayout[k] = snap[k];
+      }
+    }
+  }
+
+  function readLayoutSnap(inner) {
     var snap = {};
     var i;
     for (i = 0; i < LAYOUT_CHAIN.length; i++) {
@@ -162,8 +174,14 @@
       var w = measureW(el);
       if (w > 0) snap[item.key] = w;
     }
-    if (!snap.inner || snap.inner < CANVAS_W) return;
-    frozenLayout = snap;
+    return snap;
+  }
+
+  function captureLayoutChain(inner) {
+    if (!inner || layoutLocked) return;
+    var snap = readLayoutSnap(inner);
+    if (!snap.inner || snap.inner < 400) return;
+    mergeLayoutSnap(snap);
   }
 
   function setFrozenBox(el, w, opts) {
@@ -207,31 +225,8 @@
     layoutLocked = false;
   }
 
-  /**
-   * 未先经过宽屏时：在 site-desktop-scroll-1180 + inner=1180 下快照（仍受 viewport 断点影响，配合 CSS 保持双栏）
-   */
-  function captureLayoutChainAt1180(inner, done) {
-    if (!inner) {
-      if (done) done();
-      return;
-    }
-    syncDesktopScrollClass(CANVAS_W - 1, true);
-    inner.style.width = CANVAS_W + 'px';
-    inner.style.minWidth = CANVAS_W + 'px';
-    inner.style.maxWidth = 'none';
-    window.requestAnimationFrame(function () {
-      window.requestAnimationFrame(function () {
-        captureLayoutChain(inner);
-        inner.style.width = '';
-        inner.style.minWidth = '';
-        inner.style.maxWidth = '';
-        if (done) done();
-      });
-    });
-  }
-
   function applyLayoutChainLocks(inner) {
-    if (!inner || !frozenLayout) return;
+    if (!inner || !frozenLayout || !frozenLayout.intro) return;
     var snap = frozenLayout;
 
     setFrozenBox(inner, snap.inner);
@@ -323,19 +318,20 @@
     if (desktopClip && vwLayout < CANVAS_W) {
       syncDesktopScrollClass(vwLayout, true);
       clearCanvasStyles(outer, inner);
-      if (frozenLayout) {
-        applyLayoutChainLocks(inner);
-        return;
+
+      if (!layoutLocked) {
+        captureLayoutChain(inner);
       }
-      captureLayoutChainAt1180(inner, function () {
-        if (frozenLayout) {
-          applyLayoutChainLocks(inner);
-        } else {
-          setFrozenBox(inner, CANVAS_W);
-          inner.style.setProperty('transform', 'none', 'important');
-          inner.style.setProperty('-webkit-transform', 'none', 'important');
-        }
-      });
+
+      if (frozenLayout && frozenLayout.intro) {
+        applyLayoutChainLocks(inner);
+      } else {
+        inner.style.setProperty('width', CANVAS_W + 'px', 'important');
+        inner.style.setProperty('min-width', CANVAS_W + 'px', 'important');
+        inner.style.setProperty('max-width', 'none', 'important');
+        inner.style.setProperty('transform', 'none', 'important');
+        inner.style.setProperty('-webkit-transform', 'none', 'important');
+      }
       return;
     }
 
@@ -381,11 +377,7 @@
     if (inner && typeof ResizeObserver !== 'undefined') {
       var ro = new ResizeObserver(function () {
         if (layoutLocked) return;
-        if (
-          useScrollLayoutInsteadOfCanvas() &&
-          !isPhoneLayout() &&
-          layoutViewportWidth() >= CANVAS_W
-        ) {
+        if (useScrollLayoutInsteadOfCanvas() && !isPhoneLayout()) {
           captureLayoutChain(inner);
         }
       });
@@ -395,18 +387,36 @@
     window.addEventListener('load', function () {
       window.requestAnimationFrame(function () {
         update();
-        var innerEl = document.getElementById('site-scale-inner');
-        if (
-          innerEl &&
-          useScrollLayoutInsteadOfCanvas() &&
-          !isPhoneLayout() &&
-          layoutViewportWidth() >= CANVAS_W
-        ) {
-          captureLayoutChain(innerEl);
-        }
       });
     });
   }
+
+  /** 诊断：找父链上第一个宽度随 viewport 变的节点 */
+  function debugLayoutChain() {
+    var inner = document.getElementById('site-scale-inner');
+    if (!inner) return [];
+    var rows = [];
+    var i;
+    for (i = 0; i < LAYOUT_CHAIN.length; i++) {
+      var item = LAYOUT_CHAIN[i];
+      var el = item.find(inner);
+      rows.push({
+        key: item.key,
+        width: el ? measureW(el) : null,
+        frozen: el ? el.getAttribute(ATTR_FROZEN) : null,
+        cssWidth: el ? getComputedStyle(el).width : null,
+      });
+    }
+    rows.push({
+      key: '_frozenLayout',
+      snap: frozenLayout,
+      vw: layoutViewportWidth(),
+      classOn: document.documentElement.classList.contains(CLS_DESKTOP_SCROLL),
+    });
+    return rows;
+  }
+
+  window.debugLayoutChain = debugLayoutChain;
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
