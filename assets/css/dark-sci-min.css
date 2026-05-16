@@ -2527,8 +2527,24 @@ html.site-desktop-scroll-1180 .about-right-col > .about-section.about-pubs {
 html.site-desktop-scroll-1180 .post .about-side-by-side {
   --pub-card-width: calc(248px * 0.95);
 }
+/* HISTORY：+ 框随栏宽 scaleX，与 SVG 同宽（固定 1854 画布下栏变宽时必需） */
+html.site-desktop-scroll-1180 .info-history-row .history-col {
+  container-type: inline-size;
+  container-name: hcol;
+}
 html.site-desktop-scroll-1180 .post .about-side-by-side .history-trace {
-  height: 330px;
+  height: auto;
+  min-height: 330px;
+  overflow: hidden;
+}
+html.site-desktop-scroll-1180 .trace-ascii-frame {
+  display: block;
+  width: max-content;
+  max-width: none;
+  white-space: pre;
+  transform-origin: top left;
+  transform: scaleX(calc(100cqw / 48ch));
+  font-size: min(calc(15px * 0.95), calc(100cqw / 46));
 }
 html.site-desktop-scroll-1180 .container.mt-5:has(.about-side-by-side) {
   padding-top: 0.85rem !important;
