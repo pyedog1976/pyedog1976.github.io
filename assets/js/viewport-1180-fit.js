@@ -1,11 +1,61 @@
 /**
- * 手机（≤767 触控）：#site-scale-inner 1180px + scale 缩到视口（§16a + applyCanvasStyles）。
- * 键鼠桌面：宽屏时实测并锁定 #site-scale-inner 宽度；变窄后只由 #site-scale-outer 裁切，不改内部布局。
+ * 手机（≤767 触控）：1180px 画布 + scale（§16a）。
+ * 键鼠桌面：宽屏快照父链像素宽；变窄后仅 #site-scale-outer 裁切，子树宽度不再随 viewport 变。
  */
 (function () {
   var CANVAS_W = 1180;
   var CLS_DESKTOP_SCROLL = 'site-desktop-scroll-1180';
-  var frozenDesktopCanvasW = 0;
+  var ATTR_FROZEN = 'data-desktop-layout-frozen';
+
+  /** 与 About 页黄框相关的父链（自上而下） */
+  var LAYOUT_CHAIN = [
+    { key: 'inner', find: function (root) { return root; } },
+    {
+      key: 'container',
+      find: function (root) {
+        return root.querySelector(':scope > .container.mt-5');
+      },
+    },
+    {
+      key: 'post',
+      find: function (root) {
+        return root.querySelector('.container.mt-5 > .post');
+      },
+    },
+    {
+      key: 'row',
+      find: function (root) {
+        return root.querySelector('.about-side-by-side');
+      },
+    },
+    {
+      key: 'leftCol',
+      find: function (root) {
+        return root.querySelector('.about-left-col');
+      },
+    },
+    {
+      key: 'rightCol',
+      find: function (root) {
+        return root.querySelector('.about-right-col');
+      },
+    },
+    {
+      key: 'intro',
+      find: function (root) {
+        return root.querySelector('.about-section.about-intro');
+      },
+    },
+    {
+      key: 'pubs',
+      find: function (root) {
+        return root.querySelector('.about-section.about-pubs');
+      },
+    },
+  ];
+
+  var frozenLayout = null;
+  var layoutLocked = false;
 
   function isPhoneLayout() {
     try {
@@ -54,11 +104,13 @@
     return maxTouchPoints() === 0;
   }
 
-  function syncDesktopScrollClass(vwLayout) {
-    var on =
-      useScrollLayoutInsteadOfCanvas() &&
-      !isPhoneLayout() &&
-      vwLayout < CANVAS_W;
+  function syncDesktopScrollClass(vwLayout, on) {
+    if (typeof on !== 'boolean') {
+      on =
+        useScrollLayoutInsteadOfCanvas() &&
+        !isPhoneLayout() &&
+        vwLayout < CANVAS_W;
+    }
     document.documentElement.classList.toggle(CLS_DESKTOP_SCROLL, on);
   }
 
@@ -93,19 +145,113 @@
     return layoutViewportWidth() < CANVAS_W;
   }
 
-  /** 宽屏时记录 inner 实际排版宽（≥1180 视口下与全屏桌面一致） */
-  function captureDesktopCanvasWidth(inner) {
+  function measureW(el) {
+    if (!el) return 0;
+    return Math.round(el.getBoundingClientRect().width) || 0;
+  }
+
+  /** 宽屏自然排版下快照父链宽度 */
+  function captureLayoutChain(inner) {
     if (!inner) return;
-    var rect = inner.getBoundingClientRect();
-    var w = Math.max(
-      CANVAS_W,
-      Math.round(rect.width) || 0,
-      inner.scrollWidth || 0,
-      inner.offsetWidth || 0
-    );
-    if (w > frozenDesktopCanvasW) {
-      frozenDesktopCanvasW = w;
+    var snap = {};
+    var i;
+    for (i = 0; i < LAYOUT_CHAIN.length; i++) {
+      var item = LAYOUT_CHAIN[i];
+      var el = item.find(inner);
+      if (!el) continue;
+      var w = measureW(el);
+      if (w > 0) snap[item.key] = w;
     }
+    if (!snap.inner || snap.inner < CANVAS_W) return;
+    frozenLayout = snap;
+  }
+
+  function setFrozenBox(el, w, opts) {
+    if (!el || !w) return;
+    el.setAttribute(ATTR_FROZEN, '1');
+    el.style.setProperty('box-sizing', 'border-box', 'important');
+    el.style.setProperty('width', w + 'px', 'important');
+    el.style.setProperty('min-width', w + 'px', 'important');
+    el.style.setProperty('max-width', w + 'px', 'important');
+    el.style.setProperty('flex-shrink', '0', 'important');
+    if (opts && opts.flexBasis) {
+      el.style.setProperty('flex', '0 0 ' + w + 'px', 'important');
+    }
+    if (opts && opts.row) {
+      el.style.setProperty('display', 'flex', 'important');
+      el.style.setProperty('flex-direction', 'row', 'important');
+      el.style.setProperty('flex-wrap', 'nowrap', 'important');
+    }
+  }
+
+  function clearFrozenBox(el) {
+    if (!el) return;
+    el.removeAttribute(ATTR_FROZEN);
+    el.style.removeProperty('box-sizing');
+    el.style.removeProperty('width');
+    el.style.removeProperty('min-width');
+    el.style.removeProperty('max-width');
+    el.style.removeProperty('flex-shrink');
+    el.style.removeProperty('flex');
+    el.style.removeProperty('display');
+    el.style.removeProperty('flex-direction');
+    el.style.removeProperty('flex-wrap');
+  }
+
+  function clearLayoutChainLocks(inner) {
+    if (!inner) return;
+    var i;
+    for (i = 0; i < LAYOUT_CHAIN.length; i++) {
+      clearFrozenBox(LAYOUT_CHAIN[i].find(inner));
+    }
+    layoutLocked = false;
+  }
+
+  /**
+   * 未先经过宽屏时：在 site-desktop-scroll-1180 + inner=1180 下快照（仍受 viewport 断点影响，配合 CSS 保持双栏）
+   */
+  function captureLayoutChainAt1180(inner, done) {
+    if (!inner) {
+      if (done) done();
+      return;
+    }
+    syncDesktopScrollClass(CANVAS_W - 1, true);
+    inner.style.width = CANVAS_W + 'px';
+    inner.style.minWidth = CANVAS_W + 'px';
+    inner.style.maxWidth = 'none';
+    window.requestAnimationFrame(function () {
+      window.requestAnimationFrame(function () {
+        captureLayoutChain(inner);
+        inner.style.width = '';
+        inner.style.minWidth = '';
+        inner.style.maxWidth = '';
+        if (done) done();
+      });
+    });
+  }
+
+  function applyLayoutChainLocks(inner) {
+    if (!inner || !frozenLayout) return;
+    var snap = frozenLayout;
+
+    setFrozenBox(inner, snap.inner);
+    setFrozenBox(LAYOUT_CHAIN[1].find(inner), snap.container);
+    setFrozenBox(LAYOUT_CHAIN[2].find(inner), snap.post);
+    setFrozenBox(LAYOUT_CHAIN[3].find(inner), snap.row, { row: true });
+    setFrozenBox(LAYOUT_CHAIN[4].find(inner), snap.leftCol, { flexBasis: true });
+    setFrozenBox(LAYOUT_CHAIN[5].find(inner), snap.rightCol, { flexBasis: true });
+    setFrozenBox(LAYOUT_CHAIN[6].find(inner), snap.intro);
+    setFrozenBox(LAYOUT_CHAIN[7].find(inner), snap.pubs);
+
+    inner.style.setProperty('position', 'relative', 'important');
+    inner.style.setProperty('top', '0', 'important');
+    inner.style.setProperty('left', '0', 'important');
+    inner.style.setProperty('margin-left', '0', 'important');
+    inner.style.setProperty('transform', 'none', 'important');
+    inner.style.setProperty('-webkit-transform', 'none', 'important');
+    inner.style.setProperty('transform-origin', 'top left', 'important');
+
+    layoutLocked = true;
   }
 
   function clearCanvasStyles(outer, inner) {
@@ -117,33 +263,19 @@
     outer.style.overflowY = '';
     outer.style.position = '';
     outer.style.boxSizing = '';
-    inner.style.position = '';
-    inner.style.top = '';
-    inner.style.left = '';
-    inner.style.width = '';
-    inner.style.minWidth = '';
-    inner.style.maxWidth = '';
-    inner.style.marginLeft = '';
-    inner.style.boxSizing = '';
-    inner.style.transformOrigin = '';
-    inner.style.webkitTransform = '';
-    inner.style.transform = '';
-  }
-
-  /** 仅设置 #site-scale-inner 锁定宽；子元素不改 */
-  function applyDesktopFrozenCanvas(inner) {
-    var w = frozenDesktopCanvasW || CANVAS_W;
-    inner.style.position = 'relative';
-    inner.style.top = '0';
-    inner.style.left = '0';
-    inner.style.marginLeft = '0';
-    inner.style.width = w + 'px';
-    inner.style.minWidth = w + 'px';
-    inner.style.maxWidth = 'none';
-    inner.style.boxSizing = 'border-box';
-    inner.style.transformOrigin = 'top left';
-    inner.style.webkitTransform = 'none';
-    inner.style.transform = 'none';
+    if (!layoutLocked) {
+      inner.style.position = '';
+      inner.style.top = '';
+      inner.style.left = '';
+      inner.style.width = '';
+      inner.style.minWidth = '';
+      inner.style.maxWidth = '';
+      inner.style.marginLeft = '';
+      inner.style.boxSizing = '';
+      inner.style.transformOrigin = '';
+      inner.style.webkitTransform = '';
+      inner.style.transform = '';
+    }
   }
 
   function applyCanvasStyles(outer, inner, vw) {
@@ -181,23 +313,34 @@
     var desktopClip = useScrollLayoutInsteadOfCanvas() && !isPhoneLayout();
 
     if (desktopClip && vwLayout >= CANVAS_W) {
-      syncDesktopScrollClass(vwLayout);
+      syncDesktopScrollClass(vwLayout, false);
+      clearLayoutChainLocks(inner);
       clearCanvasStyles(outer, inner);
-      captureDesktopCanvasWidth(inner);
+      captureLayoutChain(inner);
       return;
     }
 
     if (desktopClip && vwLayout < CANVAS_W) {
-      if (frozenDesktopCanvasW === 0) {
-        frozenDesktopCanvasW = CANVAS_W;
-      }
-      syncDesktopScrollClass(vwLayout);
+      syncDesktopScrollClass(vwLayout, true);
       clearCanvasStyles(outer, inner);
-      applyDesktopFrozenCanvas(inner);
+      if (frozenLayout) {
+        applyLayoutChainLocks(inner);
+        return;
+      }
+      captureLayoutChainAt1180(inner, function () {
+        if (frozenLayout) {
+          applyLayoutChainLocks(inner);
+        } else {
+          setFrozenBox(inner, CANVAS_W);
+          inner.style.setProperty('transform', 'none', 'important');
+          inner.style.setProperty('-webkit-transform', 'none', 'important');
+        }
+      });
       return;
     }
 
     syncDesktopScrollClass(vwLayout);
+    clearLayoutChainLocks(inner);
     clearCanvasStyles(outer, inner);
 
     if (!needsCanvas()) {
@@ -237,14 +380,14 @@
     var inner = document.getElementById('site-scale-inner');
     if (inner && typeof ResizeObserver !== 'undefined') {
       var ro = new ResizeObserver(function () {
+        if (layoutLocked) return;
         if (
           useScrollLayoutInsteadOfCanvas() &&
           !isPhoneLayout() &&
           layoutViewportWidth() >= CANVAS_W
         ) {
-          captureDesktopCanvasWidth(inner);
+          captureLayoutChain(inner);
         }
-        window.requestAnimationFrame(update);
       });
       ro.observe(inner);
     }
@@ -256,10 +399,10 @@
         if (
           innerEl &&
           useScrollLayoutInsteadOfCanvas() &&
+          !isPhoneLayout() &&
           layoutViewportWidth() >= CANVAS_W
         ) {
-          captureDesktopCanvasWidth(innerEl);
-          update();
+          captureLayoutChain(innerEl);
         }
       });
     });
