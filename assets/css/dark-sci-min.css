@@ -529,14 +529,14 @@ tbody td {
   min-height: 0;
 }
 
-/* 桌面端：寬度比例 + 強制同列等高（nowrap + 雙欄皆 stretch） */
+/* 桌面端：寬度比例 + 強制同列等高（nowrap + 雙欄皆 stretch）；1854 固定画布见 html.site-desktop-scroll-1180 末尾 */
 @media (min-width: 768px) {
-  .about-side-by-side {
+  html:not(.site-desktop-scroll-1180) .about-side-by-side {
     flex-wrap: nowrap;
     align-items: stretch;
   }
 
-  .about-side-by-side .about-left-col {
+  html:not(.site-desktop-scroll-1180) .about-side-by-side .about-left-col {
     flex: 0 0 48%;
     max-width: 48%;
     display: flex;
@@ -545,7 +545,7 @@ tbody td {
     min-height: 0;
   }
 
-  .about-side-by-side .about-right-col {
+  html:not(.site-desktop-scroll-1180) .about-side-by-side .about-right-col {
     flex: 0 0 52%;
     max-width: 52%;
     align-self: stretch;
@@ -555,18 +555,18 @@ tbody td {
 
   /* 桌面：双栏一起略缩纵向——左 HISTORY 轨迹 320px；左右首块 about-section 内边距对称略收；右栏 pub 组间距略减（等高 stretch 时整体变矮） */
   /* 右栏高度主要由横向快照 img.preview（--pub-card-width 定宽后按比例出高）撑开，在此略收窄快照宽度使整行一起变矮 */
-  .post .about-side-by-side {
+  html:not(.site-desktop-scroll-1180) .post .about-side-by-side {
     --pub-card-width: calc(248px * 0.95);
   }
-  .post .about-side-by-side .history-trace {
+  html:not(.site-desktop-scroll-1180) .post .about-side-by-side .history-trace {
     height: 330px;
   }
-  .post .about-side-by-side .about-left-col > .about-section.about-intro,
-  .post .about-side-by-side .about-right-col > .about-section.about-pubs {
+  html:not(.site-desktop-scroll-1180) .post .about-side-by-side .about-left-col > .about-section.about-intro,
+  html:not(.site-desktop-scroll-1180) .post .about-side-by-side .about-right-col > .about-section.about-pubs {
     padding: 0.8rem 1.1rem 0.8rem 1.1rem !important;
     margin-bottom: 0.95rem;
   }
-  .post .about-side-by-side .about-section.about-pubs .publications-two-cols .pub-group {
+  html:not(.site-desktop-scroll-1180) .post .about-side-by-side .about-section.about-pubs .publications-two-cols .pub-group {
     margin-bottom: 0.65rem;
   }
 }
@@ -1291,7 +1291,7 @@ footer,
   padding-top: 0.25rem !important;
 }
 @media (min-width: 768px) {
-  .container.mt-5:has(.about-side-by-side) {
+  html:not(.site-desktop-scroll-1180) .container.mt-5:has(.about-side-by-side) {
     padding-top: 0.85rem !important;
   }
 }
@@ -2480,7 +2480,7 @@ html.site-desktop-scroll-1180 body.fixed-top-nav {
 
 /* 视口 >767 且 ≤991（如 iPhone「请求桌面网站」常见 ~980px）时 §16b 不命中；至少取消右栏 pubs 的 min-height:100% 拉伸 */
 @media (min-width: 768px) and (max-width: 991px) {
-  .about-right-col > .about-section.about-pubs {
+  html:not(.site-desktop-scroll-1180) .about-right-col > .about-section.about-pubs {
     min-height: 0 !important;
   }
 }
@@ -2518,4 +2518,18 @@ html.site-desktop-scroll-1180 #site-scale-inner .about-side-by-side {
 html.site-desktop-scroll-1180 #site-scale-inner .about-side-by-side .about-left-col,
 html.site-desktop-scroll-1180 #site-scale-inner .about-side-by-side .about-right-col {
   flex-shrink: 0 !important;
+}
+
+/* 固定画布：勿随视口 768/991 切换 min-height、论文卡宽（窄窗 ~500 时易抖一下） */
+html.site-desktop-scroll-1180 .about-right-col > .about-section.about-pubs {
+  min-height: 0 !important;
+}
+html.site-desktop-scroll-1180 .post .about-side-by-side {
+  --pub-card-width: calc(248px * 0.95);
+}
+html.site-desktop-scroll-1180 .post .about-side-by-side .history-trace {
+  height: 330px;
+}
+html.site-desktop-scroll-1180 .container.mt-5:has(.about-side-by-side) {
+  padding-top: 0.85rem !important;
 }
