@@ -2460,12 +2460,22 @@ html.site-desktop-scroll-1180 body.fixed-top-nav {
   }
 }
 
-/* 固定 1180+横滚的键鼠桌面：Linux 常 match (pointer:coarse)，仍应显示论文气泡（与桌面一致） */
-html.site-desktop-scroll-1180 .publications-two-cols .pub-details {
-  display: block !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: auto !important;
+/*
+ * 键鼠桌面（site-desktop-scroll-1180 常开）：仅撤销 §17 在 coarse/hover:none 下
+ * 对气泡的「永久隐藏」；仍只在 li:hover 或 .is-open 时显示（勿全员 opacity:1）。
+ */
+@media (hover: none), (pointer: coarse) {
+  html.site-desktop-scroll-1180 .publications-two-cols ol.bibliography > li .pub-details {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+  html.site-desktop-scroll-1180 .publications-two-cols ol.bibliography > li:hover .pub-details,
+  html.site-desktop-scroll-1180 .publications-two-cols ol.bibliography > li.is-open .pub-details {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
 }
 
 /* 视口 >767 且 ≤991（如 iPhone「请求桌面网站」常见 ~980px）时 §16b 不命中；至少取消右栏 pubs 的 min-height:100% 拉伸 */
