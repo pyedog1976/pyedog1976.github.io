@@ -103,12 +103,14 @@
     return maxTouchPoints() === 0;
   }
 
+  /** 真手机走 scale 画布；键鼠桌面窗口即使 <768px 宽仍算桌面裁剪（勿用 isPhoneLayout 挡 class） */
+  function isDesktopClipBrowser() {
+    return useScrollLayoutInsteadOfCanvas();
+  }
+
   function syncDesktopScrollClass(vwLayout, on) {
     if (typeof on !== 'boolean') {
-      on =
-        useScrollLayoutInsteadOfCanvas() &&
-        !isPhoneLayout() &&
-        vwLayout < CANVAS_W;
+      on = isDesktopClipBrowser() && vwLayout < CANVAS_W;
     }
     document.documentElement.classList.toggle(CLS_DESKTOP_SCROLL, on);
   }
@@ -305,7 +307,7 @@
     if (!outer || !inner) return;
 
     var vwLayout = layoutViewportWidth();
-    var desktopClip = useScrollLayoutInsteadOfCanvas() && !isPhoneLayout();
+    var desktopClip = isDesktopClipBrowser();
 
     if (desktopClip && vwLayout >= CANVAS_W) {
       syncDesktopScrollClass(vwLayout, false);
@@ -318,10 +320,7 @@
     if (desktopClip && vwLayout < CANVAS_W) {
       syncDesktopScrollClass(vwLayout, true);
       clearCanvasStyles(outer, inner);
-
-      if (!layoutLocked) {
-        captureLayoutChain(inner);
-      }
+      /* 窄视口禁止重采，否则会 merge 更窄的 1132 覆盖宽屏 724 */
 
       if (frozenLayout && frozenLayout.intro) {
         applyLayoutChainLocks(inner);
@@ -377,7 +376,10 @@
     if (inner && typeof ResizeObserver !== 'undefined') {
       var ro = new ResizeObserver(function () {
         if (layoutLocked) return;
-        if (useScrollLayoutInsteadOfCanvas() && !isPhoneLayout()) {
+        if (
+          isDesktopClipBrowser() &&
+          layoutViewportWidth() >= CANVAS_W
+        ) {
           captureLayoutChain(inner);
         }
       });
