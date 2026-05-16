@@ -2197,10 +2197,7 @@ body .post-header h1.post-title {
   html.site-desktop-scroll-1180 body.fixed-top-nav {
     padding-top: 3.75rem !important;
   }
-  /* Bootstrap .container 的 max-width 随视口变小，在固定 1180 内仍会把导航压成一条；按桌面内容宽放开 */
-  html.site-desktop-scroll-1180 #site-scale-inner .container {
-    max-width: 1140px !important;
-  }
+  /* container 冻结见文件末尾 minimal fixed-canvas clipping */
 }
 
 /* ====== 16b) 窄手机版式（与宽屏桌面不同）：About 主区单栏等；USER INFO + HISTORY 仍用全局 .info-history-row ====== */
@@ -2584,5 +2581,17 @@ html.site-desktop-scroll-1180 .publications-two-cols .pub-details {
     transform: none !important;
     -webkit-transform: none !important;
     transform-origin: top left !important;
+  }
+
+  /* 冻结 Bootstrap container：避免 1180→1140→1122 随 viewport 缩窄（非 transform scale） */
+  html.site-desktop-scroll-1180 #site-scale-inner .container,
+  html.site-desktop-scroll-1180 #site-scale-inner .container.mt-5 {
+    width: 1180px !important;
+    max-width: 1180px !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
   }
 }
