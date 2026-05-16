@@ -1,9 +1,11 @@
 /**
- * 手机（≤767 触控）：1180px 画布 + scale（§16a）。
- * 键鼠桌面：快照父链最大像素宽（仅 merge 变宽、不在窄视口重采），窄窗只裁切 #site-scale-outer。
+ * 手机（≤767 触控）：1180px 画布 + scale（§16a），逻辑不变。
+ * 键鼠桌面：固定参考视口 1854×1047 排版；窗口更小 → #site-scale-outer 裁切；更大 → 画布水平居中。
  */
 (function () {
   var CANVAS_W = 1180;
+  var DESKTOP_REF_W = 1854;
+  var DESKTOP_REF_H = 1047;
   var CLS_DESKTOP_SCROLL = 'site-desktop-scroll-1180';
   var ATTR_FROZEN = 'data-desktop-layout-frozen';
 
@@ -55,6 +57,9 @@
 
   var frozenLayout = null;
   var layoutLocked = false;
+  var desktopCaptureScheduled = false;
+  var desktopCaptureAttempts = 0;
+  var DESKTOP_CAPTURE_MAX = 16;
 
   function isPhoneLayout() {
     try {
@@ -103,16 +108,28 @@
     return maxTouchPoints() === 0;
   }
 
-  /** 真手机走 scale 画布；键鼠桌面窗口即使 <768px 宽仍算桌面裁剪（勿用 isPhoneLayout 挡 class） */
   function isDesktopClipBrowser() {
     return useScrollLayoutInsteadOfCanvas();
   }
 
-  function syncDesktopScrollClass(vwLayout, on) {
+  function syncDesktopScrollClass(on) {
     if (typeof on !== 'boolean') {
-      on = isDesktopClipBrowser() && vwLayout < CANVAS_W;
+      on = isDesktopClipBrowser();
     }
     document.documentElement.classList.toggle(CLS_DESKTOP_SCROLL, on);
+    if (on) {
+      document.documentElement.style.setProperty(
+        '--desktop-ref-w',
+        DESKTOP_REF_W + 'px'
+      );
+      document.documentElement.style.setProperty(
+        '--desktop-ref-h',
+        DESKTOP_REF_H + 'px'
+      );
+    } else {
+      document.documentElement.style.removeProperty('--desktop-ref-w');
+      document.documentElement.style.removeProperty('--desktop-ref-h');
+    }
   }
 
   function layoutWidthForScale() {
@@ -151,23 +168,8 @@
     return Math.round(el.getBoundingClientRect().width) || 0;
   }
 
-  /** 只增不减：避免在窄视口重采把 723 覆盖成 563 */
-  function mergeLayoutSnap(snap) {
-    if (!snap || !snap.intro || !snap.pubs) return;
-    if (!frozenLayout) {
-      frozenLayout = snap;
-      return;
-    }
-    var k;
-    for (k in snap) {
-      if (snap.hasOwnProperty(k) && snap[k] > (frozenLayout[k] || 0)) {
-        frozenLayout[k] = snap[k];
-      }
-    }
-  }
-
   function readLayoutSnap(inner) {
-    var snap = {};
+    var snap = { _refW: DESKTOP_REF_W, _refH: DESKTOP_REF_H };
     var i;
     for (i = 0; i < LAYOUT_CHAIN.length; i++) {
       var item = LAYOUT_CHAIN[i];
@@ -176,14 +178,43 @@
       var w = measureW(el);
       if (w > 0) snap[item.key] = w;
     }
+    if (!snap.inner || snap.inner < 400) {
+      snap.inner = DESKTOP_REF_W;
+    }
     return snap;
   }
 
-  function captureLayoutChain(inner) {
-    if (!inner || layoutLocked) return;
-    var snap = readLayoutSnap(inner);
-    if (!snap.inner || snap.inner < 400) return;
-    mergeLayoutSnap(snap);
+  function hasAboutSnap(snap) {
+    return !!(snap && snap.intro && snap.pubs);
+  }
+
+  function scheduleDesktopCapture(inner) {
+    if (desktopCaptureScheduled || !inner) return;
+    desktopCaptureScheduled = true;
+    window.requestAnimationFrame(function () {
+      window.requestAnimationFrame(function () {
+        desktopCaptureScheduled = false;
+        if (!isDesktopClipBrowser()) return;
+        var outer = inner.parentElement;
+        var snap = readLayoutSnap(inner);
+        var needsAbout = !!inner.querySelector('.about-side-by-side');
+        if (needsAbout && !hasAboutSnap(snap)) {
+          desktopCaptureAttempts += 1;
+          if (desktopCaptureAttempts < DESKTOP_CAPTURE_MAX) {
+            scheduleDesktopCapture(inner);
+          }
+          return;
+        }
+        desktopCaptureAttempts = 0;
+        snap._captured = true;
+        frozenLayout = snap;
+        if (hasAboutSnap(frozenLayout)) {
+          layoutLocked = false;
+          applyLayoutChainLocks(inner);
+        }
+        applyDesktopOuter(outer, inner, layoutViewportWidth());
+      });
+    });
   }
 
   function setFrozenBox(el, w, opts) {
@@ -228,27 +259,65 @@
   }
 
   function applyLayoutChainLocks(inner) {
-    if (!inner || !frozenLayout || !frozenLayout.intro) return;
+    if (!inner || !frozenLayout) return;
     var snap = frozenLayout;
 
-    setFrozenBox(inner, snap.inner);
-    setFrozenBox(LAYOUT_CHAIN[1].find(inner), snap.container);
-    setFrozenBox(LAYOUT_CHAIN[2].find(inner), snap.post);
-    setFrozenBox(LAYOUT_CHAIN[3].find(inner), snap.row, { row: true });
-    setFrozenBox(LAYOUT_CHAIN[4].find(inner), snap.leftCol, { flexBasis: true });
-    setFrozenBox(LAYOUT_CHAIN[5].find(inner), snap.rightCol, { flexBasis: true });
-    setFrozenBox(LAYOUT_CHAIN[6].find(inner), snap.intro);
-    setFrozenBox(LAYOUT_CHAIN[7].find(inner), snap.pubs);
+    setFrozenBox(inner, snap.inner || DESKTOP_REF_W);
+    if (snap.container) {
+      setFrozenBox(LAYOUT_CHAIN[1].find(inner), snap.container);
+    }
+    if (snap.post) {
+      setFrozenBox(LAYOUT_CHAIN[2].find(inner), snap.post);
+    }
+    if (snap.row) {
+      setFrozenBox(LAYOUT_CHAIN[3].find(inner), snap.row, { row: true });
+    }
+    if (snap.leftCol) {
+      setFrozenBox(LAYOUT_CHAIN[4].find(inner), snap.leftCol, { flexBasis: true });
+    }
+    if (snap.rightCol) {
+      setFrozenBox(LAYOUT_CHAIN[5].find(inner), snap.rightCol, { flexBasis: true });
+    }
+    if (snap.intro) {
+      setFrozenBox(LAYOUT_CHAIN[6].find(inner), snap.intro);
+    }
+    if (snap.pubs) {
+      setFrozenBox(LAYOUT_CHAIN[7].find(inner), snap.pubs);
+    }
 
     inner.style.setProperty('position', 'relative', 'important');
     inner.style.setProperty('top', '0', 'important');
-    inner.style.setProperty('left', '0', 'important');
-    inner.style.setProperty('margin-left', '0', 'important');
     inner.style.setProperty('transform', 'none', 'important');
     inner.style.setProperty('-webkit-transform', 'none', 'important');
     inner.style.setProperty('transform-origin', 'top left', 'important');
+    inner.style.setProperty('box-sizing', 'border-box', 'important');
 
     layoutLocked = true;
+  }
+
+  function applyDesktopOuter(outer, inner, vw) {
+    if (!outer || !inner) return;
+    var center = vw > DESKTOP_REF_W;
+    outer.style.position = 'relative';
+    outer.style.width = '100%';
+    outer.style.maxWidth = '100vw';
+    outer.style.overflowX = 'hidden';
+    outer.style.overflowY = 'visible';
+    outer.style.boxSizing = 'border-box';
+    outer.style.height = '';
+
+    inner.style.setProperty('width', DESKTOP_REF_W + 'px', 'important');
+    inner.style.setProperty('min-width', DESKTOP_REF_W + 'px', 'important');
+    inner.style.setProperty('max-width', DESKTOP_REF_W + 'px', 'important');
+    if (center) {
+      inner.style.setProperty('margin-left', 'auto', 'important');
+      inner.style.setProperty('margin-right', 'auto', 'important');
+      inner.style.setProperty('left', 'auto', 'important');
+    } else {
+      inner.style.setProperty('margin-left', '0', 'important');
+      inner.style.setProperty('margin-right', '0', 'important');
+      inner.style.setProperty('left', '0', 'important');
+    }
   }
 
   function clearCanvasStyles(outer, inner) {
@@ -268,6 +337,7 @@
       inner.style.minWidth = '';
       inner.style.maxWidth = '';
       inner.style.marginLeft = '';
+      inner.style.marginRight = '';
       inner.style.boxSizing = '';
       inner.style.transformOrigin = '';
       inner.style.webkitTransform = '';
@@ -301,40 +371,54 @@
     inner.style.transform = t;
   }
 
+  function resetDesktopLayoutState() {
+    frozenLayout = null;
+    layoutLocked = false;
+    desktopCaptureScheduled = false;
+    desktopCaptureAttempts = 0;
+  }
+
+  function applyDesktopRefCanvas(outer, inner) {
+    var vw = layoutViewportWidth();
+    syncDesktopScrollClass(true);
+    clearCanvasStyles(outer, inner);
+
+    inner.style.setProperty('width', DESKTOP_REF_W + 'px', 'important');
+    inner.style.setProperty('min-width', DESKTOP_REF_W + 'px', 'important');
+    inner.style.setProperty('max-width', DESKTOP_REF_W + 'px', 'important');
+    inner.style.setProperty('transform', 'none', 'important');
+    inner.style.setProperty('-webkit-transform', 'none', 'important');
+
+    applyDesktopOuter(outer, inner, vw);
+
+    if (
+      frozenLayout &&
+      frozenLayout._refW === DESKTOP_REF_W &&
+      frozenLayout._captured
+    ) {
+      if (hasAboutSnap(frozenLayout)) {
+        applyLayoutChainLocks(inner);
+      }
+      applyDesktopOuter(outer, inner, vw);
+      return;
+    }
+
+    layoutLocked = false;
+    scheduleDesktopCapture(inner);
+  }
+
   function update() {
     var outer = document.getElementById('site-scale-outer');
     var inner = document.getElementById('site-scale-inner');
     if (!outer || !inner) return;
 
-    var vwLayout = layoutViewportWidth();
-    var desktopClip = isDesktopClipBrowser();
-
-    if (desktopClip && vwLayout >= CANVAS_W) {
-      syncDesktopScrollClass(vwLayout, false);
-      clearLayoutChainLocks(inner);
-      clearCanvasStyles(outer, inner);
-      captureLayoutChain(inner);
+    if (isDesktopClipBrowser()) {
+      applyDesktopRefCanvas(outer, inner);
       return;
     }
 
-    if (desktopClip && vwLayout < CANVAS_W) {
-      syncDesktopScrollClass(vwLayout, true);
-      clearCanvasStyles(outer, inner);
-      /* 窄视口禁止重采，否则会 merge 更窄的 1132 覆盖宽屏 724 */
-
-      if (frozenLayout && frozenLayout.intro) {
-        applyLayoutChainLocks(inner);
-      } else {
-        inner.style.setProperty('width', CANVAS_W + 'px', 'important');
-        inner.style.setProperty('min-width', CANVAS_W + 'px', 'important');
-        inner.style.setProperty('max-width', 'none', 'important');
-        inner.style.setProperty('transform', 'none', 'important');
-        inner.style.setProperty('-webkit-transform', 'none', 'important');
-      }
-      return;
-    }
-
-    syncDesktopScrollClass(vwLayout);
+    resetDesktopLayoutState();
+    syncDesktopScrollClass(false);
     clearLayoutChainLocks(inner);
     clearCanvasStyles(outer, inner);
 
@@ -342,6 +426,7 @@
       return;
     }
 
+    var vwLayout = layoutViewportWidth();
     var vwScale = vwLayout;
     if (isPhoneLayout() && vwLayout < 768) {
       vwScale = Math.max(280, vwLayout - 4);
@@ -372,20 +457,6 @@
       window.setTimeout(update, 280);
     });
 
-    var inner = document.getElementById('site-scale-inner');
-    if (inner && typeof ResizeObserver !== 'undefined') {
-      var ro = new ResizeObserver(function () {
-        if (layoutLocked) return;
-        if (
-          isDesktopClipBrowser() &&
-          layoutViewportWidth() >= CANVAS_W
-        ) {
-          captureLayoutChain(inner);
-        }
-      });
-      ro.observe(inner);
-    }
-
     window.addEventListener('load', function () {
       window.requestAnimationFrame(function () {
         update();
@@ -393,7 +464,6 @@
     });
   }
 
-  /** 诊断：找父链上第一个宽度随 viewport 变的节点 */
   function debugLayoutChain() {
     var inner = document.getElementById('site-scale-inner');
     if (!inner) return [];
@@ -412,6 +482,8 @@
     rows.push({
       key: '_frozenLayout',
       snap: frozenLayout,
+      refW: DESKTOP_REF_W,
+      refH: DESKTOP_REF_H,
       vw: layoutViewportWidth(),
       classOn: document.documentElement.classList.contains(CLS_DESKTOP_SCROLL),
     });

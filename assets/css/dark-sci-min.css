@@ -77,7 +77,7 @@ body.fixed-top-nav {
   z-index: 1;
 }
 
-/* 全站画布包裹层：桌面不改动；窄于 1180px 时在 §16a 固定 1180px + scale（JS 内联优先）；§16a-fine 由 html.site-desktop-scroll-1180 控制键鼠桌面为滚动不换 scale */
+/* 全站画布包裹层：手机 §16a 为 1180px + scale；键鼠桌面由 JS 固定 1854px 参考宽 + html.site-desktop-scroll-1180 裁切/居中 */
 #site-scale-outer,
 #site-scale-inner {
   display: block;
@@ -2171,11 +2171,9 @@ body .post-header h1.post-title {
   }
 }
 
-/* ====== 16a-fine) 键鼠桌面窄视口：仅 body 顶栏留白；画布裁切见文件末尾（只动 outer/inner） ====== */
-@media (max-width: 1179px) {
-  html.site-desktop-scroll-1180 body.fixed-top-nav {
-    padding-top: 3.75rem !important;
-  }
+/* ====== 16a-fine) 键鼠桌面：顶栏留白；1854 画布裁切/居中见文件末尾 ====== */
+html.site-desktop-scroll-1180 body.fixed-top-nav {
+  padding-top: 3.75rem !important;
 }
 
 /* ====== 16b) 窄手机版式（与宽屏桌面不同）：About 主区单栏等；USER INFO + HISTORY 仍用全局 .info-history-row ====== */
@@ -2477,41 +2475,37 @@ html.site-desktop-scroll-1180 .publications-two-cols .pub-details {
   }
 }
 
-/* ===== minimal fixed-canvas clipping：仅 outer 取景 + inner 禁 scale；inner 宽度由 JS 锁定为「宽屏实测」，不改 container/row/col ===== */
-@media (max-width: 1179px) {
-  html.site-desktop-scroll-1180,
-  html.site-desktop-scroll-1180 body {
-    overflow-x: hidden !important;
-  }
+/* ===== 键鼠桌面固定参考视口 1854px：outer 取景裁切；inner 禁 scale，宽由 JS 锁定 ===== */
+html.site-desktop-scroll-1180,
+html.site-desktop-scroll-1180 body {
+  overflow-x: hidden !important;
+}
 
-  html.site-desktop-scroll-1180 #site-scale-outer {
-    position: relative !important;
-    width: 100vw !important;
-    max-width: 100vw !important;
-    overflow-x: hidden !important;
-    overflow-y: visible !important;
-  }
+html.site-desktop-scroll-1180 #site-scale-outer {
+  position: relative !important;
+  width: 100% !important;
+  max-width: 100vw !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  overflow-x: hidden !important;
+  overflow-y: visible !important;
+}
 
-  html.site-desktop-scroll-1180 #site-scale-inner {
-    position: relative !important;
-    left: 0 !important;
-    top: 0 !important;
-    transform: none !important;
-    -webkit-transform: none !important;
-    transform-origin: top left !important;
-  }
+html.site-desktop-scroll-1180 #site-scale-inner {
+  position: relative !important;
+  top: 0 !important;
+  transform: none !important;
+  -webkit-transform: none !important;
+  transform-origin: top left !important;
+  box-sizing: border-box !important;
+}
 
-  /*
-   * 桌面裁剪模式：不依赖 viewport 的 @media (min-width:768)，强制双栏行方向。
-   * 各层像素宽由 JS mergeLayoutSnap 锁定，不在此写 container/col 的 width。
-   */
-  html.site-desktop-scroll-1180 #site-scale-inner .about-side-by-side {
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-  }
+html.site-desktop-scroll-1180 #site-scale-inner .about-side-by-side {
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+}
 
-  html.site-desktop-scroll-1180 #site-scale-inner .about-side-by-side .about-left-col,
-  html.site-desktop-scroll-1180 #site-scale-inner .about-side-by-side .about-right-col {
-    flex-shrink: 0 !important;
-  }
+html.site-desktop-scroll-1180 #site-scale-inner .about-side-by-side .about-left-col,
+html.site-desktop-scroll-1180 #site-scale-inner .about-side-by-side .about-right-col {
+  flex-shrink: 0 !important;
 }
