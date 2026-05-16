@@ -2105,20 +2105,19 @@ body .post-header h1.post-title {
     overflow-x: hidden !important;
   }
 
-  /* 导航在 #site-scale-inner 的 transform 内，已非视口 fixed；body 原 padding-top 只会在屏顶留黑条 */
-  body.fixed-top-nav {
+  /* 仅手机/触控画布：导航在 transform 内；键鼠桌面窄窗见 §16a-fine */
+  html:not(.site-desktop-scroll-1180) body.fixed-top-nav {
     padding-top: 0 !important;
   }
 
-  /* 画布内：隐藏汉堡，导航与桌面一致横向排列（可换行） */
-  #site-scale-inner .navbar > .container {
+  html:not(.site-desktop-scroll-1180) #site-scale-inner .navbar > .container {
     flex-wrap: wrap !important;
     align-items: center;
   }
-  #site-scale-inner .navbar .navbar-toggler {
+  html:not(.site-desktop-scroll-1180) #site-scale-inner .navbar .navbar-toggler {
     display: none !important;
   }
-  #site-scale-inner .navbar .navbar-collapse.collapse {
+  html:not(.site-desktop-scroll-1180) #site-scale-inner .navbar .navbar-collapse.collapse {
     display: flex !important;
     flex-basis: auto !important;
     flex-grow: 1 !important;
@@ -2126,12 +2125,12 @@ body .post-header h1.post-title {
     height: auto !important;
     visibility: visible !important;
   }
-  #site-scale-inner .navbar .navbar-collapse.collapsing {
+  html:not(.site-desktop-scroll-1180) #site-scale-inner .navbar .navbar-collapse.collapsing {
     display: flex !important;
     height: auto !important;
     transition: none !important;
   }
-  #site-scale-inner .navbar-collapse {
+  html:not(.site-desktop-scroll-1180) #site-scale-inner .navbar-collapse {
     text-align: right;
     margin-top: 0 !important;
     padding: 0 !important;
@@ -2139,17 +2138,17 @@ body .post-header h1.post-title {
     border: none !important;
     box-shadow: none !important;
   }
-  #site-scale-inner .navbar-nav {
+  html:not(.site-desktop-scroll-1180) #site-scale-inner .navbar-nav {
     flex-direction: row !important;
     flex-wrap: wrap !important;
     justify-content: flex-end;
     align-items: center;
     row-gap: 0.2rem;
   }
-  #site-scale-inner .navbar .nav-item.dropdown {
+  html:not(.site-desktop-scroll-1180) #site-scale-inner .navbar .nav-item.dropdown {
     position: relative;
   }
-  #site-scale-outer {
+  html:not(.site-desktop-scroll-1180) #site-scale-outer {
     position: relative;
     width: 100vw;
     max-width: 100%;
@@ -2158,7 +2157,7 @@ body .post-header h1.post-title {
     box-sizing: border-box;
     background: var(--bg) !important;
   }
-  #site-scale-inner {
+  html:not(.site-desktop-scroll-1180) #site-scale-inner {
     position: absolute;
     top: 0;
     left: 0;
@@ -2171,16 +2170,18 @@ body .post-header h1.post-title {
   }
 }
 
-/* ====== 16a-fine) 键鼠桌面窄视口：固定 1180 左上、不 scale；外层相对定位 + 横向滚动（不用 fixed 锁 html，避免与 body padding / 进度条 / 双滚动冲突） ====== */
+/* ====== 16a-fine) 键鼠桌面窄窗：1180 贴视口左上，外层宽=当前视口、overflow 裁切（配合 viewport-1180-fit.js） ====== */
 @media (max-width: 1179px) {
   html.site-desktop-scroll-1180 #site-scale-outer {
     position: relative;
     width: 100%;
     max-width: 100%;
-    overflow-x: auto;
+    overflow-x: hidden;
     overflow-y: visible;
     height: auto;
     min-height: 0;
+    box-sizing: border-box;
+    background: var(--bg) !important;
   }
   html.site-desktop-scroll-1180 #site-scale-inner {
     position: relative;
@@ -2200,6 +2201,13 @@ body .post-header h1.post-title {
   /* Bootstrap .container 的 max-width 随视口变小，在固定 1180 内仍会把导航压成一条；按桌面内容宽放开 */
   html.site-desktop-scroll-1180 #site-scale-inner .container {
     max-width: 1140px !important;
+  }
+
+  html.site-desktop-scroll-1180 #site-scale-inner .navbar > .container {
+    flex-wrap: nowrap !important;
+  }
+  html.site-desktop-scroll-1180 #site-scale-inner .navbar-nav {
+    flex-wrap: nowrap !important;
   }
 }
 

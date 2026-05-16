@@ -9,12 +9,21 @@
  *
  * 电脑固定 1180+滚动：优先 (any-pointer:fine)（外接鼠标/触控板在 Linux 上常只有 any 为 fine）；
  * 若媒体查询全否但 maxTouchPoints===0，按无触摸键鼠桌面回退（部分 Wayland/GTK 误报 hover/pointer）。
- * 不走画布时在 html 上加 site-desktop-scroll-1180，与 CSS §16a-fine 一致。
- * 纯触控机（仅 coarse、有触摸点）仍走画布 + visualViewport。
+ * 键鼠桌面窄窗（768–1179）：按当前视口宽把 1180 画布钉在左上，不 scale，多出的部分裁掉（§16a-fine + applyDesktopViewportFrame）。
+ * 手机（≤767）仍走画布 scale + §16b，不改。
  */
 (function () {
   var CANVAS_W = 1180;
   var CLS_DESKTOP_SCROLL = 'site-desktop-scroll-1180';
+
+  function isDesktopNarrow(vw) {
+    return (
+      !isPhoneLayout() &&
+      useScrollLayoutInsteadOfCanvas() &&
+      vw < CANVAS_W &&
+      vw >= 768
+    );
+  }
 
   function isPhoneLayout() {
     try {
@@ -132,6 +141,36 @@
     inner.style.transform = '';
   }
 
+  /**
+   * 桌面窄窗：取景框宽 = 当前视口；内层 1180 逻辑宽贴 (0,0)，不缩放。
+   * 内联 !important 压过 §16a 的 CSS scale。
+   */
+  function applyDesktopViewportFrame(outer, inner) {
+    var vw =
+      window.innerWidth ||
+      document.documentElement.clientWidth ||
+      CANVAS_W;
+    outer.style.position = 'relative';
+    outer.style.width = '100%';
+    outer.style.maxWidth = vw + 'px';
+    outer.style.overflowX = 'hidden';
+    outer.style.overflowY = 'visible';
+    outer.style.height = 'auto';
+    outer.style.boxSizing = 'border-box';
+
+    inner.style.position = 'relative';
+    inner.style.top = '0';
+    inner.style.left = '0';
+    inner.style.width = CANVAS_W + 'px';
+    inner.style.minWidth = CANVAS_W + 'px';
+    inner.style.maxWidth = 'none';
+    inner.style.marginLeft = '0';
+    inner.style.boxSizing = 'border-box';
+    inner.style.transformOrigin = 'top left';
+    inner.style.setProperty('-webkit-transform', 'none', 'important');
+    inner.style.setProperty('transform', 'none', 'important');
+  }
+
   function applyCanvasStyles(outer, inner, vw) {
     var scale = vw / CANVAS_W;
     outer.style.position = 'relative';
@@ -166,8 +205,14 @@
     var vwLayout = layoutViewportWidth();
     syncDesktopScrollClass(vwLayout);
 
+    if (isDesktopNarrow(vwLayout)) {
+      applyDesktopViewportFrame(outer, inner);
+      return;
+    }
+
+    clearCanvasStyles(outer, inner);
+
     if (!needsCanvas()) {
-      clearCanvasStyles(outer, inner);
       return;
     }
 
