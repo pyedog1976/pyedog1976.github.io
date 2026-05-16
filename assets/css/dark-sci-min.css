@@ -1869,6 +1869,7 @@ body > div,
     overflow-x: visible;
     overflow-y: hidden;
     padding-bottom: 0.75rem;
+    padding-right: 1rem; /* 为 scaleX 向右延伸留空，避免裁掉右侧竖排 + */
   }
   html:not(.site-desktop-scroll-1180) .info-history-row .history-col {
     overflow-x: visible;

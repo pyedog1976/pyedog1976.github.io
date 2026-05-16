@@ -379,7 +379,8 @@
     desktopCaptureAttempts = 0;
   }
 
-  var HISTORY_ASCII_EXTRA_PX = 24; /* 1.5rem，左上锚点仅向右加宽 */
+  var HISTORY_ASCII_EXTRA_PX_DESKTOP = 24; /* 1.5rem */
+  var HISTORY_ASCII_EXTRA_PX_MOBILE = 56; /* 3.5rem，手机画布略宽于桌面 */
 
   function clearHistoryAsciiFrameTransform() {
     var pre = document.querySelector('#site-scale-inner .trace-ascii-frame');
@@ -390,14 +391,14 @@
   }
 
   /** 与自然宽相比仅向右加 EXTRA_PX（勿按栏宽拉满，否则会裁掉右侧竖排 +） */
-  function applyHistoryAsciiFrameNudge() {
+  function applyHistoryAsciiFrameNudge(extraPx) {
     var pre = document.querySelector('#site-scale-inner .trace-ascii-frame');
     if (!pre) return;
     pre.style.setProperty('transform', 'none', 'important');
     pre.style.setProperty('-webkit-transform', 'none', 'important');
     var w = pre.getBoundingClientRect().width;
     if (w < 1) return;
-    var sx = (w + HISTORY_ASCII_EXTRA_PX) / w;
+    var sx = (w + extraPx) / w;
     if (!isFinite(sx) || sx <= 0) return;
     var t = 'scaleX(' + sx + ')';
     pre.style.setProperty('transform', t, 'important');
@@ -407,12 +408,12 @@
 
   function nudgeHistoryAsciiFrameRight() {
     if (!isDesktopClipBrowser()) return;
-    applyHistoryAsciiFrameNudge();
+    applyHistoryAsciiFrameNudge(HISTORY_ASCII_EXTRA_PX_DESKTOP);
   }
 
   function nudgeHistoryAsciiFrameMobile() {
     if (isDesktopClipBrowser() || !isPhoneLayout() || !needsCanvas()) return;
-    applyHistoryAsciiFrameNudge();
+    applyHistoryAsciiFrameNudge(HISTORY_ASCII_EXTRA_PX_MOBILE);
   }
 
   function scheduleHistoryAsciiFrameFit() {
