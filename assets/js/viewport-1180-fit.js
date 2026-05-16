@@ -134,18 +134,11 @@
     inner.style.top = '';
     inner.style.left = '';
     inner.style.width = '';
-    inner.style.minWidth = '';
     inner.style.maxWidth = '';
-    inner.style.marginLeft = '';
     inner.style.boxSizing = '';
     inner.style.transformOrigin = '';
     inner.style.webkitTransform = '';
     inner.style.transform = '';
-    inner.style.removeProperty('width');
-    inner.style.removeProperty('min-width');
-    inner.style.removeProperty('max-width');
-    inner.style.removeProperty('-webkit-transform');
-    inner.style.removeProperty('transform');
   }
 
   /**
@@ -153,10 +146,13 @@
    * 内联 !important 压过 §16a 的 CSS scale。
    */
   function applyDesktopViewportFrame(outer, inner) {
-    /* 取景框 = 视口宽（100%），勿设 maxWidth:vw——会与 inner 的 max-width:100% 叠加把内容压扁 */
+    var vw =
+      window.innerWidth ||
+      document.documentElement.clientWidth ||
+      CANVAS_W;
     outer.style.position = 'relative';
     outer.style.width = '100%';
-    outer.style.maxWidth = '';
+    outer.style.maxWidth = vw + 'px';
     outer.style.overflowX = 'hidden';
     outer.style.overflowY = 'visible';
     outer.style.height = 'auto';
@@ -165,12 +161,12 @@
     inner.style.position = 'relative';
     inner.style.top = '0';
     inner.style.left = '0';
+    inner.style.width = CANVAS_W + 'px';
+    inner.style.minWidth = CANVAS_W + 'px';
+    inner.style.maxWidth = 'none';
     inner.style.marginLeft = '0';
     inner.style.boxSizing = 'border-box';
     inner.style.transformOrigin = 'top left';
-    inner.style.setProperty('width', CANVAS_W + 'px', 'important');
-    inner.style.setProperty('min-width', CANVAS_W + 'px', 'important');
-    inner.style.setProperty('max-width', 'none', 'important');
     inner.style.setProperty('-webkit-transform', 'none', 'important');
     inner.style.setProperty('transform', 'none', 'important');
   }

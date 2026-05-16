@@ -77,7 +77,7 @@ body.fixed-top-nav {
   z-index: 1;
 }
 
-/* 全站画布：≥1180 正常；键鼠 768–1179 见 site-desktop-scroll-1180（1180 贴左上裁切）；手机/触控画布见 §16a scale */
+/* 全站画布包裹层：桌面不改动；窄于 1180px 时在 §16a 固定 1180px + scale（JS 内联优先）；§16a-fine 由 html.site-desktop-scroll-1180 控制键鼠桌面为滚动不换 scale */
 #site-scale-outer,
 #site-scale-inner {
   display: block;
@@ -85,9 +85,6 @@ body.fixed-top-nav {
 #site-scale-inner {
   position: relative;
   width: 100%;
-}
-/* 勿对键鼠桌面窄窗设 max-width:100%，否则 1180 画布会被压成视口宽（挤成一团）；手机/画布见 §16a */
-html:not(.site-desktop-scroll-1180) #site-scale-inner {
   max-width: 100%;
 }
 
@@ -2188,11 +2185,11 @@ body .post-header h1.post-title {
   }
   html.site-desktop-scroll-1180 #site-scale-inner {
     position: relative;
-    top: 0;
-    left: 0;
-    width: 1180px !important;
-    min-width: 1180px !important;
-    max-width: none !important;
+    top: auto;
+    left: auto;
+    width: 1180px;
+    min-width: 1180px;
+    max-width: none;
     box-sizing: border-box;
     transform-origin: top left;
     -webkit-transform: none !important;
@@ -2201,94 +2198,15 @@ body .post-header h1.post-title {
   html.site-desktop-scroll-1180 body.fixed-top-nav {
     padding-top: 3.75rem !important;
   }
+  /* Bootstrap .container 的 max-width 随视口变小，在固定 1180 内仍会把导航压成一条；按桌面内容宽放开 */
   html.site-desktop-scroll-1180 #site-scale-inner .container {
     max-width: 1140px !important;
-    width: 100% !important;
   }
 
-  html.site-desktop-scroll-1180 #site-scale-inner .navbar .navbar-toggler {
-    display: none !important;
-  }
-  html.site-desktop-scroll-1180 #site-scale-inner .navbar .navbar-collapse.collapse,
-  html.site-desktop-scroll-1180 #site-scale-inner .navbar .navbar-collapse.collapsing {
-    display: flex !important;
-    flex-basis: auto !important;
-    flex-grow: 1 !important;
-    align-items: center;
-    height: auto !important;
-    visibility: visible !important;
-    transition: none !important;
-  }
-  html.site-desktop-scroll-1180 #site-scale-inner .navbar-collapse {
-    text-align: right;
-    margin-top: 0 !important;
-    padding: 0 !important;
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-  }
   html.site-desktop-scroll-1180 #site-scale-inner .navbar > .container {
     flex-wrap: nowrap !important;
-    align-items: center;
-    max-width: 1140px !important;
   }
   html.site-desktop-scroll-1180 #site-scale-inner .navbar-nav {
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    justify-content: flex-end;
-    align-items: center;
-    column-gap: 0.65rem;
-    row-gap: 0;
-  }
-}
-
-/* ====== 16d) 键鼠桌面 768–1179：在 1180 逻辑宽内强制桌面双栏/论文横排（§16c 仅 ≤767，此处补齐） ====== */
-@media (min-width: 768px) and (max-width: 1179px) {
-  html.site-desktop-scroll-1180 .row.about-side-by-side {
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    margin-left: -15px;
-    margin-right: -15px;
-  }
-  html.site-desktop-scroll-1180 .about-side-by-side .about-left-col {
-    flex: 0 0 48% !important;
-    max-width: 48% !important;
-    width: 48% !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-self: stretch !important;
-    min-height: 0 !important;
-  }
-  html.site-desktop-scroll-1180 .about-side-by-side .about-right-col {
-    flex: 0 0 52% !important;
-    max-width: 52% !important;
-    width: 52% !important;
-    align-self: stretch !important;
-    min-height: 0 !important;
-    height: auto !important;
-    padding-left: 1.5rem !important;
-    border-top: none !important;
-    padding-top: 0 !important;
-    margin-top: 0 !important;
-  }
-  html.site-desktop-scroll-1180 .info-history-row {
-    flex-wrap: nowrap !important;
-  }
-  html.site-desktop-scroll-1180 .info-history-row .info-col {
-    flex: 0 0 47% !important;
-    max-width: 47% !important;
-  }
-  html.site-desktop-scroll-1180 .info-history-row .history-col {
-    flex: 0 0 53% !important;
-    max-width: 53% !important;
-  }
-  html.site-desktop-scroll-1180 .post .about-side-by-side {
-    --pub-card-width: calc(248px * 0.95);
-  }
-  html.site-desktop-scroll-1180 .post .about-side-by-side .history-trace {
-    height: 330px;
-  }
-  html.site-desktop-scroll-1180 .publications-two-cols ol.bibliography {
     flex-wrap: nowrap !important;
   }
 }
