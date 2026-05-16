@@ -6,6 +6,8 @@
   var CANVAS_W = 1180;
   var DESKTOP_REF_W = 1854;
   var DESKTOP_REF_H = 1047;
+  /** HISTORY ASCII + 框比栏宽多出的像素（2rem） */
+  var HISTORY_ASCII_EXTRA_PX = 32;
   var CLS_DESKTOP_SCROLL = 'site-desktop-scroll-1180';
   var ATTR_FROZEN = 'data-desktop-layout-frozen';
 
@@ -213,6 +215,7 @@
           applyLayoutChainLocks(inner);
         }
         applyDesktopOuter(outer, inner, layoutViewportWidth());
+        scheduleFitHistoryAsciiFrame();
       });
     });
   }
@@ -378,6 +381,48 @@
     desktopCaptureAttempts = 0;
   }
 
+  function clearHistoryAsciiFrameScale() {
+    var pre = document.querySelector('#site-scale-inner .trace-ascii-frame');
+    if (!pre) return;
+    pre.style.removeProperty('transform');
+    pre.style.removeProperty('-webkit-transform');
+    pre.style.removeProperty('transform-origin');
+  }
+
+  /**
+   * 桌面：按 .history-col 实测宽度横向拉齐 + 框（CSS cqw/scaleX 在 transform 中常无效）。
+   */
+  function fitHistoryAsciiFrame() {
+    if (!isDesktopClipBrowser()) {
+      clearHistoryAsciiFrameScale();
+      return;
+    }
+    var pre = document.querySelector('#site-scale-inner .trace-ascii-frame');
+    if (!pre) return;
+    var col = pre.closest('.history-col');
+    if (!col) return;
+
+    pre.style.setProperty('transform', 'none', 'important');
+    pre.style.setProperty('-webkit-transform', 'none', 'important');
+    var natural = pre.getBoundingClientRect().width;
+    if (natural < 1) return;
+
+    var target = col.getBoundingClientRect().width + HISTORY_ASCII_EXTRA_PX;
+    var sx = target / natural;
+    if (!isFinite(sx) || sx <= 0) return;
+
+    var t = 'scaleX(' + sx + ')';
+    pre.style.setProperty('transform', t, 'important');
+    pre.style.setProperty('-webkit-transform', t, 'important');
+    pre.style.setProperty('transform-origin', 'top left', 'important');
+  }
+
+  function scheduleFitHistoryAsciiFrame() {
+    window.requestAnimationFrame(function () {
+      window.requestAnimationFrame(fitHistoryAsciiFrame);
+    });
+  }
+
   function applyDesktopRefCanvas(outer, inner) {
     var vw = layoutViewportWidth();
     syncDesktopScrollClass(true);
@@ -400,11 +445,13 @@
         applyLayoutChainLocks(inner);
       }
       applyDesktopOuter(outer, inner, vw);
+      scheduleFitHistoryAsciiFrame();
       return;
     }
 
     layoutLocked = false;
     scheduleDesktopCapture(inner);
+    scheduleFitHistoryAsciiFrame();
   }
 
   function update() {
@@ -417,6 +464,7 @@
       return;
     }
 
+    clearHistoryAsciiFrameScale();
     resetDesktopLayoutState();
     syncDesktopScrollClass(false);
     clearLayoutChainLocks(inner);
