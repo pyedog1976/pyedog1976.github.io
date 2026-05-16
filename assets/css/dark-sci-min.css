@@ -2543,7 +2543,7 @@ html.site-desktop-scroll-1180 .trace-ascii-frame {
   white-space: pre;
   font-size: calc(15px * 0.95) !important;
   transform-origin: top left;
-  transform: scaleX(calc(100cqw / 48ch));
+  transform: scaleX(calc((100cqw + 2rem) / 48ch));
 }
 html.site-desktop-scroll-1180 .container.mt-5:has(.about-side-by-side) {
   padding-top: 0.85rem !important;
