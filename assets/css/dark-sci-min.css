@@ -2533,3 +2533,46 @@ html.site-desktop-scroll-1180 .post .about-side-by-side .history-trace {
 html.site-desktop-scroll-1180 .container.mt-5:has(.about-side-by-side) {
   padding-top: 0.85rem !important;
 }
+
+/* 固定画布顶栏：不随视口切汉堡/换行（覆盖 navbar-expand-xl @1200 与 §16a 的 wrap） */
+html.site-desktop-scroll-1180 #site-scale-inner .navbar > .container {
+  flex-wrap: nowrap !important;
+  align-items: center;
+}
+html.site-desktop-scroll-1180 #site-scale-inner .navbar .navbar-toggler {
+  display: none !important;
+}
+html.site-desktop-scroll-1180 #site-scale-inner .navbar .navbar-collapse.collapse,
+html.site-desktop-scroll-1180 #site-scale-inner .navbar .navbar-collapse.collapsing {
+  display: flex !important;
+  flex-basis: auto !important;
+  flex-grow: 1 !important;
+  align-items: center;
+  height: auto !important;
+  visibility: visible !important;
+  transition: none !important;
+}
+html.site-desktop-scroll-1180 #site-scale-inner .navbar-collapse {
+  text-align: right;
+  margin-top: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+html.site-desktop-scroll-1180 #site-scale-inner .navbar-nav {
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  justify-content: flex-end;
+  align-items: center;
+  row-gap: 0 !important;
+  column-gap: 0 !important;
+}
+html.site-desktop-scroll-1180 #site-scale-inner .navbar .nav-link {
+  padding-left: 0.65rem !important;
+  padding-right: 0.65rem !important;
+  white-space: nowrap;
+}
+html.site-desktop-scroll-1180 #site-scale-inner .navbar .nav-item.dropdown {
+  position: relative;
+}
