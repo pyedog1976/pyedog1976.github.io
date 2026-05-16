@@ -302,7 +302,7 @@
     outer.style.position = 'relative';
     outer.style.width = '100%';
     outer.style.maxWidth = '100vw';
-    outer.style.overflowX = 'hidden';
+    outer.style.overflowX = center ? 'hidden' : 'auto';
     outer.style.overflowY = 'visible';
     outer.style.boxSizing = 'border-box';
     outer.style.height = '';
