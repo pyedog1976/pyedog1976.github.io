@@ -393,7 +393,7 @@
     pre.style.setProperty('-webkit-transform', 'none', 'important');
     var w = pre.getBoundingClientRect().width;
     if (w < 1) return;
-    var sx = (w + 16) / w;
+    var sx = (w + 24) / w; /* +1.5rem，锚点左上 */
     var t = 'scaleX(' + sx + ')';
     pre.style.setProperty('transform', t, 'important');
     pre.style.setProperty('-webkit-transform', t, 'important');

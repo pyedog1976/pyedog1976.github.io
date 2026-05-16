@@ -650,7 +650,7 @@ tbody td {
   background: repeating-linear-gradient(to right, #ffd84d 0, #ffd84d 8px, transparent 4px, transparent 18px) !important;
 }
 
-/* HISTORY 標題恢復白色虛線，並強制大寫 */
+/* HISTORY 標題虛線與 News 同色（#ffd84d），並強制大寫 */
 .history-col .about-profile-title-clone,
 .history-col .about-profile-title-clone * {
   text-transform: uppercase !important;
@@ -663,7 +663,7 @@ tbody td {
   max-width: var(--history-dash-length) !important;
   height: var(--title-dash-thickness) !important;   /* 和其它標題虛線統一 */
   margin-left: 0.35em !important;
-  background: repeating-linear-gradient(to right, var(--title-dash-color) 0, var(--title-dash-color) 8px, transparent 4px, transparent 18px) !important;
+  background: repeating-linear-gradient(to right, #ffd84d 0, #ffd84d 8px, transparent 4px, transparent 18px) !important;
 }
 
 /* 僅在 USER INFO / HISTORY 區塊隱藏標題後的虛線 */
