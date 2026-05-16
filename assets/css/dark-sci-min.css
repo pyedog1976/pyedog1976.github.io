@@ -2527,8 +2527,23 @@ html.site-desktop-scroll-1180 .about-right-col > .about-section.about-pubs {
 html.site-desktop-scroll-1180 .post .about-side-by-side {
   --pub-card-width: calc(248px * 0.95);
 }
+html.site-desktop-scroll-1180 .info-history-row .history-col {
+  container-type: inline-size;
+  container-name: hcol;
+}
 html.site-desktop-scroll-1180 .post .about-side-by-side .history-trace {
   height: 330px;
+  overflow: hidden;
+}
+/* 固定 1854 画布：栏宽于 48ch 时只横向拉宽 + 框；字号与桌面一致，不用手机 min(font) */
+html.site-desktop-scroll-1180 .trace-ascii-frame {
+  display: block;
+  width: max-content;
+  max-width: none;
+  white-space: pre;
+  font-size: calc(15px * 0.95) !important;
+  transform-origin: top left;
+  transform: scaleX(calc(100cqw / 48ch));
 }
 html.site-desktop-scroll-1180 .container.mt-5:has(.about-side-by-side) {
   padding-top: 0.85rem !important;
