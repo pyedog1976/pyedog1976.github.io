@@ -4,16 +4,16 @@
   <!-- Head -->
   <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="icon" href="/favicon.ico?v=1778943971">
-    <link rel="icon" type="image/png" sizes="80x80" href="/favicon.png?v=1778943971">
-    <link rel="icon" type="image/png" href="/assets/img/favicon-morty.png?v=1778943971">
-    <link rel="shortcut icon" href="/assets/img/favicon-morty.png?v=1778943971">
+<link rel="icon" href="/favicon.ico?v=1778944767">
+    <link rel="icon" type="image/png" sizes="80x80" href="/favicon.png?v=1778944767">
+    <link rel="icon" type="image/png" href="/assets/img/favicon-morty.png?v=1778944767">
+    <link rel="shortcut icon" href="/assets/img/favicon-morty.png?v=1778944767">
 <!-- Metadata, OpenGraph and Schema.org -->
     
 
     <!-- Standard metadata -->
     <meta charset="utf-8">
-    <!-- 标准视口；电脑窄窗 <1180：1180px 固定画幅 + overflow 裁切（§16d），无 scale -->
+    <!-- 电脑窄窗裁切：viewport-crop-1180.css + site-desktop-scroll-1180；手机无此类名 -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script>
     (function () {
@@ -21,9 +21,9 @@
       if (w >= 1180) return;
       try {
         if (
-          window.matchMedia(
-            '(max-width: 767px) and (hover: none) and (pointer: coarse)'
-          ).matches &&
+          window.matchMedia('(max-width: 767px)').matches &&
+          window.matchMedia('(hover: none)').matches &&
+          window.matchMedia('(pointer: coarse)').matches &&
           !window.matchMedia('(hover: hover)').matches &&
           !window.matchMedia('(pointer: fine)').matches
         ) {
@@ -66,7 +66,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="/assets/css/dark-sci-min.css?19c858ad8944aeb5c26bbfd33049b0b4&amp;v=1778943971">
+    <link rel="stylesheet" href="/assets/css/dark-sci-min.css?9f32eb9e1a6fe0f0d6d5f48010ce4af2&amp;v=1778944767">
+    <link rel="stylesheet" href="/assets/css/viewport-crop-1180.css?4fe1a13a4cdd9198167e39f8121d3015&amp;v=1778944767">
     <link rel="canonical" href="https://www.yuyuanliu.com/">
 
     <!-- Dark Mode -->
@@ -948,7 +949,8 @@
       </div>
     </footer> -->
 
-    <script src="/assets/js/viewport-1180-fit.js?cffbb0d6893fc0eb640c5cf2492abfc5"></script>
+    <!-- 同步加载：在 inner 闭合后立即算高度，避免 absolute 画布 outer 高度为 0 的闪屏 -->
+    <script src="/assets/js/viewport-1180-fit.js?e9adbc0be70339f2b161b58239fc27d5"></script>
     <script defer src="/assets/js/pub-details-touch.js?6c58aef30352c34caf058fe4ff0146b9"></script>
 
     <!-- JavaScripts -->
